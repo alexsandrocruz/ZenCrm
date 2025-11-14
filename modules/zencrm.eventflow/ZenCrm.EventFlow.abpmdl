@@ -1,0 +1,16 @@
+﻿{
+  "packages": {
+    "ZenCrm.EventFlow": {
+      "path": "ZenCrm.EventFlow/ZenCrm.EventFlow.abppkg"
+    },
+    "ZenCrm.EventFlow.Web": {
+      "path": "ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.abppkg"
+    },
+    "ZenCrm.EventFlow.Tests": {
+      "path": "ZenCrm.EventFlow.Tests/ZenCrm.EventFlow.Tests.abppkg"
+    },
+    "ZenCrm.EventFlow.Contracts": {
+      "path": "ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.abppkg"
+    }
+  }
+}

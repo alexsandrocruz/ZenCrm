@@ -1,0 +1,16 @@
+﻿{
+  "packages": {
+    "ZenCrm.Juris": {
+      "path": "ZenCrm.Juris/ZenCrm.Juris.abppkg"
+    },
+    "ZenCrm.Juris.Web": {
+      "path": "ZenCrm.Juris.Web/ZenCrm.Juris.Web.abppkg"
+    },
+    "ZenCrm.Juris.Tests": {
+      "path": "ZenCrm.Juris.Tests/ZenCrm.Juris.Tests.abppkg"
+    },
+    "ZenCrm.Juris.Contracts": {
+      "path": "ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.abppkg"
+    }
+  }
+}

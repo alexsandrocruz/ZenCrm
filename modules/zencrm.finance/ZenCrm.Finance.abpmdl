@@ -1,0 +1,16 @@
+﻿{
+  "packages": {
+    "ZenCrm.Finance": {
+      "path": "ZenCrm.Finance/ZenCrm.Finance.abppkg"
+    },
+    "ZenCrm.Finance.Web": {
+      "path": "ZenCrm.Finance.Web/ZenCrm.Finance.Web.abppkg"
+    },
+    "ZenCrm.Finance.Tests": {
+      "path": "ZenCrm.Finance.Tests/ZenCrm.Finance.Tests.abppkg"
+    },
+    "ZenCrm.Finance.Contracts": {
+      "path": "ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.abppkg"
+    }
+  }
+}

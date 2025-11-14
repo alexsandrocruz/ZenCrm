@@ -1,0 +1,78 @@
+{
+  "id": "270fcf4e-078b-487a-9904-dececbc9d6df",
+  "creationTime": "11/14/2025 13:13:40 +00:00",
+  "template": "app",
+  "versions": {
+    "AbpFramework": "9.3.6",
+    "AbpStudio": "1.4.2",
+    "TargetDotnetFramework": "net9.0"
+  },
+  "modules": {
+    "ZenCrm": {
+      "path": "ZenCrm.abpmdl",
+      "folder": "main"
+    },
+    "ZenCrm.Catalog": {
+      "path": "modules/zencrm.catalog/ZenCrm.Catalog.abpmdl",
+      "folder": "modules"
+    },
+    "ZenCrm.EventFlow": {
+      "path": "modules/zencrm.eventflow/ZenCrm.EventFlow.abpmdl",
+      "folder": "modules"
+    },
+    "ZenCrm.Juris": {
+      "path": "modules/zencrm.juris/ZenCrm.Juris.abpmdl",
+      "folder": "modules"
+    },
+    "ZenCrm.Finance": {
+      "path": "modules/zencrm.finance/ZenCrm.Finance.abpmdl",
+      "folder": "modules"
+    }
+  },
+  "runProfiles": {
+    "Default": {
+      "path": "etc/abp-studio/run-profiles/Default.abprun.json"
+    }
+  },
+  "options": {
+    "httpRequests": {
+      "ignoredUrls": []
+    }
+  },
+  "creatingStudioConfiguration": {
+    "template": "app",
+    "createdAbpStudioVersion": "1.4.2",
+    "tiered": "false",
+    "runInstallLibs": "true",
+    "useLocalReferences": "false",
+    "multiTenancy": "true",
+    "includeTests": "true",
+    "kubernetesConfiguration": "false",
+    "uiFramework": "mvc",
+    "mobileFramework": "none",
+    "distributedEventBus": "none",
+    "databaseProvider": "ef",
+    "runDbMigrator": "true",
+    "databaseManagementSystem": "sqlite",
+    "separateTenantSchema": "false",
+    "createInitialMigration": "true",
+    "theme": "leptonx-lite",
+    "themeStyle": "",
+    "themeMenuPlacement": "",
+    "publicWebsite": "false",
+    "socialLogin": "false",
+    "selectedLanguages": [
+      "Portuguese (Brazil)",
+      "English",
+      "Spanish"
+    ],
+    "defaultLanguage": "Portuguese (Brazil)",
+    "createCommand": "abp new ZenCrm -t app --ui-framework mvc --database-provider ef --database-management-system sqlite --theme leptonx-lite --without-cms-kit --sample-crud-page --dont-run-bundling --no-social-logins -no-gdpr -no-openiddict-admin-ui -no-audit-logging -no-file-management -no-language-management -no-text-template-management"
+  },
+  "folders": {
+    "items": {
+      "main": {},
+      "modules": {}
+    }
+  }
+}

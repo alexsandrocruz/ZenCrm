@@ -1,0 +1,2141 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Web/ZenCrm.Web.csproj": {}
+  },
+  "projects": {
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj",
+        "projectName": "ZenCrm.Catalog.Contracts",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.Authorization": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Validation": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/ZenCrm.Catalog.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/ZenCrm.Catalog.Web.csproj",
+        "projectName": "ZenCrm.Catalog.Web",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/ZenCrm.Catalog.Web.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/ZenCrm.Catalog.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/ZenCrm.Catalog.csproj",
+        "projectName": "ZenCrm.Catalog",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/ZenCrm.Catalog.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj",
+        "projectName": "ZenCrm.EventFlow.Contracts",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.Authorization": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Validation": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.csproj",
+        "projectName": "ZenCrm.EventFlow.Web",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/ZenCrm.EventFlow.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/ZenCrm.EventFlow.csproj",
+        "projectName": "ZenCrm.EventFlow",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/ZenCrm.EventFlow.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj",
+        "projectName": "ZenCrm.Finance.Contracts",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.Authorization": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Validation": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/ZenCrm.Finance.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/ZenCrm.Finance.Web.csproj",
+        "projectName": "ZenCrm.Finance.Web",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/ZenCrm.Finance.Web.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/ZenCrm.Finance.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/ZenCrm.Finance.csproj",
+        "projectName": "ZenCrm.Finance",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/ZenCrm.Finance.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj",
+        "projectName": "ZenCrm.Juris.Contracts",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.Authorization": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Validation": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/ZenCrm.Juris.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/ZenCrm.Juris.Web.csproj",
+        "projectName": "ZenCrm.Juris.Web",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/ZenCrm.Juris.Web.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/ZenCrm.Juris.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/ZenCrm.Juris.csproj",
+        "projectName": "ZenCrm.Juris",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/ZenCrm.Juris.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "ConfigureAwait.Fody": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.1, )"
+            },
+            "Fody": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.5.3, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Ddd.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj",
+        "projectName": "ZenCrm.Application.Contracts",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Volo.Abp.Account.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.Application.Contracts": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/ZenCrm.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/ZenCrm.Application.csproj",
+        "projectName": "ZenCrm.Application",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/ZenCrm.Application.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Volo.Abp.Account.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.Application": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj",
+        "projectName": "ZenCrm.Domain.Shared",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Contracts/ZenCrm.Catalog.Contracts.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Contracts/ZenCrm.EventFlow.Contracts.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Contracts/ZenCrm.Finance.Contracts.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Contracts/ZenCrm.Juris.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AuditLogging.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BackgroundJobs.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BlobStoring.Database.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.GlobalFeatures": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.OpenIddict.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.Domain.Shared": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj",
+        "projectName": "ZenCrm.Domain",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/ZenCrm.Catalog.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog/ZenCrm.Catalog.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/ZenCrm.EventFlow.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow/ZenCrm.EventFlow.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/ZenCrm.Finance.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance/ZenCrm.Finance.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/ZenCrm.Juris.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris/ZenCrm.Juris.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain.Shared/ZenCrm.Domain.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Volo.Abp.AuditLogging.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BackgroundJobs.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BlobStoring.Database.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Caching": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Emailing": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.OpenIddict.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.Domain.Identity": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.Domain.OpenIddict": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.Domain": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/ZenCrm.EntityFrameworkCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/ZenCrm.EntityFrameworkCore.csproj",
+        "projectName": "ZenCrm.EntityFrameworkCore",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/ZenCrm.EntityFrameworkCore.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Domain/ZenCrm.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Volo.Abp.AuditLogging.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BackgroundJobs.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.BlobStoring.Database.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.OpenIddict.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/ZenCrm.HttpApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/ZenCrm.HttpApi.csproj",
+        "projectName": "ZenCrm.HttpApi",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/ZenCrm.HttpApi.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application.Contracts/ZenCrm.Application.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Volo.Abp.Account.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.PermissionManagement.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.SettingManagement.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.HttpApi": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Web/ZenCrm.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Web/ZenCrm.Web.csproj",
+        "projectName": "ZenCrm.Web",
+        "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Web/ZenCrm.Web.csproj",
+        "packagesPath": "/Users/alexsandrocruz/.nuget/packages/",
+        "outputPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/NuGet.Config",
+          "/Users/alexsandrocruz/NuGet.Config",
+          "/Users/alexsandrocruz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.abp.io/432f8500-51aa-4d02-979c-2f6618c30d82/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/ZenCrm.Catalog.Web.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.catalog/ZenCrm.Catalog.Web/ZenCrm.Catalog.Web.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.eventflow/ZenCrm.EventFlow.Web/ZenCrm.EventFlow.Web.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/ZenCrm.Finance.Web.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.finance/ZenCrm.Finance.Web/ZenCrm.Finance.Web.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/ZenCrm.Juris.Web.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/modules/zencrm.juris/ZenCrm.Juris.Web/ZenCrm.Juris.Web.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/ZenCrm.Application.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.Application/ZenCrm.Application.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/ZenCrm.EntityFrameworkCore.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.EntityFrameworkCore/ZenCrm.EntityFrameworkCore.csproj"
+              },
+              "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/ZenCrm.HttpApi.csproj": {
+                "projectPath": "/Users/alexsandrocruz/Documents/FabioRibeiro/ZenCrm/src/ZenCrm.HttpApi/ZenCrm.HttpApi.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "AspNetCore.HealthChecks.UI": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "AspNetCore.HealthChecks.UI.Client": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "AspNetCore.HealthChecks.UI.InMemory.Storage": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Serilog.Sinks.Async": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "Volo.Abp.Account.Web.OpenIddict": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite": {
+              "target": "Package",
+              "version": "[4.3.6, )"
+            },
+            "Volo.Abp.AspNetCore.Serilog": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Autofac": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.FeatureManagement.Web": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Identity.Web": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.Studio.Client.AspNetCore": {
+              "target": "Package",
+              "version": "[1.4.2, )"
+            },
+            "Volo.Abp.Swashbuckle": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            },
+            "Volo.Abp.TenantManagement.Web": {
+              "target": "Package",
+              "version": "[9.3.6, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
