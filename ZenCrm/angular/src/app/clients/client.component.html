@@ -9,6 +9,7 @@
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
           <button
+            *abpPermission="'ZenCrm.Clients.Create'"
             id="create" class="btn btn-primary"
             type="button"
             (click)="createClient()"
@@ -39,21 +40,21 @@
             </button>
             <div ngbDropdownMenu>
               <button
-                *abpPermission="'ZenCrm.Sales.Clients.Edit'"
+                *abpPermission="'ZenCrm.Clients.Edit'"
                 ngbDropdownItem
                 (click)="editClient(row.id)"
               >
                 {{ '::Edit' | abpLocalization }}
               </button>
               <button
-                *abpPermission="'ZenCrm.Sales.Clients.Assign'"
+                *abpPermission="'ZenCrm.Clients.Assign'"
                 ngbDropdownItem
                 (click)="assignToUser(row.id)"
               >
                 {{ '::Assign' | abpLocalization }}
               </button>
               <button
-                *abpPermission="'ZenCrm.Sales.Clients.Delete'"
+                *abpPermission="'ZenCrm.Clients.Delete'"
                 ngbDropdownItem
                 (click)="delete(row.id)"
               >
