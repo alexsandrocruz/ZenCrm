@@ -9,6 +9,7 @@
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
           <button
+            *abpPermission="'ZenCrm.Customers.Create'"
             id="create" class="btn btn-primary"
             type="button"
             (click)="createCustomer()"
@@ -39,14 +40,14 @@
             </button>
             <div ngbDropdownMenu>
               <button
-                *abpPermission="'ZenCrm.Sales.Customers.Edit'"
+                *abpPermission="'ZenCrm.Customers.Edit'"
                 ngbDropdownItem
                 (click)="editCustomer(row.id)"
               >
                 {{ '::Edit' | abpLocalization }}
               </button>
               <button
-                *abpPermission="'ZenCrm.Sales.Customers.Assign'"
+                *abpPermission="'ZenCrm.Customers.Assign'"
                 ngbDropdownItem
                 (click)="assignToUser(row.id)"
               >
@@ -54,7 +55,7 @@
               </button>
               @if(!row.isPrimaryContact) {
               <button
-                *abpPermission="'ZenCrm.Sales.Customers.SetAsPrimary'"
+                *abpPermission="'ZenCrm.Customers.SetAsPrimary'"
                 ngbDropdownItem
                 (click)="setAsPrimaryContact(row.id)"
               >
@@ -62,13 +63,14 @@
               </button>
               }
               <button
+                *abpPermission="'ZenCrm.Customers.SetAsDecisionMaker'"
                 ngbDropdownItem
                 (click)="setAsDecisionMaker(row.id, !row.isDecisionMaker)"
               >
                 {{ row.isDecisionMaker ? ('::RemoveAsDecisionMaker' | abpLocalization) : ('::SetAsDecisionMaker' | abpLocalization) }}
               </button>
               <button
-                *abpPermission="'ZenCrm.Sales.Customers.Delete'"
+                *abpPermission="'ZenCrm.Customers.Delete'"
                 ngbDropdownItem
                 (click)="delete(row.id)"
               >
@@ -199,7 +201,27 @@
         <div class="col-md-6">
           <div class="mt-2">
             <label for="customer-client">{{ '::Client' | abpLocalization }}</label>
-            <input type="text" id="customer-client" class="form-control" formControlName="clientId" />
+            <input
+                type="text"
+                id="customer-client"
+                class="form-control"
+                list="client-datalist"
+                [value]="selectedClientName"
+                (input)="onClientInput($event)"
+                (keyup)="onClientKeyup($event)"
+                placeholder="Search for a client..."
+                autocomplete="off"
+              />
+              <datalist id="client-datalist">
+                @for(client of filteredClients$ | async; track client.id) {
+                <option [value]="client.name" [data-id]="client.id"></option>
+                }
+              </datalist>
+              <input
+                type="hidden"
+                formControlName="clientId"
+              />
+            <small class="form-text text-muted">Type client name to search</small>
           </div>
         </div>
       </div>

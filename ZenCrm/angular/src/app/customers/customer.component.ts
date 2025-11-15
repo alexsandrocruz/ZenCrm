@@ -15,6 +15,7 @@ import {
   PermissionDirective,
   AutofocusDirective
 } from '@abp/ng.core';
+import { AsyncPipe } from '@angular/common';
 import {
   ConfirmationService,
   Confirmation,
@@ -30,6 +31,9 @@ import {
   GetCustomersInput
 } from '../proxy/customers';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { ClientSearchService } from '../services/client-search.service';
+import { Observable, of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-customer',
@@ -46,7 +50,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     PermissionDirective,
     ModalCloseDirective,
     LocalizationPipe,
-    NgxMaskDirective
+    NgxMaskDirective,
+    AsyncPipe
   ],
   providers: [ListService, provideNgxMask()],
 })
@@ -55,11 +60,18 @@ export class CustomerComponent implements OnInit {
   private customerService = inject(CustomerService);
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
+  private clientSearchService = inject(ClientSearchService);
 
   customers = { items: [], totalCount: 0 } as PagedResultDto<CustomerDto>;
   selectedCustomer = {} as CustomerDto;
   form: FormGroup;
   isModalOpen = false;
+
+  // Client search properties
+  clientSearchQuery = '';
+  clientSearchSubject = new Subject<string>();
+  filteredClients$: Observable<{ id: string, name: string }[]> = of([]);
+  selectedClientName = '';
 
   ngOnInit() {
     const customerStreamCreator = (query: GetCustomersInput) => this.customerService.getList(query);
@@ -72,6 +84,7 @@ export class CustomerComponent implements OnInit {
   createCustomer() {
     this.selectedCustomer = {} as CustomerDto;
     this.buildForm();
+    this.initializeClientSearch();
     this.isModalOpen = true;
   }
 
@@ -79,6 +92,7 @@ export class CustomerComponent implements OnInit {
     this.customerService.get(id).subscribe(customer => {
       this.selectedCustomer = customer;
       this.buildForm();
+      this.initializeClientSearch();
       this.isModalOpen = true;
     });
   }
@@ -94,6 +108,91 @@ export class CustomerComponent implements OnInit {
   assignToUser(id: string) {
     // TODO: Implement user selection modal
     console.log('Assign to user:', id);
+  }
+
+  setupClientSearch() {
+    console.log('Setting up client search...');
+
+    this.filteredClients$ = this.clientSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => {
+        console.log('Searching for clients with query:', query);
+        this.clientSearchQuery = query;
+        return this.clientSearchService.searchClientsByName(query);
+      }),
+      tap(results => console.log('Search results in setupClientSearch:', results))
+    );
+  }
+
+  onClientInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.selectedClientName = input.value;
+    console.log('onClientInput - value:', input.value);
+
+    // Trigger the search
+    this.clientSearchSubject.next(input.value);
+
+    // Handle client selection after a delay to allow search results to update
+    setTimeout(() => {
+      this.findAndSetClient(input.value);
+    }, 350);
+  }
+
+  onClientKeyup(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    console.log('onClientKeyup - value:', input.value);
+
+    // Trigger the search
+    this.clientSearchSubject.next(input.value);
+  }
+
+  private findAndSetClient(clientName: string) {
+    // Find matching client in the current search results
+    this.filteredClients$.subscribe(clients => {
+      const matchedClient = clients.find(c => c.name === clientName);
+
+      if (matchedClient) {
+        console.log('Setting clientId to:', matchedClient.id);
+        this.form.get('clientId')?.setValue(matchedClient.id);
+        this.selectedClientName = matchedClient.name;
+      } else {
+        console.log('No matching client found for:', clientName);
+        this.form.get('clientId')?.setValue(null);
+      }
+    }).unsubscribe();
+  }
+
+  onClientSelected(clientId: string) {
+    if (clientId) {
+      // Find selected client from the search results
+      this.filteredClients$.subscribe(clients => {
+        const selectedClient = clients.find(c => c.id === clientId);
+        if (selectedClient) {
+          this.selectedClientName = selectedClient.name;
+          this.form.get('clientId')?.setValue(clientId);
+        }
+      }).unsubscribe();
+    } else {
+      this.selectedClientName = '';
+      this.form.get('clientId')?.setValue(null);
+    }
+  }
+
+  initializeClientSearch() {
+    // Set initial client name if editing existing customer
+    if (this.selectedCustomer.clientId) {
+      // Load client name from the API
+      // This would require adding a method to get client by ID
+      this.selectedClientName = `Client ID: ${this.selectedCustomer.clientId}`;
+    } else {
+      this.selectedClientName = '';
+      this.clientSearchQuery = '';
+    }
+
+    this.setupClientSearch();
+    // Trigger initial empty search
+    this.clientSearchSubject.next(this.selectedClientName);
   }
 
   setAsPrimaryContact(id: string) {
