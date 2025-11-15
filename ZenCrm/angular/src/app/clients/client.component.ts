@@ -143,12 +143,18 @@ export class ClientComponent implements OnInit {
     });
   }
 
-  getClientTypeLabel(clientType: number): string {
+  getClientTypeLabel(clientType: number | null | undefined): string {
+    if (clientType === null || clientType === undefined) {
+      return '-';
+    }
     const type = this.clientTypes.find(t => t.value === clientType);
     return type ? type.label : clientType.toString();
   }
 
-  getIndustryLabel(industry: number): string {
+  getIndustryLabel(industry: number | null | undefined): string {
+    if (industry === null || industry === undefined) {
+      return '-';
+    }
     const ind = this.clientIndustries.find(i => i.value === industry);
     return ind ? ind.label : '-';
   }
