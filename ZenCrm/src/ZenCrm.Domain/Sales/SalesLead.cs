@@ -24,7 +24,6 @@ public class SalesLead : AuditedAggregateRoot<Guid>
 
     [CanBeNull]
     [StringLength(32)]
-    [Phone]
     public string? Phone { get; set; }
 
     [CanBeNull]

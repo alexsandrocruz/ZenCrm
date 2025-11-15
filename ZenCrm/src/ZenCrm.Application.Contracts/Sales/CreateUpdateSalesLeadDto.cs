@@ -19,11 +19,9 @@ public class CreateUpdateSalesLeadDto
     public string? Email { get; set; }
 
     [StringLength(32)]
-    [Phone]
     public string? Phone { get; set; }
 
     [StringLength(32)]
-    [Phone]
     public string? MobilePhone { get; set; }
 
     [StringLength(512)]

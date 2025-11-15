@@ -29,6 +29,7 @@ import {
   CreateUpdateCustomerDto,
   GetCustomersInput
 } from '../proxy/customers';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-customer',
@@ -44,9 +45,10 @@ import {
     NgxDatatableDefaultDirective,
     PermissionDirective,
     ModalCloseDirective,
-    LocalizationPipe
+    LocalizationPipe,
+    NgxMaskDirective
   ],
-  providers: [ListService],
+  providers: [ListService, provideNgxMask()],
 })
 export class CustomerComponent implements OnInit {
   public readonly list = inject(ListService);
@@ -118,6 +120,24 @@ export class CustomerComponent implements OnInit {
       assignedUserId: [this.selectedCustomer.assignedUserId || ''],
       isActive: [this.selectedCustomer.isActive ?? true],
     });
+  }
+
+  phoneValidator() {
+    return (control: any) => {
+      if (!control.value || control.value.trim() === '') {
+        return null; // Campo é opcional, permite vazio
+      }
+
+      // Remove todos os caracteres não numéricos
+      const phoneNumbers = control.value.replace(/\D/g, '');
+
+      // Verifica se tem entre 10 e 11 dígitos (com ou sem DDD)
+      if (phoneNumbers.length < 10 || phoneNumbers.length > 11) {
+        return { invalidPhone: true };
+      }
+
+      return null;
+    };
   }
 
   save() {

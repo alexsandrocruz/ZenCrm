@@ -24,12 +24,10 @@ public class Customer : AuditedAggregateRoot<Guid>
 
     [CanBeNull]
     [StringLength(32)]
-    [Phone]
     public string? Phone { get; set; }
 
     [CanBeNull]
     [StringLength(32)]
-    [Phone]
     public string? MobilePhone { get; set; }
 
     [CanBeNull]

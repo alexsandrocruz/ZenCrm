@@ -37,7 +37,6 @@ public class Client : AuditedAggregateRoot<Guid>
 
     [CanBeNull]
     [StringLength(32)]
-    [Phone]
     public string? Phone { get; set; }
 
     [CanBeNull]

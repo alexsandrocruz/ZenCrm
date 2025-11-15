@@ -161,7 +161,13 @@
               mask="(00) 0000-0000"
               [showMaskTyped]="true"
               placeholder="(00) 0000-0000"
+              [ngClass]="{ 'is-invalid': form.get('phone')?.touched && form.get('phone')?.invalid }"
             />
+            <div class="invalid-feedback" *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+              <span *ngIf="form.get('phone')?.errors?.['invalidPhone']">
+               Telefone inválido. Digite um número válido com DDD.
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -178,7 +184,13 @@
               mask="(00) 00000-0000"
               [showMaskTyped]="true"
               placeholder="(00) 00000-0000"
+              [ngClass]="{ 'is-invalid': form.get('mobilePhone')?.touched && form.get('mobilePhone')?.invalid }"
             />
+            <div class="invalid-feedback" *ngIf="form.get('mobilePhone')?.touched && form.get('mobilePhone')?.invalid">
+              <span *ngIf="form.get('mobilePhone')?.errors?.['invalidPhone']">
+               Celular inválido. Digite um número válido com DDD.
+              </span>
+            </div>
           </div>
         </div>
         <div class="col-md-6">
