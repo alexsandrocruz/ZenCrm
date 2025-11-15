@@ -28,4 +28,14 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./book/book.component').then(c => c.BookComponent),
     canActivate: [authGuard, permissionGuard],
   },
+  {
+    path: 'crm/clients',
+    loadComponent: () => import('./clients/client.component').then(c => c.ClientComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
+    path: 'crm/customers',
+    loadComponent: () => import('./customers/customer.component').then(c => c.CustomerComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
 ];

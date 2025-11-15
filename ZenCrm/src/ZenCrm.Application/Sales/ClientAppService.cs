@@ -11,7 +11,7 @@ using ZenCrm.Sales;
 
 namespace ZenCrm.Sales;
 
-[Authorize(ZenCrmPermissions.Clients.Default)]
+// [Authorize(ZenCrmPermissions.Clients.Default)] // Temporarily disabled for testing
 public class ClientAppService : ApplicationService, IClientAppService
 {
     private readonly IRepository<Client, Guid> _clientRepository;

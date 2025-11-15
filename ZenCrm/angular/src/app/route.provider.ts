@@ -24,5 +24,26 @@ function configureRoutes() {
         layout: eLayoutType.application,
         requiredPolicy: 'ZenCrm.Books',
       },
+      {
+        path: '/crm',
+        name: '::Menu:CRM',
+        iconClass: 'fas fa-users',
+        order: 2,
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/crm/clients',
+        name: '::Menu:Clients',
+        iconClass: 'fas fa-building',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/crm/customers',
+        name: '::Menu:Customers',
+        iconClass: 'fas fa-user',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
   ]);
 }

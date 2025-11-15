@@ -1,0 +1,242 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-md-6">
+        <h5 class="card-title">
+          {{ '::Menu:Clients' | abpLocalization }}
+        </h5>
+      </div>
+      <div class="text-end col col-md-6">
+        <div class="text-lg-end pt-2">
+          <button
+            *abpPermission="'ZenCrm.Sales.Clients.Create'"
+            id="create" class="btn btn-primary"
+            type="button"
+            (click)="createClient()"
+          >
+            <i class="fa fa-plus me-1"></i>
+            <span>{{ '::NewClient' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <ngx-datatable [rows]="clients.items" [count]="clients.totalCount" [list]="list" default>
+      <ngx-datatable-column
+        [name]="'::Actions' | abpLocalization"
+        [maxWidth]="150"
+        [sortable]="false"
+      >
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button
+              class="btn btn-primary btn-sm dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              ngbDropdownToggle
+            >
+              <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
+            </button>
+            <div ngbDropdownMenu>
+              <button
+                *abpPermission="'ZenCrm.Sales.Clients.Edit'"
+                ngbDropdownItem
+                (click)="editClient(row.id)"
+              >
+                {{ '::Edit' | abpLocalization }}
+              </button>
+              <button
+                *abpPermission="'ZenCrm.Sales.Clients.Assign'"
+                ngbDropdownItem
+                (click)="assignToUser(row.id)"
+              >
+                {{ '::Assign' | abpLocalization }}
+              </button>
+              <button
+                *abpPermission="'ZenCrm.Sales.Clients.Delete'"
+                ngbDropdownItem
+                (click)="delete(row.id)"
+              >
+                {{ '::Delete' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Type' | abpLocalization" prop="clientType">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ getClientTypeLabel(row.clientType) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Industry' | abpLocalization" prop="industry">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ getIndustryLabel(row.industry) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Phone' | abpLocalization" prop="phone"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::AssignedUser' | abpLocalization" prop="assignedUserName">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.assignedUserName || '-' }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="isActive">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="badge" [class.bg-success]="row.isActive" [class.bg-secondary]="!row.isActive">
+            {{ row.isActive ? ('::Active' | abpLocalization) : ('::Inactive' | abpLocalization) }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<abp-modal [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{ (selectedClient.id ? '::EditClient' : '::NewClient' ) | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-name">{{ '::Name' | abpLocalization }}</label><span> * </span>
+            <input type="text" id="client-name" class="form-control" formControlName="name" autofocus />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-type">{{ '::Type' | abpLocalization }}</label><span> * </span>
+            <select class="form-control" id="client-type" formControlName="clientType">
+              <option [ngValue]="null">Select a client type</option>
+              @for(type of clientTypes; track type.value){
+              <option [ngValue]="type.value">
+                {{ type.label }}
+              </option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-industry">{{ '::Industry' | abpLocalization }}</label>
+            <select class="form-control" id="client-industry" formControlName="industry">
+              <option [ngValue]="null">Select an industry</option>
+              @for(industry of clientIndustries; track industry.value){
+              <option [ngValue]="industry.value">
+                {{ industry.label }}
+              </option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-email">{{ '::Email' | abpLocalization }}</label>
+            <input type="email" id="client-email" class="form-control" formControlName="email" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-phone">{{ '::Phone' | abpLocalization }}</label>
+            <input type="tel" id="client-phone" class="form-control" formControlName="phone" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-website">{{ '::Website' | abpLocalization }}</label>
+            <input type="url" id="client-website" class="form-control" formControlName="website" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <label for="client-address">{{ '::Address' | abpLocalization }}</label>
+        <input type="text" id="client-address" class="form-control" formControlName="address" />
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="mt-2">
+            <label for="client-city">{{ '::City' | abpLocalization }}</label>
+            <input type="text" id="client-city" class="form-control" formControlName="city" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mt-2">
+            <label for="client-state">{{ '::State' | abpLocalization }}</label>
+            <input type="text" id="client-state" class="form-control" formControlName="state" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mt-2">
+            <label for="client-postal-code">{{ '::PostalCode' | abpLocalization }}</label>
+            <input type="text" id="client-postal-code" class="form-control" formControlName="postalCode" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-country">{{ '::Country' | abpLocalization }}</label>
+            <input type="text" id="client-country" class="form-control" formControlName="country" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-annual-revenue">{{ '::AnnualRevenue' | abpLocalization }}</label>
+            <input type="number" id="client-annual-revenue" class="form-control" formControlName="annualRevenue" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-employees">{{ '::NumberOfEmployees' | abpLocalization }}</label>
+            <input type="number" id="client-employees" class="form-control" formControlName="numberOfEmployees" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="client-assigned-user">{{ '::AssignedUser' | abpLocalization }}</label>
+            <input type="text" id="client-assigned-user" class="form-control" formControlName="assignedUserId" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <label for="client-description">{{ '::Description' | abpLocalization }}</label>
+        <textarea id="client-description" class="form-control" formControlName="description" rows="3"></textarea>
+      </div>
+
+      <div class="mt-2">
+        <div class="form-check">
+          <input type="checkbox" id="client-is-active" class="form-check-input" formControlName="isActive" />
+          <label for="client-is-active" class="form-check-label">{{ '::Active' | abpLocalization }}</label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>
