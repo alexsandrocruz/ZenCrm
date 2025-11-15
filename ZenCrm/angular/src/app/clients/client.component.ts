@@ -32,6 +32,7 @@ import {
   clientTypeOptions,
   clientIndustryOptions
 } from '../proxy/clients';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-client',
@@ -48,9 +49,10 @@ import {
     NgxDatatableDefaultDirective,
     PermissionDirective,
     ModalCloseDirective,
-    LocalizationPipe
+    LocalizationPipe,
+    NgxMaskDirective
   ],
-  providers: [ListService],
+  providers: [ListService, provideNgxMask()],
 })
 export class ClientComponent implements OnInit {
   public readonly list = inject(ListService);
@@ -127,8 +129,21 @@ export class ClientComponent implements OnInit {
     }
 
     const formValue = this.form.value;
+
+    // Converter annualRevenue para decimal ou null se vazio/zero
+    const annualRevenue = formValue.annualRevenue && formValue.annualRevenue !== 0 && formValue.annualRevenue !== '0'
+      ? parseFloat(formValue.annualRevenue.toString().replace(/\./g, '').replace(',', '.'))
+      : null;
+
+    // Converter numberOfEmployees para int ou null se vazio/zero
+    const numberOfEmployees = formValue.numberOfEmployees && formValue.numberOfEmployees !== 0 && formValue.numberOfEmployees !== '0'
+      ? parseInt(formValue.numberOfEmployees.toString())
+      : null;
+
     const requestData: CreateUpdateClientDto = {
       ...formValue,
+      annualRevenue: annualRevenue,
+      numberOfEmployees: numberOfEmployees,
     };
 
     let request = this.clientService.create(requestData);

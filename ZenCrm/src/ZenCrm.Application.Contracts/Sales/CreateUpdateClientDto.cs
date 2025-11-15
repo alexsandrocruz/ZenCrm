@@ -45,9 +45,9 @@ public class CreateUpdateClientDto
     [StringLength(128)]
     public string? Country { get; set; }
 
-    public decimal AnnualRevenue { get; set; } = 0;
+    public decimal? AnnualRevenue { get; set; }
 
-    public int NumberOfEmployees { get; set; } = 0;
+    public int? NumberOfEmployees { get; set; }
 
     public bool IsActive { get; set; } = true;
 

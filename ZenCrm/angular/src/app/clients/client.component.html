@@ -147,7 +147,15 @@
         <div class="col-md-6">
           <div class="mt-2">
             <label for="client-phone">{{ '::Phone' | abpLocalization }}</label>
-            <input type="tel" id="client-phone" class="form-control" formControlName="phone" />
+            <input
+              type="tel"
+              id="client-phone"
+              class="form-control"
+              formControlName="phone"
+              mask="(00) 0000-0000"
+              [showMaskTyped]="true"
+              placeholder="(00) 0000-0000"
+            />
           </div>
         </div>
         <div class="col-md-6">
@@ -194,7 +202,17 @@
         <div class="col-md-6">
           <div class="mt-2">
             <label for="client-annual-revenue">{{ '::AnnualRevenue' | abpLocalization }}</label>
-            <input type="number" id="client-annual-revenue" class="form-control" formControlName="annualRevenue" />
+            <input
+              type="text"
+              id="client-annual-revenue"
+              class="form-control"
+              formControlName="annualRevenue"
+              mask="separator.2"
+              thousandSeparator="."
+              decimalSeparator=","
+              [showMaskTyped]="true"
+              placeholder="0,00"
+            />
           </div>
         </div>
       </div>
