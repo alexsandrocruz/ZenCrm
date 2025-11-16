@@ -12,7 +12,7 @@ public class ClientDto : AuditedEntityDto<Guid>
 
     public string? DocumentNumber { get; set; }
 
-    public ClientType Type { get; set; }
+    public ClientType ClientType { get; set; }
 
     public ClientIndustry Industry { get; set; }
 
@@ -34,9 +34,9 @@ public class ClientDto : AuditedEntityDto<Guid>
 
     public string? Country { get; set; }
 
-    public decimal AnnualRevenue { get; set; }
+    public decimal? AnnualRevenue { get; set; }
 
-    public int NumberOfEmployees { get; set; }
+    public int? NumberOfEmployees { get; set; }
 
     public bool IsActive { get; set; }
 
@@ -79,7 +79,7 @@ public class ClientDto : AuditedEntityDto<Guid>
         }
     }
 
-    public string GetTypeDisplay => Type.ToString();
+    public string GetTypeDisplay => ClientType.ToString();
 
     public string GetIndustryDisplay => Industry.ToString();
 }
