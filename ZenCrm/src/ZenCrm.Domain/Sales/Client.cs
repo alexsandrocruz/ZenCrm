@@ -18,7 +18,7 @@ public class Client : AuditedAggregateRoot<Guid>
     [StringLength(32)]
     public string? DocumentNumber { get; set; }
 
-    public ClientType Type { get; set; } = ClientType.Business;
+    public ClientType ClientType { get; set; } = ClientType.Business;
 
     public ClientIndustry Industry { get; set; } = ClientIndustry.None;
 
@@ -76,11 +76,11 @@ public class Client : AuditedAggregateRoot<Guid>
     public Client(
         Guid id,
         string name,
-        ClientType type = ClientType.Business
+        ClientType clientType = ClientType.Business
     ) : base(id)
     {
         Name = Check.NotNullOrWhiteSpace(name, nameof(name), maxLength: 256);
-        Type = type;
+        ClientType = clientType;
     }
 
     public Client SetName(string name)

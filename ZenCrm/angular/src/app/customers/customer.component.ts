@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { Component, inject, OnInit } from '@angular/core';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {
   ListService,
@@ -32,6 +32,9 @@ import {
 } from '../proxy/customers';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { ClientSearchService } from '../services/client-search.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserSelectionModalComponent } from '../clients/user-selection-modal.component';
+import { UserSearchService } from '../services/user-search.service';
 import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'rxjs/operators';
 
@@ -43,6 +46,7 @@ import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'r
     ReactiveFormsModule,
     NgxDatatableModule,
     NgbDropdownModule,
+    NgbModalModule,
     ModalComponent,
     AutofocusDirective,
     NgxDatatableListDirective,
@@ -51,7 +55,8 @@ import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'r
     ModalCloseDirective,
     LocalizationPipe,
     NgxMaskDirective,
-    AsyncPipe
+    AsyncPipe,
+    UserSelectionModalComponent
   ],
   providers: [ListService, provideNgxMask()],
 })
@@ -61,6 +66,8 @@ export class CustomerComponent implements OnInit {
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
   private clientSearchService = inject(ClientSearchService);
+  private modalService = inject(NgbModal);
+  private userSearchService = inject(UserSearchService);
 
   customers = { items: [], totalCount: 0 } as PagedResultDto<CustomerDto>;
   selectedCustomer = {} as CustomerDto;
@@ -73,12 +80,21 @@ export class CustomerComponent implements OnInit {
   filteredClients$: Observable<{ id: string, name: string }[]> = of([]);
   selectedClientName = '';
 
+  // User search properties
+  userSearchQuery = '';
+  userSearchSubject = new Subject<string>();
+  filteredUsers$: Observable<any[]> = of([]);
+  selectedUserName = '';
+
   ngOnInit() {
     const customerStreamCreator = (query: GetCustomersInput) => this.customerService.getList(query);
 
     this.list.hookToQuery(customerStreamCreator).subscribe(response => {
       this.customers = response;
     });
+
+    this.setupClientSearch();
+    this.setupUserSearch();
   }
 
   createCustomer() {
@@ -106,8 +122,39 @@ export class CustomerComponent implements OnInit {
   }
 
   assignToUser(id: string) {
-    // TODO: Implement user selection modal
-    console.log('Assign to user:', id);
+    const customer = this.customers.items.find(c => c.id === id);
+    if (!customer) {
+      console.error('Customer not found:', id);
+      return;
+    }
+
+    const modalRef = this.modalService.open(UserSelectionModalComponent, {
+      size: 'md',
+      centered: true
+    });
+
+    modalRef.componentInstance.title = 'Assign Customer to User';
+    modalRef.componentInstance.selectedUserId = customer.assignedUserId;
+
+    modalRef.result.then((selectedUser) => {
+      if (selectedUser) {
+        // Update the customer with the selected user
+        const updateData = { ...customer, assignedUserId: selectedUser.id };
+        this.customerService.update(id, updateData).subscribe({
+          next: () => {
+            // Refresh the list to show updated assignment
+            this.list.get();
+            console.log(`Customer ${customer.firstName} ${customer.lastName} assigned to user ${selectedUser.name || selectedUser.userName}`);
+          },
+          error: (err) => {
+            console.error('Error assigning customer to user:', err);
+          }
+        });
+      }
+    }).catch(() => {
+      // Modal was dismissed
+      console.log('User assignment cancelled');
+    });
   }
 
   setupClientSearch() {
@@ -196,7 +243,7 @@ export class CustomerComponent implements OnInit {
   }
 
   setAsPrimaryContact(id: string) {
-    this.customerService.setAsPrimaryContact(id).subscribe(() => this.list.get());
+    this.customerService.setAsPrimaryContact(id, true).subscribe(() => this.list.get());
   }
 
   setAsDecisionMaker(id: string, isDecisionMaker: boolean) {
@@ -210,11 +257,11 @@ export class CustomerComponent implements OnInit {
       email: [this.selectedCustomer.email || ''],
       phone: [this.selectedCustomer.phone || ''],
       mobilePhone: [this.selectedCustomer.mobilePhone || ''],
-      title: [this.selectedCustomer.title || ''],
+      jobTitle: [this.selectedCustomer.jobTitle || ''],
       department: [this.selectedCustomer.department || ''],
       clientId: [this.selectedCustomer.clientId || ''],
       isPrimaryContact: [this.selectedCustomer.isPrimaryContact || false],
-      isDecisionMaker: [this.selectedCustomer.isDecisionMaker || false],
+      isKeyDecisionMaker: [this.selectedCustomer.isKeyDecisionMaker || false],
       notes: [this.selectedCustomer.notes || ''],
       assignedUserId: [this.selectedCustomer.assignedUserId || ''],
       isActive: [this.selectedCustomer.isActive ?? true],
@@ -263,5 +310,55 @@ export class CustomerComponent implements OnInit {
 
   getFullName(customer: CustomerDto): string {
     return `${customer.firstName} ${customer.lastName}`;
+  }
+
+  // User search methods
+  setupUserSearch(): void {
+    this.filteredUsers$ = this.userSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (!query || query.trim().length < 2) {
+          return of([]);
+        }
+        return this.userSearchService.searchUsers(query.trim());
+      })
+    );
+  }
+
+  onUserInput(event: any): void {
+    const value = event.target ? event.target.value : event;
+    this.userSearchQuery = value;
+    this.userSearchSubject.next(value);
+
+    // Se o input for limpo, limpa o assignedUserId
+    if (!value || value.trim() === '') {
+      this.form.get('assignedUserId')?.setValue(null);
+      this.selectedUserName = '';
+    }
+  }
+
+  onUserKeyup(event: any): void {
+    // Pode ser usado para atalhos de teclado se necessário
+  }
+
+  onUserSelect(event: any): void {
+    const selectedOption = event.target.options[event.target.selectedIndex];
+    const userId = selectedOption.getAttribute('data-id');
+    if (userId) {
+      this.form.get('assignedUserId')?.setValue(userId);
+      this.selectedUserName = selectedOption.value;
+    } else {
+      this.form.get('assignedUserId')?.setValue(null);
+      this.selectedUserName = '';
+    }
+  }
+
+  getUserDisplayName(): string {
+    const userId = this.form.get('assignedUserId')?.value;
+    if (!userId) return '';
+
+    // Retorna o nome selecionado ou o valor atual do input
+    return this.selectedUserName || this.userSearchQuery || '';
   }
 }

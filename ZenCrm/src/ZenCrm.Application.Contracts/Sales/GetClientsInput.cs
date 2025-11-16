@@ -7,7 +7,7 @@ public class GetClientsInput : PagedAndSortedResultRequestDto
 {
     public string? Filter { get; set; }
 
-    public ClientType? Type { get; set; }
+    public ClientType? ClientType { get; set; }
 
     public ClientIndustry? Industry { get; set; }
 

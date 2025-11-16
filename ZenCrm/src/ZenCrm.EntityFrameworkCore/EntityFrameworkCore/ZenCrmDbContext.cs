@@ -138,7 +138,7 @@ public class ZenCrmDbContext :
 
             b.HasIndex(x => x.Name);
             b.HasIndex(x => x.DocumentNumber).IsUnique(false);
-            b.HasIndex(x => x.Type);
+            b.HasIndex(x => x.ClientType);
             b.HasIndex(x => x.Industry);
             b.HasIndex(x => x.AssignedUserId);
         });

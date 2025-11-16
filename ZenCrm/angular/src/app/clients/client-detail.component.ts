@@ -212,7 +212,7 @@ export class ClientDetailComponent implements OnInit {
         email: customer.email,
         phone: customer.phone,
         mobilePhone: customer.mobilePhone,
-        title: customer.title,
+        jobTitle: customer.jobTitle,
         department: customer.department,
         notes: customer.notes,
         isActive: customer.isActive,

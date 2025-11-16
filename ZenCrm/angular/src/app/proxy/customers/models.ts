@@ -5,7 +5,7 @@ export interface CustomerDto {
   email?: string;
   phone?: string;
   mobilePhone?: string;
-  title?: string;
+  jobTitle?: string;
   department?: string;
   clientId?: string;
   clientName?: string;
@@ -27,7 +27,7 @@ export interface CreateUpdateCustomerDto {
   email?: string;
   phone?: string;
   mobilePhone?: string;
-  title?: string;
+  jobTitle?: string;
   department?: string;
   clientId?: string;
   isPrimaryContact: boolean;

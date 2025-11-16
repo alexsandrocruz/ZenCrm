@@ -31,6 +31,7 @@ import {
 } from '../proxy/customers';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { ClientSearchService } from '../services/client-search.service';
+import { UserSearchService } from '../services/user-search.service';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
 
@@ -59,6 +60,7 @@ export class CustomerComponent implements OnInit {
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
   private clientSearchService = inject(ClientSearchService);
+  private userSearchService = inject(UserSearchService);
 
   customers = { items: [], totalCount: 0 } as PagedResultDto<CustomerDto>;
   selectedCustomer = {} as CustomerDto;
@@ -164,7 +166,7 @@ export class CustomerComponent implements OnInit {
       email: [this.selectedCustomer.email || ''],
       phone: [this.selectedCustomer.phone || ''],
       mobilePhone: [this.selectedCustomer.mobilePhone || ''],
-      title: [this.selectedCustomer.title || ''],
+      jobTitle: [this.selectedCustomer.jobTitle || ''],
       department: [this.selectedCustomer.department || ''],
       clientId: [this.selectedCustomer.clientId || ''],
       isPrimaryContact: [this.selectedCustomer.isPrimaryContact || false],

@@ -236,7 +236,28 @@
         <div class="col-md-6">
           <div class="mt-2">
             <label for="client-assigned-user">{{ '::AssignedUser' | abpLocalization }}</label>
-            <input type="text" id="client-assigned-user" class="form-control" formControlName="assignedUserId" />
+            <input
+              type="text"
+              id="client-assigned-user"
+              class="form-control"
+              list="client-user-datalist"
+              [value]="getUserDisplayName()"
+              (input)="onUserInput($event)"
+              (keyup)="onUserKeyup($event)"
+              (change)="onUserSelect($event)"
+              placeholder="Search for a user..."
+              autocomplete="off"
+            />
+            <datalist id="client-user-datalist">
+              @for(user of filteredUsers$ | async; track user.id) {
+              <option [value]="user.displayName || user.name || user.userName" [data-id]="user.id"></option>
+              }
+            </datalist>
+            <input
+              type="hidden"
+              formControlName="assignedUserId"
+            />
+            <small class="form-text text-muted">Type user name to search</small>
           </div>
         </div>
       </div>

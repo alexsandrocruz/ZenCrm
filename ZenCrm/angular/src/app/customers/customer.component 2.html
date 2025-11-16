@@ -86,7 +86,7 @@
       <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Phone' | abpLocalization" prop="phone"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::MobilePhone' | abpLocalization" prop="mobilePhone"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Title' | abpLocalization" prop="title"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::JobTitle' | abpLocalization" prop="jobTitle"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Department' | abpLocalization" prop="department"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Client' | abpLocalization" prop="clientName">
         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -195,8 +195,8 @@
         </div>
         <div class="col-md-6">
           <div class="mt-2">
-            <label for="customer-title">{{ '::Title' | abpLocalization }}</label>
-            <input type="text" id="customer-title" class="form-control" formControlName="title" />
+            <label for="customer-jobTitle">{{ '::JobTitle' | abpLocalization }}</label>
+            <input type="text" id="customer-jobTitle" class="form-control" formControlName="jobTitle" />
           </div>
         </div>
       </div>

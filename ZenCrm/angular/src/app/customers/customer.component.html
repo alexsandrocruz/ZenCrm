@@ -88,7 +88,7 @@
       <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Phone' | abpLocalization" prop="phone"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::MobilePhone' | abpLocalization" prop="mobilePhone"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Title' | abpLocalization" prop="title"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::JobTitle' | abpLocalization" prop="jobTitle"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Department' | abpLocalization" prop="department"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Client' | abpLocalization" prop="clientName">
         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -185,8 +185,8 @@
         </div>
         <div class="col-md-6">
           <div class="mt-2">
-            <label for="customer-title">{{ '::Title' | abpLocalization }}</label>
-            <input type="text" id="customer-title" class="form-control" formControlName="title" />
+            <label for="customer-jobTitle">{{ '::JobTitle' | abpLocalization }}</label>
+            <input type="text" id="customer-jobTitle" class="form-control" formControlName="jobTitle" />
           </div>
         </div>
       </div>
@@ -230,7 +230,28 @@
         <div class="col-md-6">
           <div class="mt-2">
             <label for="customer-assigned-user">{{ '::AssignedUser' | abpLocalization }}</label>
-            <input type="text" id="customer-assigned-user" class="form-control" formControlName="assignedUserId" />
+            <input
+              type="text"
+              id="customer-assigned-user"
+              class="form-control"
+              list="customer-user-datalist"
+              [value]="getUserDisplayName()"
+              (input)="onUserInput($event)"
+              (keyup)="onUserKeyup($event)"
+              (change)="onUserSelect($event)"
+              placeholder="Search for a user..."
+              autocomplete="off"
+            />
+            <datalist id="customer-user-datalist">
+              @for(user of filteredUsers$ | async; track user.id) {
+              <option [value]="user.displayName || user.name || user.userName" [data-id]="user.id"></option>
+              }
+            </datalist>
+            <input
+              type="hidden"
+              formControlName="assignedUserId"
+            />
+            <small class="form-text text-muted">Type user name to search</small>
           </div>
         </div>
         <div class="col-md-6">

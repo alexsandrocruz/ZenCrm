@@ -13,7 +13,7 @@ public class CreateUpdateClientDto
     [StringLength(32)]
     public string? DocumentNumber { get; set; }
 
-    public ClientType Type { get; set; } = ClientType.Business;
+    public ClientType ClientType { get; set; } = ClientType.Business;
 
     public ClientIndustry Industry { get; set; } = ClientIndustry.None;
 

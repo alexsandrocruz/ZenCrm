@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Component, inject, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { NgbDatepickerModule, NgbDateStruct, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerModule, NgbDateStruct, NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {
   ListService,
@@ -34,6 +34,11 @@ import {
 } from '../proxy/clients';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserSelectionModalComponent } from './user-selection-modal.component';
+import { UserSearchService } from '../services/user-search.service';
+import { Observable, of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-client',
@@ -44,6 +49,7 @@ import { Router } from '@angular/router';
     NgbDatepickerModule,
     NgxDatatableModule,
     NgbDropdownModule,
+    NgbModalModule,
     ModalComponent,
     AutofocusDirective,
     NgxDatatableListDirective,
@@ -51,7 +57,8 @@ import { Router } from '@angular/router';
     PermissionDirective,
     ModalCloseDirective,
     LocalizationPipe,
-    NgxMaskDirective
+    NgxMaskDirective,
+    UserSelectionModalComponent
   ],
   providers: [ListService, provideNgxMask()],
 })
@@ -61,6 +68,8 @@ export class ClientComponent implements OnInit {
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
   private router = inject(Router);
+  private modalService = inject(NgbModal);
+  private userSearchService = inject(UserSearchService);
 
   clients = { items: [], totalCount: 0 } as PagedResultDto<ClientDto>;
   selectedClient = {} as ClientDto;
@@ -69,12 +78,19 @@ export class ClientComponent implements OnInit {
   clientIndustries = clientIndustryOptions;
   isModalOpen = false;
 
+  // User search properties
+  userSearchQuery = '';
+  userSearchSubject = new Subject<string>();
+  filteredUsers$: Observable<any[]> = of([]);
+
   ngOnInit() {
     const clientStreamCreator = (query: GetClientsInput) => this.clientService.getList(query);
 
     this.list.hookToQuery(clientStreamCreator).subscribe(response => {
       this.clients = response;
     });
+
+    this.setupUserSearch();
   }
 
   createClient() {
@@ -100,8 +116,39 @@ export class ClientComponent implements OnInit {
   }
 
   assignToUser(id: string) {
-    // TODO: Implement user selection modal
-    console.log('Assign to user:', id);
+    const client = this.clients.items.find(c => c.id === id);
+    if (!client) {
+      console.error('Client not found:', id);
+      return;
+    }
+
+    const modalRef = this.modalService.open(UserSelectionModalComponent, {
+      size: 'md',
+      centered: true
+    });
+
+    modalRef.componentInstance.title = 'Assign Client to User';
+    modalRef.componentInstance.selectedUserId = client.assignedUserId;
+
+    modalRef.result.then((selectedUser) => {
+      if (selectedUser) {
+        // Update the client with the selected user
+        const updateData = { ...client, assignedUserId: selectedUser.id };
+        this.clientService.update(id, updateData).subscribe({
+          next: () => {
+            // Refresh the list to show updated assignment
+            this.list.get();
+            console.log(`Client ${client.name} assigned to user ${selectedUser.name}`);
+          },
+          error: (err) => {
+            console.error('Error assigning client to user:', err);
+          }
+        });
+      }
+    }).catch(() => {
+      // Modal was dismissed
+      console.log('User assignment cancelled');
+    });
   }
 
   viewClientDetails(id: string) {
@@ -178,5 +225,52 @@ export class ClientComponent implements OnInit {
     }
     const ind = this.clientIndustries.find(i => i.value === industry);
     return ind ? ind.label : '-';
+  }
+
+  // User search methods
+  setupUserSearch(): void {
+    this.filteredUsers$ = this.userSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (!query || query.trim().length < 2) {
+          return of([]);
+        }
+        return this.userSearchService.searchUsers(query.trim());
+      })
+    );
+  }
+
+  onUserInput(event: any): void {
+    const value = event.target ? event.target.value : event;
+    this.userSearchQuery = value;
+    this.userSearchSubject.next(value);
+
+    // Se o input for limpo, limpa o assignedUserId
+    if (!value || value.trim() === '') {
+      this.form.get('assignedUserId')?.setValue(null);
+    }
+  }
+
+  onUserKeyup(event: any): void {
+    // Pode ser usado para atalhos de teclado se necessário
+  }
+
+  onUserSelect(event: any): void {
+    const selectedOption = event.target.options[event.target.selectedIndex];
+    const userId = selectedOption.getAttribute('data-id');
+    if (userId) {
+      this.form.get('assignedUserId')?.setValue(userId);
+    } else {
+      this.form.get('assignedUserId')?.setValue(null);
+    }
+  }
+
+  getUserDisplayName(): string {
+    const userId = this.form.get('assignedUserId')?.value;
+    if (!userId) return '';
+
+    // Para simplificar, vamos usar o valor atual do input
+    return this.userSearchQuery || '';
   }
 }

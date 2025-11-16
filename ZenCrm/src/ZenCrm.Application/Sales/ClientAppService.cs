@@ -11,7 +11,7 @@ using ZenCrm.Sales;
 
 namespace ZenCrm.Sales;
 
-// [Authorize(ZenCrmPermissions.Clients.Default)] // Temporarily disabled for testing
+[Authorize(ZenCrmPermissions.Clients.Default)]
 public class ClientAppService : ApplicationService, IClientAppService
 {
     private readonly IRepository<Client, Guid> _clientRepository;
@@ -31,7 +31,7 @@ public class ClientAppService : ApplicationService, IClientAppService
                 x.DocumentNumber.Contains(input.Filter) ||
                 x.Email.Contains(input.Filter) ||
                 x.Website.Contains(input.Filter))
-            .WhereIf(input.Type.HasValue, x => x.Type == input.Type.Value)
+            .WhereIf(input.ClientType.HasValue, x => x.ClientType == input.ClientType.Value)
             .WhereIf(input.Industry.HasValue, x => x.Industry == input.Industry.Value)
             .WhereIf(input.AssignedUserId.HasValue, x => x.AssignedUserId == input.AssignedUserId.Value)
             .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value)
@@ -67,7 +67,7 @@ public class ClientAppService : ApplicationService, IClientAppService
         return ObjectMapper.Map<Client, ClientDto>(client);
     }
 
-    // [Authorize(ZenCrmPermissions.Clients.Create)] // Temporarily disabled for testing
+    [Authorize(ZenCrmPermissions.Clients.Create)]
     public async Task<ClientDto> CreateAsync(CreateUpdateClientDto input)
     {
         var client = ObjectMapper.Map<CreateUpdateClientDto, Client>(input);
