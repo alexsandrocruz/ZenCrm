@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { Component, inject, OnInit } from '@angular/core';
-import { formatDate } from '@angular/common';
+import { formatDate, CommonModule } from '@angular/common';
 import { NgbDatepickerModule, NgbDateStruct, NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {
@@ -46,6 +46,7 @@ import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'r
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    CommonModule,
     NgbDatepickerModule,
     NgxDatatableModule,
     NgbDropdownModule,
