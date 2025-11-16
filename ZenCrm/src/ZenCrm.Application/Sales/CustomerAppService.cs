@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -29,8 +28,6 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
 
     public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomersInput input)
     {
-        Logger.LogInformation($"GetListAsync called with filter: {input.Filter}");
-
         IQueryable<Customer> queryable = await _customerRepository.GetQueryableAsync();
 
         queryable = queryable
@@ -50,7 +47,6 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
             .WhereIf(input.EndDate.HasValue, x => x.CreationTime <= input.EndDate.Value.AddDays(1).AddTicks(-1));
 
         var totalCount = await AsyncExecuter.CountAsync(queryable);
-        Logger.LogInformation($"Total customers found: {totalCount}");
 
         queryable = queryable
             .OrderBy<Customer, string>(x => x.FirstName)
@@ -59,8 +55,6 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
             .Take(input.MaxResultCount);
 
         var customers = await AsyncExecuter.ToListAsync(queryable);
-        Logger.LogInformation($"Query results count: {customers.Count}");
-
         var customerDtos = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
 
         // Populate AssignedUserName for each customer
@@ -78,12 +72,6 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
                             ? user.Name
                             : user.UserName;
                 }
-
-                Logger.LogInformation($"Customer: {customerDto.FirstName} {customerDto.LastName}, AssignedUserId: {customerDto.AssignedUserId}, AssignedUserName: {customerDto.AssignedUserName}");
-            }
-            else
-            {
-                Logger.LogInformation($"Customer: {customerDto.FirstName} {customerDto.LastName}, No AssignedUserId");
             }
         }
 
@@ -122,22 +110,11 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
     [Authorize(ZenCrmPermissions.Customers.Create)]
     public async Task<CustomerDto> CreateAsync(CreateUpdateCustomerDto input)
     {
-        // Debug: Log para verificar o que está sendo recebido
-        Logger.LogInformation($"Creating customer with data: FirstName={input.FirstName}, LastName={input.LastName}, AssignedUserId={input.AssignedUserId}");
-
         var customer = ObjectMapper.Map<CreateUpdateCustomerDto, Customer>(input);
-
-        // Debug: Log para verificar o que foi mapeado
-        Logger.LogInformation($"Mapped customer entity: Id={customer.Id}, FirstName={customer.FirstName}, LastName={customer.LastName}, AssignedUserId={customer.AssignedUserId}");
 
         await _customerRepository.InsertAsync(customer);
 
-        var result = ObjectMapper.Map<Customer, CustomerDto>(customer);
-
-        // Debug: Log para verificar o que foi retornado
-        Logger.LogInformation($"Created customer returned: Id={result.Id}, FirstName={result.FirstName}, LastName={result.LastName}, AssignedUserId={result.AssignedUserId}");
-
-        return result;
+        return ObjectMapper.Map<Customer, CustomerDto>(customer);
     }
 
     [Authorize(ZenCrmPermissions.Customers.Edit)]
