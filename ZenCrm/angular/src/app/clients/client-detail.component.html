@@ -340,7 +340,7 @@
                     @if(customer.isPrimaryContact) {
                     <span class="badge bg-primary me-1">Primary Contact</span>
                     }
-                    @if(customer.isDecisionMaker) {
+                    @if(customer.isKeyDecisionMaker) {
                     <span class="badge bg-success">Decision Maker</span>
                     }
                   </div>
@@ -350,17 +350,31 @@
                     <button class="btn btn-sm btn-outline-primary" (click)="editCustomer(customer.id)">
                       <i class="fa fa-edit"></i>
                     </button>
-                    @if(!customer.isPrimaryContact) {
-                    <button class="btn btn-sm btn-outline-info" (click)="setAsPrimaryContact(customer.id)" title="Set as Primary">
-                      <i class="fa fa-star"></i>
-                    </button>
-                    }
                     <button
-                      class="btn btn-sm btn-outline-success"
-                      (click)="setAsDecisionMaker(customer.id, !customer.isDecisionMaker)"
-                      title="{{ customer.isDecisionMaker ? 'Remove as Decision Maker' : 'Set as Decision Maker' }}"
+                      class="btn btn-sm"
+                      [class.btn-outline-info]="!customer.isPrimaryContact"
+                      [class.btn-info]="customer.isPrimaryContact"
+                      (click)="setAsPrimaryContact(customer.id)"
+                      title="{{ customer.isPrimaryContact ? 'Remove as Primary Contact' : 'Set as Primary Contact' }}"
                     >
-                      <i class="fa fa-user-tie"></i>
+                      @if(customer.isPrimaryContact) {
+                        <i class="fa fa-star"></i>
+                      } @else {
+                        <i class="far fa-star"></i>
+                      }
+                    </button>
+                    <button
+                      class="btn btn-sm"
+                      [class.btn-outline-success]="!customer.isKeyDecisionMaker"
+                      [class.btn-success]="customer.isKeyDecisionMaker"
+                      (click)="setAsDecisionMaker(customer.id, !customer.isKeyDecisionMaker)"
+                      title="{{ customer.isKeyDecisionMaker ? 'Remove as Decision Maker' : 'Set as Decision Maker' }}"
+                    >
+                      @if(customer.isKeyDecisionMaker) {
+                        <i class="fa fa-user-tie"></i>
+                      } @else {
+                        <i class="far fa-user-tie"></i>
+                      }
                     </button>
                     <button class="btn btn-sm btn-outline-danger" (click)="deleteCustomer(customer.id)">
                       <i class="fa fa-trash"></i>
@@ -493,7 +507,7 @@
               <label for="customer-is-primary" class="form-check-label">Primary Contact</label>
             </div>
             <div class="form-check">
-              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isDecisionMaker" />
+              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isKeyDecisionMaker" />
               <label for="customer-is-decision-maker" class="form-check-label">Decision Maker</label>
             </div>
           </div>

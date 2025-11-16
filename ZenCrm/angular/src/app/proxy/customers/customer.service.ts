@@ -42,7 +42,7 @@ export class CustomerService {
         filter: input.filter,
         clientId: input.clientId,
         assignedUserId: input.assignedUserId,
-        isDecisionMaker: input.isDecisionMaker,
+        isKeyDecisionMaker: input.isKeyDecisionMaker,
         isPrimaryContact: input.isPrimaryContact
       },
     },
@@ -64,18 +64,19 @@ export class CustomerService {
     },
     { apiName: this.apiName });
 
-  setAsPrimaryContact = (id: string) =>
-    this.restService.request<any, void>({
+  setAsPrimaryContact = (id: string, isPrimary: boolean) =>
+    this.restService.request<any, CustomerDto>({
       method: 'POST',
       url: `/api/app/customer/${id}/set-as-primary-contact`,
+      params: { isPrimary },
     },
     { apiName: this.apiName });
 
   setAsDecisionMaker = (id: string, isDecisionMaker: boolean) =>
-    this.restService.request<any, void>({
+    this.restService.request<any, CustomerDto>({
       method: 'POST',
-      url: `/api/app/customer/${id}/set-as-decision-maker`,
-      params: { isDecisionMaker },
+      url: `/api/app/customer/${id}/set-as-key-decision-maker`,
+      params: { isKeyDecisionMaker: isDecisionMaker },
     },
     { apiName: this.apiName });
 

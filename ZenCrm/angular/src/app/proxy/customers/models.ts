@@ -10,7 +10,7 @@ export interface CustomerDto {
   clientId?: string;
   clientName?: string;
   isPrimaryContact: boolean;
-  isDecisionMaker: boolean;
+  isKeyDecisionMaker: boolean;
   notes?: string;
   assignedUserId?: string;
   assignedUserName?: string;
@@ -31,7 +31,7 @@ export interface CreateUpdateCustomerDto {
   department?: string;
   clientId?: string;
   isPrimaryContact: boolean;
-  isDecisionMaker: boolean;
+  isKeyDecisionMaker: boolean;
   notes?: string;
   assignedUserId?: string;
   isActive: boolean;
@@ -44,6 +44,6 @@ export interface GetCustomersInput {
   filter?: string;
   clientId?: string;
   assignedUserId?: string;
-  isDecisionMaker?: boolean;
+  isKeyDecisionMaker?: boolean;
   isPrimaryContact?: boolean;
 }

@@ -90,7 +90,7 @@ export class ClientDetailComponent implements OnInit {
       notes: ['', Validators.maxLength(512)],
       isActive: [true],
       isPrimaryContact: [false],
-      isDecisionMaker: [false],
+      isKeyDecisionMaker: [false],
       clientId: ['', Validators.required], // Changed from null to empty string to avoid validation issues
       assignedUserId: [null],
     });
@@ -186,7 +186,7 @@ export class ClientDetailComponent implements OnInit {
         notes: '',
         isActive: true,
         isPrimaryContact: false,
-        isDecisionMaker: false,
+        isKeyDecisionMaker: false,
         clientId: this.client.id,
         assignedUserId: null,
       });
@@ -217,7 +217,7 @@ export class ClientDetailComponent implements OnInit {
         notes: customer.notes,
         isActive: customer.isActive,
         isPrimaryContact: customer.isPrimaryContact,
-        isDecisionMaker: customer.isDecisionMaker,
+        isKeyDecisionMaker: customer.isKeyDecisionMaker,
         clientId: customer.clientId,
         assignedUserId: customer.assignedUserId,
       });
@@ -261,13 +261,17 @@ export class ClientDetailComponent implements OnInit {
   }
 
   setAsPrimaryContact(customerId: string): void {
-    this.customerService.setAsPrimaryContact(customerId).subscribe(() => {
+    // Find the current customer to get its current state
+    const currentCustomer = this.customers.find(c => c.id === customerId);
+    const newState = !currentCustomer?.isPrimaryContact;
+
+    this.customerService.setAsPrimaryContact(customerId, newState).subscribe(() => {
       this.loadCustomers();
     });
   }
 
-  setAsDecisionMaker(customerId: string, isDecisionMaker: boolean): void {
-    this.customerService.setAsDecisionMaker(customerId, isDecisionMaker).subscribe(() => {
+  setAsDecisionMaker(customerId: string, isKeyDecisionMaker: boolean): void {
+    this.customerService.setAsDecisionMaker(customerId, isKeyDecisionMaker).subscribe(() => {
       this.loadCustomers();
     });
   }
