@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using ZenCrm.Permissions;
 using ZenCrm.Sales;
 
@@ -15,14 +17,20 @@ namespace ZenCrm.Sales;
 public class CustomerAppService : ApplicationService, ICustomerAppService
 {
     private readonly IRepository<Customer, Guid> _customerRepository;
+    private readonly IdentityUserManager _userManager;
 
-    public CustomerAppService(IRepository<Customer, Guid> customerRepository)
+    public CustomerAppService(
+        IRepository<Customer, Guid> customerRepository,
+        IdentityUserManager userManager)
     {
         _customerRepository = customerRepository;
+        _userManager = userManager;
     }
 
     public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomersInput input)
     {
+        Logger.LogInformation($"GetListAsync called with filter: {input.Filter}");
+
         IQueryable<Customer> queryable = await _customerRepository.GetQueryableAsync();
 
         queryable = queryable
@@ -42,6 +50,7 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
             .WhereIf(input.EndDate.HasValue, x => x.CreationTime <= input.EndDate.Value.AddDays(1).AddTicks(-1));
 
         var totalCount = await AsyncExecuter.CountAsync(queryable);
+        Logger.LogInformation($"Total customers found: {totalCount}");
 
         queryable = queryable
             .OrderBy<Customer, string>(x => x.FirstName)
@@ -50,28 +59,85 @@ public class CustomerAppService : ApplicationService, ICustomerAppService
             .Take(input.MaxResultCount);
 
         var customers = await AsyncExecuter.ToListAsync(queryable);
+        Logger.LogInformation($"Query results count: {customers.Count}");
 
-        return new PagedResultDto<CustomerDto>(
-            totalCount,
-            ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers)
-        );
+        var customerDtos = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
+
+        // Populate AssignedUserName for each customer
+        foreach (var customerDto in customerDtos)
+        {
+            if (customerDto.AssignedUserId.HasValue)
+            {
+                var user = await _userManager.FindByIdAsync(customerDto.AssignedUserId.Value.ToString());
+
+                if (user != null)
+                {
+                    customerDto.AssignedUserName = !string.IsNullOrWhiteSpace(user.Name) && !string.IsNullOrWhiteSpace(user.Surname)
+                        ? $"{user.Name} {user.Surname}"
+                        : !string.IsNullOrWhiteSpace(user.Name)
+                            ? user.Name
+                            : user.UserName;
+                }
+
+                Logger.LogInformation($"Customer: {customerDto.FirstName} {customerDto.LastName}, AssignedUserId: {customerDto.AssignedUserId}, AssignedUserName: {customerDto.AssignedUserName}");
+            }
+            else
+            {
+                Logger.LogInformation($"Customer: {customerDto.FirstName} {customerDto.LastName}, No AssignedUserId");
+            }
+        }
+
+        return new PagedResultDto<CustomerDto>(totalCount, customerDtos);
     }
 
     public async Task<CustomerDto> GetAsync(Guid id)
     {
-        var customer = await _customerRepository.GetAsync(id);
+        var customerRepository = await _customerRepository.GetQueryableAsync();
+        var userRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<IdentityUser, Guid>>();
 
-        return ObjectMapper.Map<Customer, CustomerDto>(customer);
+        var query = from customer in customerRepository
+                   join user in await userRepository.GetQueryableAsync() on customer.AssignedUserId equals user.Id into userGroup
+                   from user in userGroup.DefaultIfEmpty()
+                   where customer.Id == id
+                   select new { customer, user };
+
+        var result = await AsyncExecuter.FirstOrDefaultAsync(query);
+        if (result == null)
+        {
+            throw new Volo.Abp.BusinessException("CustomerNotFound");
+        }
+
+        var customerDto = ObjectMapper.Map<Customer, CustomerDto>(result.customer);
+        customerDto.AssignedUserName = result.user != null ?
+            (!string.IsNullOrWhiteSpace(result.user.Name) && !string.IsNullOrWhiteSpace(result.user.Surname)
+                ? $"{result.user.Name} {result.user.Surname}"
+                : !string.IsNullOrWhiteSpace(result.user.Name)
+                    ? result.user.Name
+                    : result.user.UserName)
+            : null;
+
+        return customerDto;
     }
 
     [Authorize(ZenCrmPermissions.Customers.Create)]
     public async Task<CustomerDto> CreateAsync(CreateUpdateCustomerDto input)
     {
+        // Debug: Log para verificar o que está sendo recebido
+        Logger.LogInformation($"Creating customer with data: FirstName={input.FirstName}, LastName={input.LastName}, AssignedUserId={input.AssignedUserId}");
+
         var customer = ObjectMapper.Map<CreateUpdateCustomerDto, Customer>(input);
+
+        // Debug: Log para verificar o que foi mapeado
+        Logger.LogInformation($"Mapped customer entity: Id={customer.Id}, FirstName={customer.FirstName}, LastName={customer.LastName}, AssignedUserId={customer.AssignedUserId}");
 
         await _customerRepository.InsertAsync(customer);
 
-        return ObjectMapper.Map<Customer, CustomerDto>(customer);
+        var result = ObjectMapper.Map<Customer, CustomerDto>(customer);
+
+        // Debug: Log para verificar o que foi retornado
+        Logger.LogInformation($"Created customer returned: Id={result.Id}, FirstName={result.FirstName}, LastName={result.LastName}, AssignedUserId={result.AssignedUserId}");
+
+        return result;
     }
 
     [Authorize(ZenCrmPermissions.Customers.Edit)]

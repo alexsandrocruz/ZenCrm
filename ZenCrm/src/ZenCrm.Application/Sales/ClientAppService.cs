@@ -27,10 +27,10 @@ public class ClientAppService : ApplicationService, IClientAppService
 
         queryable = queryable
             .WhereIf(!string.IsNullOrWhiteSpace(input.Filter), x =>
-                x.Name.Contains(input.Filter) ||
-                x.DocumentNumber.Contains(input.Filter) ||
-                x.Email.Contains(input.Filter) ||
-                x.Website.Contains(input.Filter))
+                x.Name.Contains(input.Filter!) ||
+                x.DocumentNumber.Contains(input.Filter!) ||
+                x.Email.Contains(input.Filter!) ||
+                x.Website.Contains(input.Filter!))
             .WhereIf(input.ClientType.HasValue, x => x.ClientType == input.ClientType.Value)
             .WhereIf(input.Industry.HasValue, x => x.Industry == input.Industry.Value)
             .WhereIf(input.AssignedUserId.HasValue, x => x.AssignedUserId == input.AssignedUserId.Value)

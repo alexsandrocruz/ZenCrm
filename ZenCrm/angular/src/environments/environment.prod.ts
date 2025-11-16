@@ -3,7 +3,7 @@ import { Environment } from '@abp/ng.core';
 const baseUrl = 'http://localhost:4200';
 
 const oAuthConfig = {
-  issuer: 'https://localhost:44349/',
+  issuer: 'https://localhost:44340/',
   redirectUri: baseUrl,
   clientId: 'ZenCrm_App',
   responseType: 'code',
@@ -20,7 +20,7 @@ export const environment = {
   oAuthConfig,
   apis: {
     default: {
-      url: 'https://localhost:44349',
+      url: 'https://localhost:44340',
       rootNamespace: 'ZenCrm',
     },
     AbpAccountPublic: {

@@ -292,6 +292,7 @@ export class CustomerComponent implements OnInit {
     }
 
     const formValue = this.form.value;
+
     const requestData: CreateUpdateCustomerDto = {
       ...formValue,
     };
@@ -343,15 +344,34 @@ export class CustomerComponent implements OnInit {
   }
 
   onUserSelect(event: any): void {
-    const selectedOption = event.target.options[event.target.selectedIndex];
-    const userId = selectedOption.getAttribute('data-id');
-    if (userId) {
-      this.form.get('assignedUserId')?.setValue(userId);
-      this.selectedUserName = selectedOption.value;
-    } else {
+    // Para datalist, precisamos encontrar o usuário pelo value
+    const selectedValue = event.target.value;
+
+    // Se o campo foi limpo, limpa o ID também
+    if (!selectedValue || selectedValue.trim() === '') {
       this.form.get('assignedUserId')?.setValue(null);
       this.selectedUserName = '';
+      return;
     }
+
+    // Buscar usuário correspondente nos resultados
+    this.filteredUsers$.subscribe(users => {
+      const matchedUser = users.find(user =>
+        user.displayName === selectedValue ||
+        user.userName === selectedValue ||
+        `${user.name} ${user.surname}` === selectedValue ||
+        user.email === selectedValue
+      );
+
+      if (matchedUser) {
+        this.form.get('assignedUserId')?.setValue(matchedUser.id);
+        this.selectedUserName = selectedValue;
+      } else {
+        // Se não encontrar correspondência, limpa
+        this.form.get('assignedUserId')?.setValue(null);
+        this.selectedUserName = '';
+      }
+    });
   }
 
   getUserDisplayName(): string {
