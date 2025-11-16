@@ -451,9 +451,31 @@
         </div>
       </div>
 
-      <div class="mb-3">
-        <label for="customer-department" class="form-label">Department</label>
-        <input type="text" id="customer-department" class="form-control" formControlName="department" />
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-department" class="form-label">Department</label>
+            <input type="text" id="customer-department" class="form-control" formControlName="department" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-client" class="form-label">Client</label>
+            <input
+              type="text"
+              id="customer-client"
+              class="form-control"
+              [value]="client?.name"
+              readonly
+              style="background-color: #f8f9fa; cursor: not-allowed;"
+            />
+            <input
+              type="hidden"
+              formControlName="clientId"
+            />
+            <small class="form-text text-muted">Contact associated with: {{ client?.name }}</small>
+          </div>
+        </div>
       </div>
 
       <div class="row">
@@ -497,6 +519,9 @@
     <button class="btn btn-primary" (click)="saveCustomer()" [disabled]="customerForm.invalid">
       <i class="fa fa-check me-1"></i>
       Save
+      <small *ngIf="customerForm.invalid" class="ms-2 text-warning">
+        (Fill required fields)
+      </small>
     </button>
   </ng-template>
 </abp-modal>

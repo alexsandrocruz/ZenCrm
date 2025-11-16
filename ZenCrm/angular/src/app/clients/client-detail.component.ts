@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { ClientService, ClientDto } from '../proxy/clients';
 import { ClientType, clientTypeOptions } from '../proxy/clients/client-type.enum';
 import { ClientIndustry, clientIndustryOptions } from '../proxy/clients/client-industry.enum';
@@ -17,10 +20,14 @@ import {
   selector: 'app-client-detail',
   templateUrl: './client-detail.component.html',
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxMaskDirective,
     ModalComponent,
     ModalCloseDirective
   ],
-  providers: [ListService],
+  providers: [ListService, provideNgxMask()],
 })
 export class ClientDetailComponent implements OnInit {
   client: ClientDto;
@@ -84,7 +91,7 @@ export class ClientDetailComponent implements OnInit {
       isActive: [true],
       isPrimaryContact: [false],
       isDecisionMaker: [false],
-      clientId: [null],
+      clientId: ['', Validators.required], // Changed from null to empty string to avoid validation issues
       assignedUserId: [null],
     });
   }
@@ -153,15 +160,47 @@ export class ClientDetailComponent implements OnInit {
   }
 
   createCustomer(): void {
+    // Ensure we have a valid client ID
+    if (!this.client?.id) {
+      console.error('Cannot create customer: No client ID available');
+      return;
+    }
+
     this.selectedCustomer = {} as CustomerDto;
-    this.selectedCustomer.clientId = this.client?.id;
-    this.isCustomerModalOpen = true;
-    this.customerForm.reset({
-      clientId: this.client?.id,
-      isActive: true,
-      isPrimaryContact: false,
-      isDecisionMaker: false,
-    });
+    this.selectedCustomer.clientId = this.client.id;
+
+    // Close modal first if it's open
+    this.isCustomerModalOpen = false;
+
+    // Use setTimeout to ensure modal state is reset
+    setTimeout(() => {
+      // Reset form with all required values
+      this.customerForm.reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        mobilePhone: '',
+        title: '',
+        department: '',
+        notes: '',
+        isActive: true,
+        isPrimaryContact: false,
+        isDecisionMaker: false,
+        clientId: this.client.id,
+        assignedUserId: null,
+      });
+
+      // Force form update and validation
+      this.customerForm.updateValueAndValidity();
+
+      // Open modal after form is ready
+      this.isCustomerModalOpen = true;
+
+      console.log('Form after initialization:', this.customerForm.status, this.customerForm.value);
+      console.log('Is form valid?', this.customerForm.valid);
+      console.log('Form errors:', this.customerForm.errors);
+    }, 50);
   }
 
   editCustomer(customerId: string): void {
@@ -187,7 +226,14 @@ export class ClientDetailComponent implements OnInit {
   }
 
   saveCustomer(): void {
-    if (!this.customerForm.valid) return;
+    if (!this.customerForm.valid) {
+      // Mark all controls as touched to show validation errors
+      Object.keys(this.customerForm.controls).forEach(key => {
+        const control = this.customerForm.get(key);
+        control?.markAsTouched();
+      });
+      return;
+    }
 
     const customerData = { ...this.customerForm.value };
 
@@ -226,11 +272,17 @@ export class ClientDetailComponent implements OnInit {
     });
   }
 
-  getClientTypeLabel(type: number): string {
+  getClientTypeLabel(type: number | undefined | null): string {
+    if (type === undefined || type === null) {
+      return '-';
+    }
     return this.clientTypes.find(t => t.value === type)?.label || type.toString();
   }
 
-  getIndustryLabel(industry: number): string {
+  getIndustryLabel(industry: number | undefined | null): string {
+    if (industry === undefined || industry === null) {
+      return '-';
+    }
     return this.clientIndustries.find(i => i.value === industry)?.label || industry.toString();
   }
 
