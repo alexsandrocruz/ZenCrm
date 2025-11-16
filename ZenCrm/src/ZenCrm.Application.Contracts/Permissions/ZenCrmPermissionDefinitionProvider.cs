@@ -30,6 +30,7 @@ public class ZenCrmPermissionDefinitionProvider : PermissionDefinitionProvider
         clientsPermission.AddChild(ZenCrmPermissions.Clients.Create, L("Permission:Clients.Create"));
         clientsPermission.AddChild(ZenCrmPermissions.Clients.Edit, L("Permission:Clients.Edit"));
         clientsPermission.AddChild(ZenCrmPermissions.Clients.Delete, L("Permission:Clients.Delete"));
+        clientsPermission.AddChild(ZenCrmPermissions.Clients.ViewDetails, L("Permission:Clients.ViewDetails"));
         clientsPermission.AddChild(ZenCrmPermissions.Clients.Assign, L("Permission:Clients.Assign"));
         clientsPermission.AddChild(ZenCrmPermissions.Clients.ViewAll, L("Permission:Clients.ViewAll"));
         clientsPermission.AddChild(ZenCrmPermissions.Clients.ManageAll, L("Permission:Clients.ManageAll"));

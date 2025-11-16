@@ -38,7 +38,7 @@ function configureRoutes() {
         parentName: '::Menu:CRM',
         layout: eLayoutType.application,
       },
-      {
+            {
         path: '/crm/customers',
         name: '::Menu:Customers',
         iconClass: 'fas fa-user',

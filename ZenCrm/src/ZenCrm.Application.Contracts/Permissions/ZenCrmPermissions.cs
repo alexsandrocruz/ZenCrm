@@ -31,6 +31,7 @@ public static class ZenCrmPermissions
         public const string Create = Default + ".Create";
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
+        public const string ViewDetails = Default + ".ViewDetails";
         public const string Assign = Default + ".Assign";
         public const string ViewAll = Default + ".ViewAll";
         public const string ManageAll = Default + ".ManageAll";

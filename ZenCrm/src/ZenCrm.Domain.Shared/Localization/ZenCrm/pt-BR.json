@@ -37,6 +37,18 @@
     "Unspecified": "Sistema",
     "SeeAllUsers": "Ver todos os usuários",
     "TakePhoto": "Tirar fotos",
-    "ChoosePhoto": "Escolher Foto"
+    "ChoosePhoto": "Escolher Foto",
+    "Permission:ZenCrm": "ZenCrm",
+    "Permission:Clients": "Gerenciamento de Clientes",
+    "Permission:Clients.Create": "Criar novos clientes",
+    "Permission:Clients.Edit": "Editar clientes",
+    "Permission:Clients.Delete": "Excluir clientes",
+    "Permission:Clients.ViewDetails": "Visualizar detalhes do cliente",
+    "Permission:Clients.Assign": "Atribuir clientes a usuários",
+    "Permission:Clients.ViewAll": "Visualizar todos os clientes",
+    "Permission:Clients.ManageAll": "Gerenciar todos os clientes",
+    "Menu:CRM": "CRM",
+    "Menu:Clients": "Clientes",
+    "Menu:Customers": "Contatos"
   }
 }

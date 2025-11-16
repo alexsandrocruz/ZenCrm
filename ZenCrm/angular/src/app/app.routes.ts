@@ -34,6 +34,11 @@ export const APP_ROUTES: Routes = [
     canActivate: [authGuard, permissionGuard],
   },
   {
+    path: 'crm/clients/:id',
+    loadComponent: () => import('./clients/client-detail.component').then(c => c.ClientDetailComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
     path: 'crm/customers',
     loadComponent: () => import('./customers/customer.component').then(c => c.CustomerComponent),
     canActivate: [authGuard, permissionGuard],

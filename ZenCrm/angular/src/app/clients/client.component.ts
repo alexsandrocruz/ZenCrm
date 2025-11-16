@@ -33,6 +33,7 @@ import {
   clientIndustryOptions
 } from '../proxy/clients';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-client',
@@ -59,6 +60,7 @@ export class ClientComponent implements OnInit {
   private clientService = inject(ClientService);
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
+  private router = inject(Router);
 
   clients = { items: [], totalCount: 0 } as PagedResultDto<ClientDto>;
   selectedClient = {} as ClientDto;
@@ -100,6 +102,10 @@ export class ClientComponent implements OnInit {
   assignToUser(id: string) {
     // TODO: Implement user selection modal
     console.log('Assign to user:', id);
+  }
+
+  viewClientDetails(id: string) {
+    this.router.navigate(['/crm/clients', id]);
   }
 
   buildForm() {
