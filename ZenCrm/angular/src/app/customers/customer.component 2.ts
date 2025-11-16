@@ -170,7 +170,7 @@ export class CustomerComponent implements OnInit {
       department: [this.selectedCustomer.department || ''],
       clientId: [this.selectedCustomer.clientId || ''],
       isPrimaryContact: [this.selectedCustomer.isPrimaryContact || false],
-      isDecisionMaker: [this.selectedCustomer.isDecisionMaker || false],
+      isKeyDecisionMaker: [this.selectedCustomer.isKeyDecisionMaker || false],
       notes: [this.selectedCustomer.notes || ''],
       assignedUserId: [this.selectedCustomer.assignedUserId || ''],
       isActive: [this.selectedCustomer.isActive ?? true],

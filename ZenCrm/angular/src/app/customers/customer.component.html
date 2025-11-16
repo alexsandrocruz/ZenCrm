@@ -65,9 +65,9 @@
               <button
                 *abpPermission="'ZenCrm.Customers.SetAsDecisionMaker'"
                 ngbDropdownItem
-                (click)="setAsDecisionMaker(row.id, !row.isDecisionMaker)"
+                (click)="setAsDecisionMaker(row.id, !row.isKeyDecisionMaker)"
               >
-                {{ row.isDecisionMaker ? ('::RemoveAsDecisionMaker' | abpLocalization) : ('::SetAsDecisionMaker' | abpLocalization) }}
+                {{ row.isKeyDecisionMaker ? ('::RemoveAsDecisionMaker' | abpLocalization) : ('::SetAsDecisionMaker' | abpLocalization) }}
               </button>
               <button
                 *abpPermission="'ZenCrm.Customers.Delete'"
@@ -101,7 +101,7 @@
             @if(row.isPrimaryContact) {
             <span class="badge bg-primary me-1">{{ '::PrimaryContact' | abpLocalization }}</span>
             }
-            @if(row.isDecisionMaker) {
+            @if(row.isKeyDecisionMaker) {
             <span class="badge bg-success">{{ '::DecisionMaker' | abpLocalization }}</span>
             }
           </div>
@@ -262,7 +262,7 @@
               <label for="customer-is-primary" class="form-check-label">{{ '::PrimaryContact' | abpLocalization }}</label>
             </div>
             <div class="form-check">
-              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isDecisionMaker" />
+              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isKeyDecisionMaker" />
               <label for="customer-is-decision-maker" class="form-check-label">{{ '::DecisionMaker' | abpLocalization }}</label>
             </div>
           </div>
