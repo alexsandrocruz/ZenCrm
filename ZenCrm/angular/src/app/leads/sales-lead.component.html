@@ -13,24 +13,12 @@
         <input type="text" class="form-control" placeholder="{{ '::Search' | abpLocalization }}" [(ngModel)]="list.filter" (keyup.enter)="list.get()">
       </div>
       <div class="col-md-2">
-        <select class="form-select" [(ngModel)]="statusFilter" (change)="list.get()">
-          <option value="">{{ '::All' | abpLocalization }}</option>
-          <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <select class="form-select" [(ngModel)]="sourceFilter" (change)="list.get()">
-          <option value="">{{ '::All' | abpLocalization }}</option>
-          <option *ngFor="let source of leadSources" [value]="source.value">{{ source.key }}</option>
-        </select>
-      </div>
-      <div class="col-md-2">
         <button class="btn btn-secondary" (click)="list.get()">
           <i class="fas fa-search me-1"></i> {{ '::Search' | abpLocalization }}
         </button>
       </div>
       <div class="col-md-2">
-        <button class="btn btn-outline-secondary" (click)="list.filter = ''; statusFilter = ''; sourceFilter = ''; list.get();">
+        <button class="btn btn-outline-secondary" (click)="list.filter = ''; list.get();">
           <i class="fas fa-times me-1"></i> {{ '::Clear' | abpLocalization }}
         </button>
       </div>
@@ -227,10 +215,31 @@
         </div>
         <div class="col-md-6">
           <div class="mb-3">
+            <label class="form-label">Estimated Value</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" formControlName="estimatedValue" min="0" step="0.01" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
             <label class="form-label">Source</label>
             <select class="form-select" formControlName="source">
               <option value="">Select a source</option>
               <option *ngFor="let source of leadSources" [value]="source.value">{{ source.key }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" formControlName="status">
+              <option value="">Select status</option>
+              <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
             </select>
           </div>
         </div>

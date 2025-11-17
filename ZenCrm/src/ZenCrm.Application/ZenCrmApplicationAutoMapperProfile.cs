@@ -18,6 +18,9 @@ public class ZenCrmApplicationAutoMapperProfile : Profile
         CreateMap<Customer, CustomerDto>();
         CreateMap<CreateUpdateCustomerDto, Customer>();
 
+        CreateMap<SalesLead, SalesLeadDto>();
+        CreateMap<CreateUpdateSalesLeadDto, SalesLead>();
+
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */

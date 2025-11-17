@@ -43,6 +43,9 @@
     "Menu:CRM": "CRM",
     "Menu:Clients": "Clients",
     "Menu:Customers": "Customers",
+    "Menu:SalesLeads": "Sales Leads",
+    "Menu:Opportunities": "Opportunities",
+    "Menu:Pipeline": "Pipeline",
     "Menu:Home": "Home",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
     "Welcome": "Welcome"

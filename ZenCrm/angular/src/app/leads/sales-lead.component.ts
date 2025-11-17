@@ -81,25 +81,13 @@ export class SalesLeadComponent implements OnInit {
   leadStatuses = leadStatusOptions;
   isModalOpen = false;
 
-  // Filter properties
-  statusFilter: string = '';
-  sourceFilter: string = '';
-
   // User search properties
   userSearchQuery = '';
   userSearchSubject = new Subject<string>();
   filteredUsers$: Observable<any[]> = of([]);
 
   ngOnInit() {
-    const leadStreamCreator = (query: GetSalesLeadsInput) => {
-      // Add filters to the query
-      const enhancedQuery = {
-        ...query,
-        status: this.statusFilter ? parseInt(this.statusFilter) : undefined,
-        source: this.sourceFilter ? parseInt(this.sourceFilter) : undefined,
-      };
-      return this.salesLeadService.getList(enhancedQuery);
-    };
+    const leadStreamCreator = (query: GetSalesLeadsInput) => this.salesLeadService.getList(query);
 
     this.list.hookToQuery(leadStreamCreator).subscribe(response => {
       this.leads = response;
@@ -193,6 +181,7 @@ export class SalesLeadComponent implements OnInit {
       status: [this.selectedLead.status || null],
       description: [this.selectedLead.description || ''],
       assignedUserId: [this.selectedLead.assignedUserId || ''],
+      estimatedValue: [this.selectedLead.estimatedValue || 0],
     });
   }
 
@@ -204,17 +193,33 @@ export class SalesLeadComponent implements OnInit {
     const formValue = this.form.value;
     const requestData: CreateUpdateSalesLeadDto = {
       ...formValue,
+      // Converter enums de string para número
+      source: formValue.source ? parseInt(formValue.source) : undefined,
+      status: formValue.status ? parseInt(formValue.status) : undefined,
+      estimatedValue: parseFloat(formValue.estimatedValue) || 0,
     };
+
+    console.log('🔍 SalesLead - Dados do formulário:', formValue);
+    console.log('🔍 SalesLead - requestData enviado:', requestData);
+    console.log('🔍 SalesLead - Estamos criando ou atualizando?', this.selectedLead.id ? 'Atualizando' : 'Criando');
 
     let request = this.salesLeadService.create(requestData);
     if (this.selectedLead.id) {
       request = this.salesLeadService.update(this.selectedLead.id, requestData);
     }
 
-    request.subscribe(() => {
-      this.isModalOpen = false;
-      this.form.reset();
-      this.list.get();
+    request.subscribe({
+      next: (response) => {
+        console.log('✅ SalesLead - Sucesso:', response);
+        this.isModalOpen = false;
+        this.form.reset();
+        this.list.get();
+      },
+      error: (error) => {
+        console.error('❌ SalesLead - Erro detalhado:', error);
+        console.error('❌ SalesLead - Status:', error.status);
+        console.error('❌ SalesLead - Error:', error.error);
+      }
     });
   }
 
