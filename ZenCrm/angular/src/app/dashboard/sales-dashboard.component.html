@@ -1,0 +1,158 @@
+<div class="dashboard-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="mb-0">Sales Performance</h3>
+      <small class="text-muted">Pipeline health, activities and upcoming revenue</small>
+    </div>
+    <button class="btn btn-outline-primary" type="button" (click)="loadDashboard()">
+      <i class="fa fa-sync me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div class="row g-3">
+    @for(card of kpis; track card.title) {
+    <div class="col-md-3 col-sm-6">
+      <div class="kpi-card">
+        <div class="kpi-icon">
+          <i class="fa" [ngClass]="card.icon"></i>
+        </div>
+        <div class="kpi-value">
+          <span *ngIf="card.isCurrency; else plainValue">{{ card.value | currency }}</span>
+          <ng-template #plainValue>{{ card.value | number }}</ng-template>
+        </div>
+        <div class="kpi-title">{{ card.title }}</div>
+        <div class="kpi-description text-muted">{{ card.description }}</div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="row mt-4 g-3">
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Pipeline by Stage</h5>
+          <small class="text-muted">Monitor deal distribution</small>
+        </div>
+        <div class="card-body">
+          @for(stage of stageSummary; track stage.stage) {
+          <div class="stage-row">
+            <div class="stage-label">
+              <strong>{{ stage.label }}</strong>
+              <span class="text-muted">{{ stage.count }} deals</span>
+            </div>
+            <div class="progress mb-1">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [style.width.%]="totalStageCount ? (stage.count / totalStageCount) * 100 : 0"
+              ></div>
+            </div>
+            <div class="stage-value text-muted">{{ stage.value | currency }}</div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">Lead Funnel</h5>
+          <small class="text-muted">Status of incoming leads</small>
+        </div>
+        <div class="card-body">
+          @if(leadSummary.length === 0) {
+          <div class="text-muted text-center">No leads registered</div>
+          } @else {
+          @for(item of leadSummary; track item.label) {
+          <div class="d-flex justify-content-between align-items-center py-2 lead-row">
+            <div>{{ item.label }}</div>
+            <span class="badge bg-light text-dark">{{ item.count }}</span>
+          </div>
+          }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 g-3">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">Upcoming Closings</h5>
+          <small class="text-muted">Next opportunities to close</small>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Client</th>
+                <th>Value</th>
+                <th>Close date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if(upcomingOpportunities.length === 0) {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">Nothing scheduled</td>
+              </tr>
+              } @else {
+              @for(opportunity of upcomingOpportunities; track opportunity.id) {
+              <tr>
+                <td>
+                  <strong>{{ opportunity.name }}</strong>
+                  <div class="text-muted small">{{ getStageLabel(opportunity.stage) }}</div>
+                </td>
+                <td>{{ opportunity.clientName || 'Unassigned' }}</td>
+                <td>{{ opportunity.estimatedValue | currency }}</td>
+                <td>{{ opportunity.expectedCloseDate | date: 'mediumDate' }}</td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Interactions</h5>
+          <small class="text-muted">Meetings, calls and follow-ups</small>
+        </div>
+        <div class="list-group list-group-flush">
+          @if(recentInteractions.length === 0) {
+          <div class="list-group-item text-center text-muted py-4">No interactions logged</div>
+          } @else {
+          @for(interaction of recentInteractions; track interaction.id) {
+          <div class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>{{ interaction.subject }}</strong>
+                <div class="text-muted small">
+                  {{ interaction.getTypeDisplay || interaction.type }} ·
+                  {{ interaction.clientName || interaction.customerName || 'General' }}
+                </div>
+              </div>
+              <span class="badge bg-light text-dark">{{ interaction.scheduledDate | date: 'short' }}</span>
+            </div>
+            <p class="mb-0 text-muted small mt-2">{{ interaction.description || 'No notes provided.' }}</p>
+          </div>
+          }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center my-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>

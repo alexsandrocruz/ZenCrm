@@ -24,6 +24,7 @@
     "@abp/ng.tenant-management": "~9.3.6",
     "@abp/ng.theme.lepton-x": "~4.3.6",
     "@abp/ng.theme.shared": "~9.3.6",
+    "@angular/cdk": "~20.0.0",
     "@angular/animations": "~20.0.0",
     "@angular/common": "~20.0.0",
     "@angular/compiler": "~20.0.0",

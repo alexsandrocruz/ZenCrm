@@ -1,0 +1,72 @@
+.pipeline-container {
+  .pipeline-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .pipeline-column {
+    background-color: #f8f9fa;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+  }
+
+  .pipeline-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .pipeline-column-value {
+    font-weight: 600;
+    color: #198754;
+  }
+
+  .pipeline-dropzone {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    overflow-y: auto;
+  }
+
+  .pipeline-card {
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    background-color: #fff;
+    box-shadow: 0 5px 12px rgba(31, 45, 61, 0.08);
+    cursor: move;
+  }
+
+  .pipeline-card-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .pipeline-card-client {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+
+  .pipeline-card-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+
+  .pipeline-card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}

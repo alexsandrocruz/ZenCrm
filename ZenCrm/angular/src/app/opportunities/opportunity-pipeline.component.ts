@@ -1,0 +1,164 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ClientDto, PipelineStage, SalesOpportunityDto, pipelineStageOptions } from '../proxy/sales';
+import { SimpleClientService } from '../services/simple-client.service';
+import { SimpleSalesOpportunityService } from '../services/simple-sales-opportunity.service';
+
+interface PipelineColumn {
+  stage: PipelineStage;
+  label: string;
+  opportunities: SalesOpportunityDto[];
+  totalValue: number;
+  dropListId: string;
+}
+
+@Component({
+  selector: 'app-opportunity-pipeline',
+  templateUrl: './opportunity-pipeline.component.html',
+  styleUrls: ['./opportunity-pipeline.component.scss'],
+  imports: [CommonModule, FormsModule, DragDropModule],
+})
+export class OpportunityPipelineComponent implements OnInit {
+  private readonly opportunityService = inject(SimpleSalesOpportunityService);
+  private readonly clientService = inject(SimpleClientService);
+
+  readonly boardStages: PipelineStage[] = [
+    PipelineStage.Lead,
+    PipelineStage.Qualifying,
+    PipelineStage.Qualified,
+    PipelineStage.Analysis,
+    PipelineStage.Proposal,
+    PipelineStage.ProposalSent,
+    PipelineStage.Negotiation,
+    PipelineStage.VerbalCommitment,
+    PipelineStage.Closing,
+    PipelineStage.Won,
+    PipelineStage.OnHold,
+  ];
+
+  columns: PipelineColumn[] = [];
+  lostOpportunities: SalesOpportunityDto[] = [];
+  clients: ClientDto[] = [];
+  isLoading = false;
+  filterText = '';
+  clientFilter: string | null = null;
+
+  ngOnInit(): void {
+    this.initializeColumns();
+    this.loadClients();
+    this.loadPipeline();
+  }
+
+  initializeColumns(): void {
+    this.columns = this.boardStages.map(stage => {
+      const option = pipelineStageOptions.find(x => x.value === stage);
+      return {
+        stage,
+        label: option?.key ?? PipelineStage[stage],
+        opportunities: [],
+        totalValue: 0,
+        dropListId: this.getDropListId(stage),
+      };
+    });
+  }
+
+  get connectedDropLists(): string[] {
+    return this.columns.map(column => column.dropListId);
+  }
+
+  loadClients(): void {
+    this.clientService
+      .getList({ skipCount: 0, maxResultCount: 100, sorting: 'name' })
+      .subscribe(result => (this.clients = result.items));
+  }
+
+  loadPipeline(): void {
+    this.isLoading = true;
+    this.opportunityService
+      .getList({
+        skipCount: 0,
+        maxResultCount: 500,
+        filter: this.filterText?.trim() || undefined,
+        clientId: this.clientFilter || undefined,
+        sorting: 'stage, expectedCloseDate',
+      })
+      .subscribe(result => {
+        this.columns.forEach(column => {
+          column.opportunities = [];
+          column.totalValue = 0;
+        });
+        this.lostOpportunities = [];
+
+        result.items.forEach(opportunity => {
+          const column = this.columns.find(col => col.stage === opportunity.stage);
+          if (column) {
+            column.opportunities.push(opportunity);
+            column.totalValue += opportunity.estimatedValue;
+          } else if (opportunity.stage === PipelineStage.Lost) {
+            this.lostOpportunities.push(opportunity);
+          }
+        });
+
+        this.isLoading = false;
+      });
+  }
+
+  drop(event: CdkDragDrop<SalesOpportunityDto[]>, column: PipelineColumn): void {
+    if (column.stage === PipelineStage.Lost) {
+      return;
+    }
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(column.opportunities, event.previousIndex, event.currentIndex);
+      return;
+    }
+
+    const movedOpportunity = event.previousContainer.data[event.previousIndex];
+
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex,
+    );
+
+    movedOpportunity.stage = column.stage;
+    this.opportunityService.moveOpportunityToStage(movedOpportunity.id, column.stage).subscribe({
+      next: updated => {
+        Object.assign(movedOpportunity, updated);
+        this.recalculateTotals();
+      },
+      error: () => this.loadPipeline(),
+    });
+  }
+
+  recalculateTotals(): void {
+    this.columns.forEach(column => {
+      column.totalValue = column.opportunities.reduce((sum, opportunity) => sum + opportunity.estimatedValue, 0);
+    });
+  }
+
+  applyFilters(): void {
+    this.loadPipeline();
+  }
+
+  resetFilters(): void {
+    this.filterText = '';
+    this.clientFilter = null;
+    this.loadPipeline();
+  }
+
+  trackByOpportunity(_index: number, item: SalesOpportunityDto): string {
+    return item.id;
+  }
+
+  getDropListId(stage: PipelineStage): string {
+    return `stage-column-${stage}`;
+  }
+
+  isDropDisabled(stage: PipelineStage): boolean {
+    return stage === PipelineStage.Lost;
+  }
+}

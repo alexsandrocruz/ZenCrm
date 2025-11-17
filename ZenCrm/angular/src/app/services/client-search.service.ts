@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ClientService, GetClientsInput } from '../proxy/clients';
+import { GetClientsInput } from '../proxy/sales';
+import { SimpleClientService } from './simple-client.service';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -8,7 +9,7 @@ import { map, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ClientSearchService {
-  constructor(private clientService: ClientService) {}
+  constructor(private clientService: SimpleClientService) {}
 
   searchClientsByName(query: string): Observable<{ id: string, name: string }[]> {
     console.log('ClientSearchService: Searching with query:', query);

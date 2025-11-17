@@ -32,16 +32,37 @@ function configureRoutes() {
         layout: eLayoutType.application,
       },
       {
+        path: '/crm/dashboard',
+        name: '::Menu:Dashboard',
+        iconClass: 'fas fa-chart-line',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
+      {
         path: '/crm/clients',
         name: '::Menu:Clients',
         iconClass: 'fas fa-building',
         parentName: '::Menu:CRM',
         layout: eLayoutType.application,
       },
-            {
+      {
         path: '/crm/customers',
         name: '::Menu:Customers',
         iconClass: 'fas fa-user',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/crm/opportunities',
+        name: '::Menu:Opportunities',
+        iconClass: 'fas fa-briefcase',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/crm/opportunities/pipeline',
+        name: '::Menu:Pipeline',
+        iconClass: 'fas fa-project-diagram',
         parentName: '::Menu:CRM',
         layout: eLayoutType.application,
       },

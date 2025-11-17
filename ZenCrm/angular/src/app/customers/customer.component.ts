@@ -29,7 +29,7 @@ import {
   CustomerDto,
   CreateUpdateCustomerDto,
   GetCustomersInput
-} from '../proxy/customers';
+} from '../proxy/sales';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { ClientSearchService } from '../services/client-search.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -139,7 +139,21 @@ export class CustomerComponent implements OnInit {
     modalRef.result.then((selectedUser) => {
       if (selectedUser) {
         // Update the customer with the selected user
-        const updateData = { ...customer, assignedUserId: selectedUser.id };
+        const updateData: CreateUpdateCustomerDto = {
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phone: customer.phone,
+          mobilePhone: customer.mobilePhone,
+          jobTitle: customer.jobTitle,
+          department: customer.department,
+          notes: customer.notes,
+          isActive: customer.isActive,
+          isPrimaryContact: customer.isPrimaryContact,
+          isKeyDecisionMaker: customer.isKeyDecisionMaker,
+          clientId: customer.clientId,
+          assignedUserId: selectedUser.id
+        };
         this.customerService.update(id, updateData).subscribe({
           next: () => {
             // Refresh the list to show updated assignment
@@ -247,7 +261,7 @@ export class CustomerComponent implements OnInit {
   }
 
   setAsDecisionMaker(id: string, isDecisionMaker: boolean) {
-    this.customerService.setAsDecisionMaker(id, isDecisionMaker).subscribe(() => this.list.get());
+    this.customerService.setAsKeyDecisionMaker(id, isDecisionMaker).subscribe(() => this.list.get());
   }
 
   buildForm() {

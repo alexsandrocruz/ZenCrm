@@ -8,6 +8,11 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./home/home.component').then(c => c.HomeComponent),
   },
   {
+    path: 'crm/dashboard',
+    loadComponent: () => import('./dashboard/sales-dashboard.component').then(c => c.SalesDashboardComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
     path: 'account',
     loadChildren: () => import('@abp/ng.account').then(c => c.createRoutes()),
   },
@@ -41,6 +46,16 @@ export const APP_ROUTES: Routes = [
   {
     path: 'crm/customers',
     loadComponent: () => import('./customers/customer.component').then(c => c.CustomerComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
+    path: 'crm/opportunities',
+    loadComponent: () => import('./opportunities/opportunities.component').then(c => c.OpportunitiesComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
+    path: 'crm/opportunities/pipeline',
+    loadComponent: () => import('./opportunities/opportunity-pipeline.component').then(c => c.OpportunityPipelineComponent),
     canActivate: [authGuard, permissionGuard],
   },
 ];

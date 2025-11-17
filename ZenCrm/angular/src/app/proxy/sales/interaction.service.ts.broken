@@ -1,0 +1,189 @@
+import type { InteractionStatus } from './interaction-status.enum';
+import type { InteractionType } from './interaction-type.enum';
+import type { CreateUpdateInteractionDto, GetInteractionsInput, InteractionDto } from './models';
+import { RestService, Rest } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class InteractionService {
+  apiName = 'Default';
+  
+
+  cancel = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: `/api/app/interaction/${id}/cancel`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  complete = (id: string, outcome?: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: `/api/app/interaction/${id}/complete`,
+      params: { outcome },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  create = (input: CreateUpdateInteractionDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: '/api/app/interaction',
+      body: input,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  delete = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'DELETE',
+      url: `/api/app/interaction/${id}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  get = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'GET',
+      url: `/api/app/interaction/${id}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByClient = (clientId: string, input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: `/api/app/interaction/by-client/${input.clientId}`,
+      params: { clientId, filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByCustomer = (customerId: string, input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: `/api/app/interaction/by-customer/${input.customerId}`,
+      params: { customerId, filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByDate = (date: string, input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction/by-date',
+      params: { date, filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByDateRange = (startDate: string, endDate: string, input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction/by-date-range',
+      params: { startDate, endDate, filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByLead = (leadId: string, input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: `/api/app/interaction/by-lead/${leadId}`,
+      params: { filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getList = (input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction',
+      params: { filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getMyInteractions = (input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction/my-interactions',
+      params: { filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getOverdueInteractions = (input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction/overdue-interactions',
+      params: { filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getStatusOptions = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<enum>>({
+      method: 'GET',
+      url: '/api/app/interaction/status-options',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getTypeOptions = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<enum>>({
+      method: 'GET',
+      url: '/api/app/interaction/type-options',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getUpcomingInteractions = (input: GetInteractionsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<InteractionDto>>({
+      method: 'GET',
+      url: '/api/app/interaction/upcoming-interactions',
+      params: { filter: input.filter, type: input.type, status: input.status, priority: input.priority, ownerUserId: input.ownerUserId, salesLeadId: input.salesLeadId, clientId: input.clientId, customerId: input.customerId, startDate: input.startDate, endDate: input.endDate, requiresReminder: input.requiresReminder, isAllDay: input.isAllDay, includeCompleted: input.includeCompleted, includeCancelled: input.includeCancelled, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  postpone = (id: string, newScheduledDate: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: `/api/app/interaction/${id}/pone`,
+      params: { newScheduledDate },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  setReminder = (id: string, requiresReminder: boolean, reminderDate?: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: `/api/app/interaction/${id}/set-reminder`,
+      params: { requiresReminder, reminderDate },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  start = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'POST',
+      url: `/api/app/interaction/${id}/start`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  update = (id: string, input: CreateUpdateInteractionDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, InteractionDto>({
+      method: 'PUT',
+      url: `/api/app/interaction/${id}`,
+      body: input,
+    },
+    { apiName: this.apiName,...config });
+
+  constructor(private restService: RestService) {}
+}

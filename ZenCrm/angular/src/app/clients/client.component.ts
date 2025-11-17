@@ -25,13 +25,13 @@ import {
   ModalComponent
 } from '@abp/ng.theme.shared';
 import {
-  ClientService,
   ClientDto,
   CreateUpdateClientDto,
   GetClientsInput,
   clientTypeOptions,
   clientIndustryOptions
-} from '../proxy/clients';
+} from '../proxy/sales';
+import { SimpleClientService } from '../services/simple-client.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -65,7 +65,7 @@ import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'r
 })
 export class ClientComponent implements OnInit {
   public readonly list = inject(ListService);
-  private clientService = inject(ClientService);
+  private clientService = inject(SimpleClientService);
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
   private router = inject(Router);
@@ -134,7 +134,24 @@ export class ClientComponent implements OnInit {
     modalRef.result.then((selectedUser) => {
       if (selectedUser) {
         // Update the client with the selected user
-        const updateData = { ...client, assignedUserId: selectedUser.id };
+        const updateData: CreateUpdateClientDto = {
+          name: client.name,
+          assignedUserId: selectedUser.id,
+          clientType: client.clientType,
+          industry: client.industry,
+          description: client.description,
+          website: client.website,
+          email: client.email,
+          phone: client.phone,
+          address: client.address,
+          city: client.city,
+          state: client.state,
+          country: client.country,
+          postalCode: client.postalCode,
+          annualRevenue: client.annualRevenue,
+          numberOfEmployees: client.numberOfEmployees,
+          isActive: client.isActive
+        };
         this.clientService.update(id, updateData).subscribe({
           next: () => {
             // Refresh the list to show updated assignment
@@ -217,7 +234,7 @@ export class ClientComponent implements OnInit {
       return '-';
     }
     const type = this.clientTypes.find(t => t.value === clientType);
-    return type ? type.label : clientType.toString();
+    return type ? type.key || type.value.toString() : clientType.toString();
   }
 
   getIndustryLabel(industry: number | null | undefined): string {
@@ -225,7 +242,7 @@ export class ClientComponent implements OnInit {
       return '-';
     }
     const ind = this.clientIndustries.find(i => i.value === industry);
-    return ind ? ind.label : '-';
+    return ind ? ind.key || ind.value.toString() : '-';
   }
 
   // User search methods

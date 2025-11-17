@@ -4,10 +4,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { ClientService, ClientDto } from '../proxy/clients';
-import { ClientType, clientTypeOptions } from '../proxy/clients/client-type.enum';
-import { ClientIndustry, clientIndustryOptions } from '../proxy/clients/client-industry.enum';
-import { CustomerService, CustomerDto } from '../proxy/customers';
+import {
+  ClientDto,
+  ClientType,
+  clientTypeOptions,
+  ClientIndustry,
+  clientIndustryOptions,
+  CustomerService,
+  CustomerDto
+} from '../proxy/sales';
+import { SimpleClientService } from '../services/simple-client.service';
 import { ListService } from '@abp/ng.core';
 import {
   Confirmation,
@@ -47,7 +53,7 @@ export class ClientDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private clientService: ClientService,
+    private clientService: SimpleClientService,
     private customerService: CustomerService,
     private fb: FormBuilder,
     private list: ListService,
@@ -127,7 +133,11 @@ export class ClientDetailComponent implements OnInit {
 
   loadCustomers(): void {
     if (this.client?.id) {
-      this.customerService.getList({ clientId: this.client.id }).subscribe(customers => {
+      this.customerService.getList({
+        clientId: this.client.id,
+        maxResultCount: 1000,
+        skipCount: 0
+      } as any).subscribe(customers => {
         this.customers = customers.items;
       });
     }
@@ -271,7 +281,7 @@ export class ClientDetailComponent implements OnInit {
   }
 
   setAsDecisionMaker(customerId: string, isKeyDecisionMaker: boolean): void {
-    this.customerService.setAsDecisionMaker(customerId, isKeyDecisionMaker).subscribe(() => {
+    this.customerService.setAsKeyDecisionMaker(customerId, isKeyDecisionMaker).subscribe(() => {
       this.loadCustomers();
     });
   }
@@ -280,14 +290,16 @@ export class ClientDetailComponent implements OnInit {
     if (type === undefined || type === null) {
       return '-';
     }
-    return this.clientTypes.find(t => t.value === type)?.label || type.toString();
+    const clientType = this.clientTypes.find(t => t.value === type);
+    return clientType ? clientType.key || clientType.value.toString() : type.toString();
   }
 
   getIndustryLabel(industry: number | undefined | null): string {
     if (industry === undefined || industry === null) {
       return '-';
     }
-    return this.clientIndustries.find(i => i.value === industry)?.label || industry.toString();
+    const clientIndustry = this.clientIndustries.find(i => i.value === industry);
+    return clientIndustry ? clientIndustry.key || clientIndustry.value.toString() : industry.toString();
   }
 
   getFullName(customer: CustomerDto): string {
