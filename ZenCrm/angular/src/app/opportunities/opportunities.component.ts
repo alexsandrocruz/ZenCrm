@@ -34,8 +34,8 @@ import {
   pipelineStageOptions,
   priorityOptions,
 } from '../proxy/sales';
-import { SimpleClientService } from '../services/simple-client.service';
-import { SimpleSalesOpportunityService } from '../services/simple-sales-opportunity.service';
+import { ClientService } from '../proxy/sales';
+import { SalesOpportunityService } from '../proxy/sales';
 import { UserSelectionModalComponent } from '../clients/user-selection-modal.component';
 
 import type { UserData } from '@abp/ng.identity/proxy';
@@ -64,9 +64,9 @@ import type { UserData } from '@abp/ng.identity/proxy';
 export class OpportunitiesComponent implements OnInit {
   public readonly list = inject(ListService);
   private readonly fb = inject(FormBuilder);
-  private readonly opportunityService = inject(SimpleSalesOpportunityService);
+  private readonly opportunityService = inject(SalesOpportunityService);
   private readonly confirmation = inject(ConfirmationService);
-  private readonly clientService = inject(SimpleClientService);
+  private readonly clientService = inject(ClientService);
   private readonly modalService = inject(NgbModal);
 
   opportunities = { items: [], totalCount: 0 } as PagedResultDto<SalesOpportunityDto>;
