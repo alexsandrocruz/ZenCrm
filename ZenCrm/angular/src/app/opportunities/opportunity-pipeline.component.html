@@ -1,0 +1,118 @@
+<div class="pipeline-container">
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label text-uppercase fw-semibold small">Search</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Client, opportunity or competitor"
+            [(ngModel)]="filterText"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-uppercase fw-semibold small">Client</label>
+          <select class="form-select" [(ngModel)]="clientFilter">
+            <option [ngValue]="null">All clients</option>
+            @for(client of clients; track client.id) {
+            <option [ngValue]="client.id">{{ client.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3 text-md-end">
+          <button type="button" class="btn btn-outline-secondary me-2" (click)="resetFilters()">
+            <i class="fa fa-undo me-1"></i>
+            Reset
+          </button>
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">
+            <i class="fa fa-filter me-1"></i>
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipeline-board" cdkDropListGroup>
+    @for(column of columns; track column.stage) {
+    <div class="pipeline-column">
+      <div class="pipeline-column-header">
+        <div>
+          <h6 class="mb-0">{{ column.label }}</h6>
+          <small class="text-muted">
+            {{ column.opportunities.length }} deals
+          </small>
+        </div>
+        <div class="pipeline-column-value">
+          {{ column.totalValue | currency }}
+        </div>
+      </div>
+      <div
+        class="pipeline-dropzone"
+        cdkDropList
+        [id]="column.dropListId"
+        [cdkDropListConnectedTo]="connectedDropLists"
+        [cdkDropListData]="column.opportunities"
+        [cdkDropListDisabled]="isDropDisabled(column.stage)"
+        (cdkDropListDropped)="drop($event, column)"
+      >
+        <div
+          cdkDrag
+          class="pipeline-card"
+          *ngFor="let opportunity of column.opportunities; trackBy: trackByOpportunity"
+        >
+          <div class="pipeline-card-title">{{ opportunity.name }}</div>
+          <div class="pipeline-card-client">
+            <i class="fa fa-building me-1"></i>
+            {{ opportunity.clientName || 'Unassigned client' }}
+          </div>
+          <div class="pipeline-card-meta">
+            <span><i class="fa fa-money-bill me-1"></i>{{ opportunity.estimatedValue | currency }}</span>
+            <span>
+              <i class="fa fa-calendar me-1"></i>
+              {{ opportunity.expectedCloseDate | date: 'MMM d' }}
+            </span>
+          </div>
+          <div class="pipeline-card-footer">
+            <span>Owner: {{ opportunity.ownerUserName || '-' }}</span>
+            <span>{{ opportunity.probability | number: '1.0-0' }}%</span>
+          </div>
+        </div>
+        <div class="text-muted text-center py-3" *ngIf="!column.opportunities.length && !isLoading">
+          No opportunities in this stage
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="text-center py-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div class="card mt-4" *ngIf="lostOpportunities.length">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h6 class="mb-0">Recently Lost Deals</h6>
+      <small class="text-muted">{{ lostOpportunities.length }} records</small>
+    </div>
+    <div class="list-group list-group-flush">
+      @for(opportunity of lostOpportunities | slice:0:5; track opportunity.id) {
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fw-semibold">{{ opportunity.name }}</div>
+          <small class="text-muted">
+            {{ opportunity.clientName || 'Unassigned client' }} · {{ opportunity.expectedCloseDate | date: 'mediumDate' }}
+          </small>
+        </div>
+        <div class="text-end">
+          <div>{{ opportunity.estimatedValue | currency }}</div>
+          <small class="text-danger">Lost</small>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

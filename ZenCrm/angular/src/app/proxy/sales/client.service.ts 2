@@ -1,0 +1,153 @@
+import type { ClientIndustry } from './client-industry.enum';
+import type { ClientType } from './client-type.enum';
+import type { ClientDto, CreateUpdateClientDto, GetClientsInput } from './models';
+import { RestService, Rest } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ClientService {
+  apiName = 'Default';
+  
+
+  assignToUser = (id: string, userId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'POST',
+      url: `/api/app/client/${id}/assign-to-user/${userId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  create = (input: CreateUpdateClientDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'POST',
+      url: '/api/app/client',
+      body: input,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  delete = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'DELETE',
+      url: `/api/app/client/${id}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  get = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'GET',
+      url: `/api/app/client/${id}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getActiveClients = (input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/active-clients',
+      params: { filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByCity = (city: string, input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/by-city',
+      params: { city, filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getByState = (state: string, input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/by-state',
+      params: { state, filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getInactiveClients = (input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/inactive-clients',
+      params: { filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getIndustryOptions = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<enum>>({
+      method: 'GET',
+      url: '/api/app/client/industry-options',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getList = (input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client',
+      params: { filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getMyClients = (input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/my-clients',
+      params: { filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getTypeOptions = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<enum>>({
+      method: 'GET',
+      url: '/api/app/client/type-options',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getUnassignedClients = (input: GetClientsInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<ClientDto>>({
+      method: 'GET',
+      url: '/api/app/client/unassigned-clients',
+      params: { filter: input.filter, clientType: input.clientType, industry: input.industry, assignedUserId: input.assignedUserId, isActive: input.isActive, startDate: input.startDate, endDate: input.endDate, minAnnualRevenue: input.minAnnualRevenue, maxAnnualRevenue: input.maxAnnualRevenue, minEmployees: input.minEmployees, maxEmployees: input.maxEmployees, city: input.city, state: input.state, country: input.country, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  setStatus = (id: string, isActive: boolean, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'POST',
+      url: `/api/app/client/${id}/set-status`,
+      params: { isActive },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  update = (id: string, input: CreateUpdateClientDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'PUT',
+      url: `/api/app/client/${id}`,
+      body: input,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  updateLastInteraction = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ClientDto>({
+      method: 'PUT',
+      url: `/api/app/client/${id}/last-interaction`,
+    },
+    { apiName: this.apiName,...config });
+
+  constructor(private restService: RestService) {}
+}

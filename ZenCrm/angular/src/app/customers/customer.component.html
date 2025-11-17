@@ -1,0 +1,296 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-md-6">
+        <h5 class="card-title">
+          Customers
+        </h5>
+      </div>
+      <div class="text-end col col-md-6">
+        <div class="text-lg-end pt-2">
+          <button
+            *abpPermission="'ZenCrm.Customers.Create'"
+            id="create" class="btn btn-primary"
+            type="button"
+            (click)="createCustomer()"
+          >
+            <i class="fa fa-plus me-1"></i>
+            <span>New Customer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <ngx-datatable [rows]="customers.items" [count]="customers.totalCount" [list]="list" default>
+      <ngx-datatable-column
+        [name]="'::Actions' | abpLocalization"
+        [maxWidth]="150"
+        [sortable]="false"
+      >
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button
+              class="btn btn-primary btn-sm dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              ngbDropdownToggle
+            >
+              <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
+            </button>
+            <div ngbDropdownMenu>
+              <button
+                *abpPermission="'ZenCrm.Customers.Edit'"
+                ngbDropdownItem
+                (click)="editCustomer(row.id)"
+              >
+                {{ '::Edit' | abpLocalization }}
+              </button>
+              <button
+                *abpPermission="'ZenCrm.Customers.Assign'"
+                ngbDropdownItem
+                (click)="assignToUser(row.id)"
+              >
+                {{ '::Assign' | abpLocalization }}
+              </button>
+              @if(!row.isPrimaryContact) {
+              <button
+                *abpPermission="'ZenCrm.Customers.SetAsPrimary'"
+                ngbDropdownItem
+                (click)="setAsPrimaryContact(row.id)"
+              >
+                {{ '::SetAsPrimaryContact' | abpLocalization }}
+              </button>
+              }
+              <button
+                *abpPermission="'ZenCrm.Customers.SetAsDecisionMaker'"
+                ngbDropdownItem
+                (click)="setAsDecisionMaker(row.id, !row.isKeyDecisionMaker)"
+              >
+                {{ row.isKeyDecisionMaker ? ('::RemoveAsDecisionMaker' | abpLocalization) : ('::SetAsDecisionMaker' | abpLocalization) }}
+              </button>
+              <button
+                *abpPermission="'ZenCrm.Customers.Delete'"
+                ngbDropdownItem
+                (click)="delete(row.id)"
+              >
+                {{ '::Delete' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Name' | abpLocalization">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ getFullName(row) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Phone' | abpLocalization" prop="phone"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::MobilePhone' | abpLocalization" prop="mobilePhone"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::JobTitle' | abpLocalization" prop="jobTitle"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Department' | abpLocalization" prop="department"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Client' | abpLocalization" prop="clientName">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.clientName || '-' }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Roles' | abpLocalization">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div>
+            @if(row.isPrimaryContact) {
+            <span class="badge bg-primary me-1">{{ '::PrimaryContact' | abpLocalization }}</span>
+            }
+            @if(row.isKeyDecisionMaker) {
+            <span class="badge bg-success">{{ '::DecisionMaker' | abpLocalization }}</span>
+            }
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::AssignedUser' | abpLocalization" prop="assignedUserName">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.assignedUserName || '-' }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="isActive">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="badge" [class.bg-success]="row.isActive" [class.bg-secondary]="!row.isActive">
+            {{ row.isActive ? ('::Active' | abpLocalization) : ('::Inactive' | abpLocalization) }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<abp-modal [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{ (selectedCustomer.id ? '::EditCustomer' : '::NewCustomer' ) | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-first-name">{{ '::FirstName' | abpLocalization }}</label><span> * </span>
+            <input type="text" id="customer-first-name" class="form-control" formControlName="firstName" autofocus />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-last-name">{{ '::LastName' | abpLocalization }}</label><span> * </span>
+            <input type="text" id="customer-last-name" class="form-control" formControlName="lastName" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-email">{{ '::Email' | abpLocalization }}</label>
+            <input type="email" id="customer-email" class="form-control" formControlName="email" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-phone">{{ '::Phone' | abpLocalization }}</label>
+            <input
+              type="tel"
+              id="customer-phone"
+              class="form-control"
+              formControlName="phone"
+              mask="(00) 0000-0000"
+              [showMaskTyped]="true"
+              placeholder="(00) 0000-0000"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-mobile-phone">{{ '::MobilePhone' | abpLocalization }}</label>
+            <input
+              type="tel"
+              id="customer-mobile-phone"
+              class="form-control"
+              formControlName="mobilePhone"
+              mask="(00) 00000-0000"
+              [showMaskTyped]="true"
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-jobTitle">{{ '::JobTitle' | abpLocalization }}</label>
+            <input type="text" id="customer-jobTitle" class="form-control" formControlName="jobTitle" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-department">{{ '::Department' | abpLocalization }}</label>
+            <input type="text" id="customer-department" class="form-control" formControlName="department" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-client">{{ '::Client' | abpLocalization }}</label>
+            <input
+                type="text"
+                id="customer-client"
+                class="form-control"
+                list="client-datalist"
+                [value]="selectedClientName"
+                (input)="onClientInput($event)"
+                (keyup)="onClientKeyup($event)"
+                placeholder="Search for a client..."
+                autocomplete="off"
+              />
+              <datalist id="client-datalist">
+                @for(client of filteredClients$ | async; track client.id) {
+                <option [value]="client.name" [data-id]="client.id"></option>
+                }
+              </datalist>
+              <input
+                type="hidden"
+                formControlName="clientId"
+              />
+            <small class="form-text text-muted">Type client name to search</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label for="customer-assigned-user">{{ '::AssignedUser' | abpLocalization }}</label>
+            <input
+              type="text"
+              id="customer-assigned-user"
+              class="form-control"
+              list="customer-user-datalist"
+              [value]="getUserDisplayName()"
+              (input)="onUserInput($event)"
+              (keyup)="onUserKeyup($event)"
+              (change)="onUserSelect($event)"
+              placeholder="Search for a user..."
+              autocomplete="off"
+            />
+            <datalist id="customer-user-datalist">
+              @for(user of filteredUsers$ | async; track user.id) {
+              <option [value]="user.displayName || user.name || user.userName" [data-id]="user.id"></option>
+              }
+            </datalist>
+            <input
+              type="hidden"
+              formControlName="assignedUserId"
+            />
+            <small class="form-text text-muted">Type user name to search</small>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mt-2">
+            <label>{{ '::Roles' | abpLocalization }}</label>
+            <div class="form-check mt-2">
+              <input type="checkbox" id="customer-is-primary" class="form-check-input" formControlName="isPrimaryContact" />
+              <label for="customer-is-primary" class="form-check-label">{{ '::PrimaryContact' | abpLocalization }}</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isKeyDecisionMaker" />
+              <label for="customer-is-decision-maker" class="form-check-label">{{ '::DecisionMaker' | abpLocalization }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <label for="customer-notes">{{ '::Notes' | abpLocalization }}</label>
+        <textarea id="customer-notes" class="form-control" formControlName="notes" rows="3"></textarea>
+      </div>
+
+      <div class="mt-2">
+        <div class="form-check">
+          <input type="checkbox" id="customer-is-active" class="form-check-input" formControlName="isActive" />
+          <label for="customer-is-active" class="form-check-label">{{ '::Active' | abpLocalization }}</label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

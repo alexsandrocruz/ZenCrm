@@ -1,0 +1,541 @@
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <button class="btn btn-outline-secondary me-3" (click)="goBack()">
+            <i class="fa fa-arrow-left me-1"></i>
+            Back to Clients
+          </button>
+          <h2 class="d-inline-block mb-0">{{ client?.name }}</h2>
+        </div>
+        <div>
+          @if (!isEditMode) {
+          <button class="btn btn-primary" (click)="editClient()">
+            <i class="fa fa-edit me-1"></i>
+            Edit Client
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'details'"
+        (click)="setTab('details')"
+        type="button"
+      >
+        <i class="fa fa-building me-2"></i>Client Details
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'contacts'"
+        (click)="setTab('contacts')"
+        type="button"
+      >
+        <i class="fa fa-users me-2"></i>Contacts
+        <span class="badge bg-secondary ms-2">{{ customers?.length || 0 }}</span>
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Client Details Tab -->
+    @if (activeTab === 'details') {
+    <div class="card">
+      <div class="card-body">
+        @if (isEditMode) {
+        <form [formGroup]="form" (ngSubmit)="saveClient()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-name" class="form-label">Name *</label>
+                <input type="text" id="client-name" class="form-control" formControlName="name" autofocus />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-type" class="form-label">Type *</label>
+                <select class="form-control" id="client-type" formControlName="clientType">
+                  @for(type of clientTypes; track type.value) {
+                  <option [ngValue]="type.value">{{ type.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-industry" class="form-label">Industry</label>
+                <select class="form-control" id="client-industry" formControlName="industry">
+                  @for(industry of clientIndustries; track industry.value) {
+                  <option [ngValue]="industry.value">{{ industry.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-email" class="form-label">Email</label>
+                <input type="email" id="client-email" class="form-control" formControlName="email" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-phone" class="form-label">Phone</label>
+                <input
+                  type="tel"
+                  id="client-phone"
+                  class="form-control"
+                  formControlName="phone"
+                  mask="(00) 0000-0000"
+                  [showMaskTyped]="true"
+                  placeholder="(00) 0000-0000"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-website" class="form-label">Website</label>
+                <input type="url" id="client-website" class="form-control" formControlName="website" />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="client-address" class="form-label">Address</label>
+            <input type="text" id="client-address" class="form-control" formControlName="address" />
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="client-city" class="form-label">City</label>
+                <input type="text" id="client-city" class="form-control" formControlName="city" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="client-state" class="form-label">State</label>
+                <input type="text" id="client-state" class="form-control" formControlName="state" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="client-postal-code" class="form-label">Postal Code</label>
+                <input type="text" id="client-postal-code" class="form-control" formControlName="postalCode" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-country" class="form-label">Country</label>
+                <input type="text" id="client-country" class="form-control" formControlName="country" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-annual-revenue" class="form-label">Annual Revenue</label>
+                <input
+                  type="text"
+                  id="client-annual-revenue"
+                  class="form-control"
+                  formControlName="annualRevenue"
+                  mask="separator.2"
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  [showMaskTyped]="true"
+                  placeholder="0,00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-employees" class="form-label">Number of Employees</label>
+                <input type="number" id="client-employees" class="form-control" formControlName="numberOfEmployees" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="client-assigned-user" class="form-label">Assigned User</label>
+                <input type="text" id="client-assigned-user" class="form-control" formControlName="assignedUserId" />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="client-description" class="form-label">Description</label>
+            <textarea id="client-description" class="form-control" formControlName="description" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <div class="form-check">
+              <input type="checkbox" id="client-is-active" class="form-check-input" formControlName="isActive" />
+              <label for="client-is-active" class="form-check-label">Active</label>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+              <i class="fa fa-save me-1"></i>
+              Save Changes
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+              <i class="fa fa-times me-1"></i>
+              Cancel
+            </button>
+          </div>
+        </form>
+        } @else {
+        <!-- View Mode -->
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Basic Information</h4>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-bold">Name:</td>
+                <td>{{ client?.name }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Type:</td>
+                <td>{{ getClientTypeLabel(client?.clientType) }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Industry:</td>
+                <td>{{ getIndustryLabel(client?.industry) }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Email:</td>
+                <td>{{ client?.email || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Phone:</td>
+                <td>{{ client?.phone || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Website:</td>
+                <td>
+                  @if (client?.website) {
+                  <a href="{{ client.website }}" target="_blank" rel="noopener">{{ client.website }}</a>
+                  } @else {
+                  -
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Status:</td>
+                <td>
+                  <span class="badge" [class.bg-success]="client?.isActive" [class.bg-secondary]="!client?.isActive">
+                    {{ client?.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <h4>Address Information</h4>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-bold">Address:</td>
+                <td>{{ client?.address || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">City:</td>
+                <td>{{ client?.city || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">State:</td>
+                <td>{{ client?.state || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Postal Code:</td>
+                <td>{{ client?.postalCode || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Country:</td>
+                <td>{{ client?.country || '-' }}</td>
+              </tr>
+            </table>
+
+            <h4 class="mt-4">Financial Information</h4>
+            <table class="table table-borderless">
+              <tr>
+                <td class="fw-bold">Annual Revenue:</td>
+                <td>{{ client?.annualRevenue ? 'R$ ' + client.annualRevenue.toLocaleString('pt-BR') : '-' }}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Number of Employees:</td>
+                <td>{{ client?.numberOfEmployees || '-' }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        @if (client?.description) {
+        <div class="mt-4">
+          <h4>Description</h4>
+          <p>{{ client.description }}</p>
+        </div>
+        }
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Contacts Tab -->
+    @if (activeTab === 'contacts') {
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Contacts</h5>
+        <button class="btn btn-primary" (click)="createCustomer()">
+          <i class="fa fa-plus me-1"></i>
+          New Contact
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Mobile</th>
+                <th>Title</th>
+                <th>Department</th>
+                <th>Roles</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(customer of customers; track customer.id) {
+              <tr>
+                <td>{{ getFullName(customer) }}</td>
+                <td>{{ customer.email || '-' }}</td>
+                <td>{{ customer.phone || '-' }}</td>
+                <td>{{ customer.mobilePhone || '-' }}</td>
+                <td>{{ customer.title || '-' }}</td>
+                <td>{{ customer.department || '-' }}</td>
+                <td>
+                  <div>
+                    @if(customer.isPrimaryContact) {
+                    <span class="badge bg-primary me-1">Primary Contact</span>
+                    }
+                    @if(customer.isKeyDecisionMaker) {
+                    <span class="badge bg-success">Decision Maker</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-primary" (click)="editCustomer(customer.id)">
+                      <i class="fa fa-edit"></i>
+                    </button>
+                    <button
+                      class="btn btn-sm"
+                      [class.btn-outline-info]="!customer.isPrimaryContact"
+                      [class.btn-info]="customer.isPrimaryContact"
+                      (click)="setAsPrimaryContact(customer.id)"
+                      title="{{ customer.isPrimaryContact ? 'Remove as Primary Contact' : 'Set as Primary Contact' }}"
+                    >
+                      @if(customer.isPrimaryContact) {
+                        <i class="fa fa-star"></i>
+                      } @else {
+                        <i class="far fa-star"></i>
+                      }
+                    </button>
+                    <button
+                      class="btn btn-sm"
+                      [class.btn-outline-success]="!customer.isKeyDecisionMaker"
+                      [class.btn-success]="customer.isKeyDecisionMaker"
+                      (click)="setAsDecisionMaker(customer.id, !customer.isKeyDecisionMaker)"
+                      title="{{ customer.isKeyDecisionMaker ? 'Remove as Decision Maker' : 'Set as Decision Maker' }}"
+                    >
+                      @if(customer.isKeyDecisionMaker) {
+                        <i class="fa fa-user-tie"></i>
+                      } @else {
+                        <i class="far fa-user-tie"></i>
+                      }
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCustomer(customer.id)">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="8" class="text-center">No contacts found. Click "New Contact" to add one.</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Customer Modal -->
+<abp-modal [(visible)]="isCustomerModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{ (selectedCustomer.id ? 'Edit Contact' : 'New Contact') }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="customerForm" (ngSubmit)="saveCustomer()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-first-name" class="form-label">First Name *</label>
+            <input type="text" id="customer-first-name" class="form-control" formControlName="firstName" autofocus />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-last-name" class="form-label">Last Name *</label>
+            <input type="text" id="customer-last-name" class="form-control" formControlName="lastName" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-email" class="form-label">Email</label>
+            <input type="email" id="customer-email" class="form-control" formControlName="email" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-phone" class="form-label">Phone</label>
+            <input
+              type="tel"
+              id="customer-phone"
+              class="form-control"
+              formControlName="phone"
+              mask="(00) 0000-0000"
+              [showMaskTyped]="true"
+              placeholder="(00) 0000-0000"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-mobile-phone" class="form-label">Mobile Phone</label>
+            <input
+              type="tel"
+              id="customer-mobile-phone"
+              class="form-control"
+              formControlName="mobilePhone"
+              mask="(00) 00000-0000"
+              [showMaskTyped]="true"
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-title" class="form-label">Job Title</label>
+            <input type="text" id="customer-title" class="form-control" formControlName="title" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-department" class="form-label">Department</label>
+            <input type="text" id="customer-department" class="form-control" formControlName="department" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-client" class="form-label">Client</label>
+            <input
+              type="text"
+              id="customer-client"
+              class="form-control"
+              [value]="client?.name"
+              readonly
+              style="background-color: #f8f9fa; cursor: not-allowed;"
+            />
+            <input
+              type="hidden"
+              formControlName="clientId"
+            />
+            <small class="form-text text-muted">Contact associated with: {{ client?.name }}</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="customer-assigned-user" class="form-label">Assigned User</label>
+            <input type="text" id="customer-assigned-user" class="form-control" formControlName="assignedUserId" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Roles</label>
+            <div class="form-check">
+              <input type="checkbox" id="customer-is-primary" class="form-check-input" formControlName="isPrimaryContact" />
+              <label for="customer-is-primary" class="form-check-label">Primary Contact</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="customer-is-decision-maker" class="form-check-input" formControlName="isKeyDecisionMaker" />
+              <label for="customer-is-decision-maker" class="form-check-label">Decision Maker</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="customer-notes" class="form-label">Notes</label>
+        <textarea id="customer-notes" class="form-control" formControlName="notes" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <div class="form-check">
+          <input type="checkbox" id="customer-is-active" class="form-check-input" formControlName="isActive" />
+          <label for="customer-is-active" class="form-check-label">Active</label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>Close</button>
+    <button class="btn btn-primary" (click)="saveCustomer()" [disabled]="customerForm.invalid">
+      <i class="fa fa-check me-1"></i>
+      Save
+      <small *ngIf="customerForm.invalid" class="ms-2 text-warning">
+        (Fill required fields)
+      </small>
+    </button>
+  </ng-template>
+</abp-modal>
