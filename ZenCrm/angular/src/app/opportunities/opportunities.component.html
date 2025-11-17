@@ -35,7 +35,9 @@
         <select class="form-select" [(ngModel)]="stageFilter" (ngModelChange)="onFilterChange()">
           <option [ngValue]="undefined">All stages</option>
           @for(stage of stageOptions; track stage.value) {
-          <option [ngValue]="stage.value">{{ stage.label }}</option>
+          <option [ngValue]="stage.value">
+            {{ ('::Enum:PipelineStage.' + stage.key) | abpLocalization }}
+          </option>
           }
         </select>
       </div>
@@ -44,7 +46,9 @@
         <select class="form-select" [(ngModel)]="priorityFilter" (ngModelChange)="onFilterChange()">
           <option [ngValue]="undefined">All priorities</option>
           @for(priority of priorityOptions; track priority.value) {
-          <option [ngValue]="priority.value">{{ priority.label }}</option>
+          <option [ngValue]="priority.value">
+            {{ ('::Enum:Priority.' + priority.key) | abpLocalization }}
+          </option>
           }
         </select>
       </div>
@@ -176,7 +180,9 @@
           <label class="form-label">Priority *</label>
           <select class="form-select" formControlName="priority">
             @for(priority of priorityOptions; track priority.value) {
-            <option [ngValue]="priority.value">{{ priority.label }}</option>
+            <option [ngValue]="priority.value">
+              {{ ('::Enum:Priority.' + priority.key) | abpLocalization }}
+            </option>
             }
           </select>
         </div>

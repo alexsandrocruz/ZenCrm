@@ -8,11 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  ListService,
-  LocalizationPipe,
-  PagedResultDto,
-} from '@abp/ng.core';
+import { ListService, LocalizationPipe, LocalizationService, PagedResultDto } from '@abp/ng.core';
 import {
   Confirmation,
   ConfirmationService,
@@ -71,6 +67,7 @@ export class OpportunitiesComponent implements OnInit {
   private readonly clientService = inject(ClientService);
   private readonly salesLeadService = inject(SalesLeadService);
   private readonly modalService = inject(NgbModal);
+  private readonly localization = inject(LocalizationService);
 
   opportunities = { items: [], totalCount: 0 } as PagedResultDto<SalesOpportunityDto>;
   selectedOpportunity = {} as SalesOpportunityDto;
@@ -212,12 +209,26 @@ export class OpportunitiesComponent implements OnInit {
 
   getStageLabel(stage?: PipelineStage): string {
     const option = this.stageOptions.find(x => x.value === stage);
-    return option?.key ?? 'N/A';
+    if (!option) {
+      return 'N/A';
+    }
+
+    return this.translateEnumKey('PipelineStage', option.key);
   }
 
   getPriorityLabel(priority?: Priority): string {
     const option = this.priorityOptions.find(x => x.value === priority);
-    return option?.key ?? 'N/A';
+    if (!option) {
+      return 'N/A';
+    }
+
+    return this.translateEnumKey('Priority', option.key);
+  }
+
+  private translateEnumKey(enumName: string, key: string): string {
+    const localizationKey = `::Enum:${enumName}.${key}`;
+    const localizedValue = this.localization.instant(localizationKey);
+    return localizedValue && localizedValue !== localizationKey ? localizedValue : key;
   }
 
   getStageBadgeClass(stage?: PipelineStage): string {

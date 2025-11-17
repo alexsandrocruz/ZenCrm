@@ -52,6 +52,22 @@
     "Menu:Customers": "Contatos",
     "Menu:SalesLeads": "Leads",
     "Menu:Opportunities": "Oportunidades",
-    "Menu:Pipeline": "Pipeline"
+    "Menu:Pipeline": "Pipeline",
+    "Enum:Priority.Low": "Baixa",
+    "Enum:Priority.Normal": "Normal",
+    "Enum:Priority.High": "Alta",
+    "Enum:Priority.Critical": "Crítica",
+    "Enum:PipelineStage.Lead": "Lead",
+    "Enum:PipelineStage.Qualifying": "Qualificação",
+    "Enum:PipelineStage.Qualified": "Qualificado",
+    "Enum:PipelineStage.Analysis": "Análise",
+    "Enum:PipelineStage.Proposal": "Proposta",
+    "Enum:PipelineStage.ProposalSent": "Proposta Enviada",
+    "Enum:PipelineStage.Negotiation": "Negociação",
+    "Enum:PipelineStage.VerbalCommitment": "Compromisso Verbal",
+    "Enum:PipelineStage.Closing": "Fechamento",
+    "Enum:PipelineStage.Won": "Ganha",
+    "Enum:PipelineStage.Lost": "Perdida",
+    "Enum:PipelineStage.OnHold": "Em Espera"
   }
 }

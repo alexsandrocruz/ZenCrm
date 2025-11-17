@@ -37,6 +37,22 @@
     "Unspecified": "Sistema",
     "SeeAllUsers": "Ver todos los usuarios",
     "TakePhoto": "Tomar foto",
-    "ChoosePhoto": "Escoge una foto"
+    "ChoosePhoto": "Escoge una foto",
+    "Enum:Priority.Low": "Baja",
+    "Enum:Priority.Normal": "Normal",
+    "Enum:Priority.High": "Alta",
+    "Enum:Priority.Critical": "Crítica",
+    "Enum:PipelineStage.Lead": "Lead",
+    "Enum:PipelineStage.Qualifying": "Calificación",
+    "Enum:PipelineStage.Qualified": "Calificado",
+    "Enum:PipelineStage.Analysis": "Análisis",
+    "Enum:PipelineStage.Proposal": "Propuesta",
+    "Enum:PipelineStage.ProposalSent": "Propuesta Enviada",
+    "Enum:PipelineStage.Negotiation": "Negociación",
+    "Enum:PipelineStage.VerbalCommitment": "Compromiso Verbal",
+    "Enum:PipelineStage.Closing": "Cierre",
+    "Enum:PipelineStage.Won": "Ganada",
+    "Enum:PipelineStage.Lost": "Perdida",
+    "Enum:PipelineStage.OnHold": "En Espera"
   }
 }
