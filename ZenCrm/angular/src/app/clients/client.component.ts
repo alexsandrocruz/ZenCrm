@@ -31,7 +31,7 @@ import {
   clientTypeOptions,
   clientIndustryOptions
 } from '../proxy/sales';
-import { SimpleClientService } from '../services/simple-client.service';
+import { ClientService } from '../proxy/sales';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -65,7 +65,7 @@ import { debounceTime, distinctUntilChanged, switchMap, startWith, tap } from 'r
 })
 export class ClientComponent implements OnInit {
   public readonly list = inject(ListService);
-  private clientService = inject(SimpleClientService);
+  private clientService = inject(ClientService);
   private fb = inject(FormBuilder);
   private confirmation = inject(ConfirmationService);
   private router = inject(Router);

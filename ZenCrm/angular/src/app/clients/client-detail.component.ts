@@ -13,7 +13,7 @@ import {
   CustomerService,
   CustomerDto
 } from '../proxy/sales';
-import { SimpleClientService } from '../services/simple-client.service';
+import { ClientService } from '../proxy/sales';
 import { ListService } from '@abp/ng.core';
 import {
   Confirmation,
@@ -53,7 +53,7 @@ export class ClientDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private clientService: SimpleClientService,
+    private clientService: ClientService,
     private customerService: CustomerService,
     private fb: FormBuilder,
     private list: ListService,

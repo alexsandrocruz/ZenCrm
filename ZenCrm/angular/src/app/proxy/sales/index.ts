@@ -1,7 +1,6 @@
 export * from './client-industry.enum';
 export * from './client-type.enum';
-// TODO: Fix client.service
-// export * from './client.service';
+export * from './client.service';
 export * from './customer.service';
 export * from './interaction-status.enum';
 export * from './interaction-type.enum';
