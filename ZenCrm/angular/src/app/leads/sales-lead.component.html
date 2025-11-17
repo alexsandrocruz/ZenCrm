@@ -1,0 +1,283 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="m-0">{{ '::Menu:SalesLeads' | abpLocalization }}</h3>
+    <button class="btn btn-primary" (click)="createLead()">
+      <i class="fas fa-plus me-2"></i>{{ '::NewLead' | abpLocalization }}
+    </button>
+  </div>
+
+  <div class="card-body">
+    <!-- Filters -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="{{ '::Search' | abpLocalization }}" [(ngModel)]="list.filter" (keyup.enter)="list.get()">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="statusFilter" (change)="list.get()">
+          <option value="">{{ '::All' | abpLocalization }}</option>
+          <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="sourceFilter" (change)="list.get()">
+          <option value="">{{ '::All' | abpLocalization }}</option>
+          <option *ngFor="let source of leadSources" [value]="source.value">{{ source.key }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" (click)="list.get()">
+          <i class="fas fa-search me-1"></i> {{ '::Search' | abpLocalization }}
+        </button>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary" (click)="list.filter = ''; statusFilter = ''; sourceFilter = ''; list.get();">
+          <i class="fas fa-times me-1"></i> {{ '::Clear' | abpLocalization }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      <ngx-datatable
+        [rows]="leads.items"
+        [count]="leads.totalCount"
+        [list]="list"
+        default
+        class="material striped"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        rowHeight="auto">
+
+        <!-- Name Column -->
+        <ngx-datatable-column name="Name" prop="firstName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <strong>{{ row.firstName }} {{ row.lastName }}</strong>
+            <div class="text-muted small" *ngIf="row.company">
+              <i class="fas fa-building me-1"></i>{{ row.company }}
+            </div>
+            <div class="text-muted small" *ngIf="row.jobTitle">
+              <i class="fas fa-briefcase me-1"></i>{{ row.jobTitle }}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Contact Info Column -->
+        <ngx-datatable-column name="Contact" prop="email">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="row.email">
+              <i class="fas fa-envelope me-1"></i>{{ row.email }}
+            </div>
+            <div *ngIf="row.phone" class="small mt-1">
+              <i class="fas fa-phone me-1"></i>{{ row.phone }}
+            </div>
+            <div *ngIf="row.mobilePhone" class="small mt-1">
+              <i class="fas fa-mobile-alt me-1"></i>{{ row.mobilePhone }}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Status Column -->
+        <ngx-datatable-column name="Status" prop="status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-success': row.status === 1,
+                    'bg-warning': row.status === 2,
+                    'bg-info': row.status === 3,
+                    'bg-secondary': row.status === 0
+                  }">
+              {{ getStatusLabel(row.status) }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Source Column -->
+        <ngx-datatable-column name="Source" prop="source">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ getSourceLabel(row.source) }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Assigned User Column -->
+        <ngx-datatable-column name="Assigned To" prop="assignedUserName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div *ngIf="row.assignedUserName">
+              <i class="fas fa-user me-1"></i>{{ row.assignedUserName }}
+            </div>
+            <div *ngIf="!row.assignedUserName" class="text-muted">
+              <i class="fas fa-user-slash me-1"></i>Unassigned
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Creation Date Column -->
+        <ngx-datatable-column name="Created" prop="creationTime">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.creationTime | date:'short' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Actions Column -->
+        <ngx-datatable-column name="Actions" [sortable]="false" [width]="150">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-sm btn-outline-primary"
+                      (click)="editLead(row.id)"
+                      title="{{ '::Edit' | abpLocalization }}">
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <div class="btn-group" ngbDropdown role="group">
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        ngbDropdownToggle
+                        title="{{ '::Actions' | abpLocalization }}">
+                </button>
+                <ul ngbDropdownMenu>
+                  <li>
+                    <ng-container *ngIf="!row.assignedUserId">
+                      <button class="dropdown-item" (click)="assignToUser(row.id)">
+                        <i class="fas fa-user-plus me-2"></i>{{ '::AssignToUser' | abpLocalization }}
+                      </button>
+                    </ng-container>
+                  </li>
+                  <li>
+                    <button class="dropdown-item" (click)="convertToOpportunity(row.id)">
+                      <i class="fas fa-exchange-alt me-2"></i>{{ '::ConvertToOpportunity' | abpLocalization }}
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item" (click)="updateStatus(row.id, 1)">
+                      <i class="fas fa-check me-2"></i>{{ '::MarkAsQualified' | abpLocalization }}
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item text-danger" (click)="delete(row.id)">
+                      <i class="fas fa-trash me-2"></i>{{ '::Delete' | abpLocalization }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<abp-modal [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{ (selectedLead.id ? 'Edit Lead' : 'New Lead') }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()" class="lead-form">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">First Name *</label>
+            <input type="text" class="form-control" formControlName="firstName" required />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Last Name *</label>
+            <input type="text" class="form-control" formControlName="lastName" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" formControlName="email" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-control" formControlName="phone" mask="(00) 00000-0000" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Mobile Phone</label>
+            <input type="tel" class="form-control" formControlName="mobilePhone" mask="(00) 00000-0000" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Company</label>
+            <input type="text" class="form-control" formControlName="company" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Job Title</label>
+            <input type="text" class="form-control" formControlName="jobTitle" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Source</label>
+            <select class="form-select" formControlName="source">
+              <option value="">Select a source</option>
+              <option *ngFor="let source of leadSources" [value]="source.value">{{ source.key }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" formControlName="status">
+              <option value="">Select status</option>
+              <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Assigned To</label>
+            <input type="text" class="form-control"
+                   [value]="getUserDisplayName()"
+                   (input)="onUserInput($event)"
+                   (keyup)="onUserKeyup($event)"
+                   (change)="onUserSelect($event)"
+                   list="userList"
+                   placeholder="Search and select user...">
+            <datalist id="userList">
+              <option *ngFor="let user of filteredUsers$ | async" [value]="user.displayName || user.userName">
+                {{ user.email }}
+              </option>
+            </datalist>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" formControlName="description" rows="3"></textarea>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" (click)="isModalOpen = false">
+      {{ '::Cancel' | abpLocalization }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

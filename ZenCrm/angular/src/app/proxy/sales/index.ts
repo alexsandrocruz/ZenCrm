@@ -11,6 +11,5 @@ export * from './lead-status.enum';
 export * from './models';
 export * from './pipeline-stage.enum';
 export * from './priority.enum';
-// TODO: Fix sales-lead.service
-// export * from './sales-lead.service';
+export * from './sales-lead.service';
 export * from './sales-opportunity.service';

@@ -58,4 +58,9 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./opportunities/opportunity-pipeline.component').then(c => c.OpportunityPipelineComponent),
     canActivate: [authGuard, permissionGuard],
   },
+  {
+    path: 'crm/leads',
+    loadComponent: () => import('./leads/sales-lead.component').then(c => c.SalesLeadComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
 ];

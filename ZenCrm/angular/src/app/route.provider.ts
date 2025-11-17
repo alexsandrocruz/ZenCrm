@@ -53,6 +53,13 @@ function configureRoutes() {
         layout: eLayoutType.application,
       },
       {
+        path: '/crm/leads',
+        name: '::Menu:SalesLeads',
+        iconClass: 'fas fa-user-plus',
+        parentName: '::Menu:CRM',
+        layout: eLayoutType.application,
+      },
+      {
         path: '/crm/opportunities',
         name: '::Menu:Opportunities',
         iconClass: 'fas fa-briefcase',

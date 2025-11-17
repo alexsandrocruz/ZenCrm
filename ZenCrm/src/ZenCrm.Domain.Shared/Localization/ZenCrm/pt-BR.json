@@ -49,6 +49,9 @@
     "Permission:Clients.ManageAll": "Gerenciar todos os clientes",
     "Menu:CRM": "CRM",
     "Menu:Clients": "Clientes",
-    "Menu:Customers": "Contatos"
+    "Menu:Customers": "Contatos",
+    "Menu:SalesLeads": "Leads",
+    "Menu:Opportunities": "Oportunidades",
+    "Menu:Pipeline": "Pipeline"
   }
 }
