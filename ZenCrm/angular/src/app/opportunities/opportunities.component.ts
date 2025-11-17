@@ -26,6 +26,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {
   ClientDto,
   CreateUpdateSalesOpportunityDto,
+  GetSalesLeadsInput,
   GetSalesOpportunitiesInput,
   PipelineStage,
   Priority,
@@ -35,6 +36,7 @@ import {
   priorityOptions,
 } from '../proxy/sales';
 import { ClientService } from '../proxy/sales';
+import { SalesLeadService } from '../proxy/sales';
 import { SalesOpportunityService } from '../proxy/sales';
 import { UserSelectionModalComponent } from '../clients/user-selection-modal.component';
 
@@ -67,6 +69,7 @@ export class OpportunitiesComponent implements OnInit {
   private readonly opportunityService = inject(SalesOpportunityService);
   private readonly confirmation = inject(ConfirmationService);
   private readonly clientService = inject(ClientService);
+  private readonly salesLeadService = inject(SalesLeadService);
   private readonly modalService = inject(NgbModal);
 
   opportunities = { items: [], totalCount: 0 } as PagedResultDto<SalesOpportunityDto>;
@@ -107,10 +110,15 @@ export class OpportunitiesComponent implements OnInit {
       .getList({ skipCount: 0, maxResultCount: 100, sorting: 'name' })
       .subscribe(result => (this.clientsLookup = result.items));
 
-    // TODO: Implement SalesLeadService when backend is ready
-    // this.salesLeadService
-    //   .getList({ skipCount: 0, maxResultCount: 100, sorting: 'creationTime DESC', includeInactive: false })
-    //   .subscribe(result => (this.salesLeads = result.items));
+    const leadInput: GetSalesLeadsInput = {
+      skipCount: 0,
+      maxResultCount: 100,
+      sorting: 'creationTime DESC',
+      includeInactive: false,
+      converted: false,
+    };
+
+    this.salesLeadService.getList(leadInput).subscribe(result => (this.salesLeads = result.items));
   }
 
   createOpportunity(): void {
