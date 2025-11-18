@@ -17,3 +17,13 @@
 .opportunity-form .input-group button {
   min-width: 2.5rem;
 }
+
+/* Keep Owner input group elements on a single line and responsive */
+.opportunity-form .input-group {
+  flex-wrap: nowrap;
+}
+
+/* Allow input to shrink properly beside buttons without wrapping */
+.opportunity-form .input-group .form-control {
+  min-width: 0;
+}

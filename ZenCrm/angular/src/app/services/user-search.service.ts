@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, race } from 'rxjs';
 import { UserData } from '@abp/ng.identity/proxy';
 import { IdentityUserService } from '@abp/ng.identity/proxy';
-import { catchError, debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from '../../environments/environment';
 import { GetIdentityUsersInput } from '@abp/ng.identity/proxy';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserSearchService {
-  constructor(private userService: IdentityUserService) {}
+  constructor(
+    private userService: IdentityUserService,
+    private http: HttpClient,
+    private oauth: OAuthService,
+  ) {}
 
   searchUsers(query: string): Observable<UserData[]> {
     console.log('UserSearchService: Searching with query:', query);
@@ -29,28 +35,50 @@ export class UserSearchService {
 
     console.log('UserSearchService: Making API call with input:', input);
 
-    return this.userService.getList(input).pipe(
-      tap(response => console.log('UserSearchService: API response:', response)),
-      map(response => {
-        const items = response.items || [];
-        const mapped = items.map(user => ({
-          id: user.id,
-          userName: user.userName,
-          name: user.name,
-          surname: user.surname,
-          email: user.email,
-          emailConfirmed: user.emailConfirmed,
-          phoneNumber: user.phoneNumber,
-          phoneNumberConfirmed: user.phoneNumberConfirmed,
-          isActive: user.isActive,
-          displayName: this.getUserDisplayName(user)
-        }));
-        console.log('UserSearchService: Mapped results:', mapped);
-        return mapped;
-      }),
+    const rest$ = this.userService.getList(input).pipe(
+      tap(response => console.log('UserSearchService: GetList response:', response)),
+      map(response => (response.items || []).map(user => ({
+        id: user.id,
+        userName: user.userName,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        emailConfirmed: user.emailConfirmed,
+        phoneNumber: user.phoneNumber,
+        phoneNumberConfirmed: user.phoneNumberConfirmed,
+        isActive: user.isActive,
+        displayName: this.getUserDisplayName(user)
+      }))),
+    );
+
+    // Raw HttpClient fallback in case RestService/interceptors hang
+    const token = this.oauth.getAccessToken();
+    const url = `${environment.apis.default.url}/api/identity/users`;
+    const params = new HttpParams()
+      .set('Filter', query.trim())
+      .set('SkipCount', 0)
+      .set('MaxResultCount', 10)
+      .set('Sorting', 'name');
+    const headers = new HttpHeaders({ Authorization: token ? `Bearer ${token}` : '' });
+    const http$ = this.http.get<any>(url, { params, headers }).pipe(
+      tap(response => console.log('UserSearchService: Raw HTTP response:', response)),
+      map(response => (response.items || []).map((user: any) => ({
+        id: user.id,
+        userName: user.userName,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        emailConfirmed: user.emailConfirmed,
+        phoneNumber: user.phoneNumber,
+        phoneNumberConfirmed: user.phoneNumberConfirmed,
+        isActive: user.isActive,
+        displayName: this.getUserDisplayName(user)
+      }))),
+    );
+
+    return race(rest$, http$).pipe(
       catchError(error => {
-        console.error('UserSearchService: Error searching users:', error);
-        // Fallback: retornar usuário mock ou array vazio
+        console.error('UserSearchService: Error searching users (race fallback):', error);
         return of(this.getMockUsers(query));
       })
     );
