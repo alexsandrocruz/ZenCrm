@@ -33,6 +33,7 @@ export class UserSelectionModalComponent implements OnInit {
   isLoading = false;
   searchTerms = new Subject<string>();
   errorMessage = '';
+  private latestUsers: UserData[] = [];
 
   private fb = inject(FormBuilder);
   public modal = inject(NgbActiveModal);
@@ -51,6 +52,9 @@ export class UserSelectionModalComponent implements OnInit {
     this.searchForm.get('searchTerm')?.valueChanges.subscribe(value => {
       this.onSearchChange(value ?? '');
     });
+
+    // Keep local cache of latest users for datalist selection matching
+    this.filteredUsers$.subscribe(users => (this.latestUsers = users || []));
 
     // If a selected user ID is provided, we could pre-load the user details
     if (this.selectedUserId) {
@@ -79,8 +83,10 @@ export class UserSelectionModalComponent implements OnInit {
   }
 
   onSearchChange(event: any): void {
-    const value = event.target ? event.target.value : event;
+    const value = event?.target ? event.target.value : event;
     this.searchTerms.next(value);
+    // Try to auto-select if input exactly matches an option
+    this.syncSelectedFromInput((value || '').toString());
   }
 
   selectUser(user: UserData): void {
@@ -124,14 +130,23 @@ export class UserSelectionModalComponent implements OnInit {
       this.selectedUser = null;
       return;
     }
-    this.filteredUsers$.pipe(take(1)).subscribe(users => {
-      const matched = (users || []).find(u =>
-        this.getUserDisplayName(u) === selectedValue ||
-        u.userName === selectedValue ||
-        `${u.name ?? ''} ${u.surname ?? ''}`.trim() === selectedValue ||
-        u.email === selectedValue
-      );
-      this.selectedUser = matched || null;
-    });
+    this.syncSelectedFromInput(selectedValue);
+  }
+
+  private syncSelectedFromInput(value: string): void {
+    const v = (value || '').trim();
+    if (!v) {
+      this.selectedUser = null;
+      return;
+    }
+    const matched = (this.latestUsers || []).find(u =>
+      this.getUserDisplayName(u) === v ||
+      u.userName === v ||
+      `${u.name ?? ''} ${u.surname ?? ''}`.trim() === v ||
+      u.email === v
+    );
+    if (matched) {
+      this.selectedUser = matched;
+    }
   }
 }
