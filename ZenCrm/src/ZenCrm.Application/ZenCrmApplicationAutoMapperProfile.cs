@@ -22,7 +22,8 @@ public class ZenCrmApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateSalesLeadDto, SalesLead>();
 
         CreateMap<SalesOpportunity, SalesOpportunityDto>();
-        CreateMap<CreateUpdateSalesOpportunityDto, SalesOpportunity>();
+        // Note: CreateMap<CreateUpdateSalesOpportunityDto, SalesOpportunity>() removed
+        // because SalesOpportunity has a parameterized constructor and requires manual mapping
 
         CreateMap<Interaction, InteractionDto>();
         CreateMap<CreateUpdateInteractionDto, Interaction>();
