@@ -4,6 +4,7 @@ import type { Priority } from './priority.enum';
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,10 @@ export class SalesOpportunityService {
   apiName = 'Default';
 
   constructor(private restService: RestService) {
-    console.log('SalesOpportunityService initialized with API URL:', 'https://localhost:44340');
+    // Garantir que o ambiente esteja configurado corretamente
+    if (environment.apis?.default?.url) {
+      console.log('SalesOpportunityService initialized with API URL:', environment.apis.default.url);
+    }
   }
 
   create = (input: CreateUpdateSalesOpportunityDto, config?: Partial<Rest.Config>) =>

@@ -74,7 +74,22 @@ public class SalesOpportunityAppService : ApplicationService, ISalesOpportunityA
     [Authorize(ZenCrmPermissions.SalesOpportunities.Create)]
     public async Task<SalesOpportunityDto> CreateAsync(CreateUpdateSalesOpportunityDto input)
     {
-        var opportunity = ObjectMapper.Map<CreateUpdateSalesOpportunityDto, SalesOpportunity>(input);
+        var opportunity = new SalesOpportunity(
+            GuidGenerator.Create(),
+            input.Name,
+            input.SalesLeadId,
+            input.OwnerUserId,
+            input.EstimatedValue,
+            input.ExpectedCloseDate
+        );
+
+        // Mapear propriedades adicionais
+        opportunity.SetDescription(input.Description);
+        opportunity.SetPriority(input.Priority);
+        opportunity.AssociateWithClient(input.ClientId);
+        opportunity.SetCompetitor(input.Competitor);
+        opportunity.SetParentOpportunity(input.ParentOpportunityId);
+        opportunity.SetStatus(input.IsActive);
 
         await _salesOpportunityRepository.InsertAsync(opportunity);
 
