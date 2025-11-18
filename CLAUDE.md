@@ -94,3 +94,174 @@ Located in `modules/` directory, each follows ABP's module structure:
 - Feature Management
 - Blob Storage
 - LeptonXLite UI Theme
+
+## CRM Entity Development Guidelines
+
+### When Creating New CRM Entities
+
+#### 1. Domain Layer (Entity Design)
+```csharp
+// Always create entities with parameterized constructors for required fields
+public class SalesOpportunity : FullAuditedAggregateRoot<Guid>
+{
+    public string Name { get; private set; }
+    public Guid SalesLeadId { get; private set; }
+    public Guid OwnerUserId { get; private set; }
+    public decimal EstimatedValue { get; private set; }
+    public DateTime ExpectedCloseDate { get; private set; }
+
+    // Constructor with REQUIRED parameters only
+    public SalesOpportunity(
+        Guid id,
+        string name,
+        Guid salesLeadId,
+        Guid ownerUserId,
+        decimal estimatedValue,
+        DateTime expectedCloseDate) : base(id)
+    {
+        SetName(name);
+        SalesLeadId = salesLeadId;
+        OwnerUserId = ownerUserId;
+        SetEstimatedValue(estimatedValue);
+        ExpectedCloseDate = expectedCloseDate;
+        // Initialize defaults
+        Priority = Priority.Normal;
+        Stage = PipelineStage.Qualification;
+        IsActive = true;
+    }
+
+    // Use setter methods for business logic validation
+    public void SetEstimatedValue(decimal value)
+    {
+        if (value <= 0)
+            throw new ArgumentException("Estimated value must be greater than 0");
+        EstimatedValue = value;
+    }
+}
+```
+
+#### 2. Application Layer (AutoMapper Configuration)
+```csharp
+// ALWAYS add mappings to ZenCrmApplicationAutoMapperProfile.cs
+public class ZenCrmApplicationAutoMapperProfile : Profile
+{
+    public ZenCrmApplicationAutoMapperProfile()
+    {
+        CreateMap<YourEntity, YourEntityDto>();
+        CreateMap<CreateUpdateYourEntityDto, YourEntity>();
+        // Add ALL entity mappings here
+    }
+}
+```
+
+#### 3. Application Service (Entity Creation Pattern)
+```csharp
+[Authorize(ZenCrmPermissions.YourEntity.Create)]
+public async Task<YourEntityDto> CreateAsync(CreateUpdateYourEntityDto input)
+{
+    // NEVER use ObjectMapper.Map() for entities with parameterized constructors
+    // ALWAYS construct manually using the entity's constructor
+    var entity = new YourEntity(
+        GuidGenerator.Create(),
+        input.RequiredField1,
+        input.RequiredField2,
+        input.RequiredField3
+    );
+
+    // Use setter methods for optional properties with validation
+    entity.SetOptionalProperty(input.OptionalField);
+    entity.AssociateWithRelatedEntity(input.RelatedEntityId);
+
+    await _repository.InsertAsync(entity);
+
+    // Use ObjectMapper for Entity -> DTO mapping (this works)
+    return ObjectMapper.Map<YourEntity, YourEntityDto>(entity);
+}
+```
+
+#### 4. Frontend Angular Form Validation
+```typescript
+// Form validation with proper min/max values
+buildForm(): void {
+  this.form = this.fb.group({
+    name: ['', [Validators.required, Validators.maxLength(256)]],
+    estimatedValue: [
+      null, // Start with null instead of 0
+      [Validators.required, Validators.min(0.01)] // Enforce > 0
+    ],
+    expectedCloseDate: [null, Validators.required]
+  });
+}
+
+// Helper methods for validation feedback
+isFieldInvalid(fieldName: string): boolean {
+  const field = this.form.get(fieldName);
+  return field ? field.invalid && (field.dirty || field.touched) : false;
+}
+
+getErrorMessage(fieldName: string): string {
+  const field = this.form.get(fieldName);
+  if (!field || !field.errors) return '';
+
+  if (field.errors['required']) return 'This field is required.';
+  if (field.errors['min']) {
+    if (fieldName === 'estimatedValue') return 'Value must be greater than 0.';
+    return `Minimum value is ${field.errors['min'].min}.`;
+  }
+  return 'Invalid value.';
+}
+```
+
+#### 5. Frontend Template HTML
+```html
+<!-- Always include validation feedback -->
+<input
+  type="number"
+  min="0.01"
+  step="0.01"
+  class="form-control"
+  formControlName="estimatedValue"
+  [class.is-invalid]="isFieldInvalid('estimatedValue')"
+/>
+@if (isFieldInvalid('estimatedValue')) {
+  <div class="invalid-feedback d-block">
+    {{ getErrorMessage('estimatedValue') }}
+  </div>
+}
+```
+
+#### 6. Frontend Payload Cleanup
+```typescript
+// Always remove undefined fields from payload
+const payload = { /* ... form values ... */ };
+
+Object.keys(payload).forEach(key => {
+  if (payload[key] === undefined) {
+    delete payload[key];
+  }
+});
+```
+
+### Critical Rules to Follow
+
+1. **NEVER use ObjectMapper.Map()** to create entities with parameterized constructors
+2. **ALWAYS add AutoMapper mappings** for every new entity in `ZenCrmApplicationAutoMapperProfile.cs`
+3. **Frontend forms must validate** business rules (e.g., values > 0)
+4. **Remove undefined fields** from API payloads to prevent serialization errors
+5. **Use parameterized constructors** to enforce required fields and business logic
+6. **Test both API and frontend** when creating new entities
+
+### Common Pitfalls to Avoid
+
+- ❌ `ObjectMapper.Map<Dto, Entity>(input)` - Fails with parameterized constructors
+- ❌ Sending `undefined` values in API payloads
+- ❌ Starting numeric fields with 0 when validation requires > 0
+- ❌ Forgetting to add AutoMapper profiles for new entities
+- ❌ Not providing visual validation feedback in forms
+
+### Testing New Entities
+
+1. Test API directly with curl/PostMan first
+2. Test frontend form validation
+3. Test end-to-end creation flow
+4. Verify all CRUD operations work correctly

@@ -27,3 +27,8 @@
 .opportunity-form .input-group .form-control {
   min-width: 0;
 }
+
+/* Fix dropdown menu z-index when attached to body */
+::ng-deep .dropdown-menu.show {
+  z-index: 1060 !important;
+}

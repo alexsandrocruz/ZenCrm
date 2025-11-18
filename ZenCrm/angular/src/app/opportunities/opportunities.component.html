@@ -73,7 +73,7 @@
     <ngx-datatable [rows]="opportunities.items" [count]="opportunities.totalCount" [list]="list" default>
       <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <div ngbDropdown class="d-inline-block">
+          <div ngbDropdown class="d-inline-block" container="body">
             <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
               <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
             </button>
