@@ -265,3 +265,119 @@ Object.keys(payload).forEach(key => {
 2. Test frontend form validation
 3. Test end-to-end creation flow
 4. Verify all CRUD operations work correctly
+
+## ABP Framework Localization Guidelines
+
+### How Localization Works in ZenCrm
+
+ZenCrm uses ABP Framework's built-in localization system with the resource "ZenCrm" defined in:
+- **Backend**: `src/ZenCrm.Domain.Shared/Localization/ZenCrm/ZenCrmResource.cs`
+- **Angular**: Configured via `environment.ts` with `defaultResourceName: 'ZenCrm'`
+
+### Critical Localization Rule: Use Double Colons (`::`)
+
+**ALWAYS use `::` prefix for localization keys to use the default resource:**
+
+```html
+<!-- ✅ CORRECT - Uses ZenCrm resource by default -->
+<h3>{{ '::Dashboard:SalesPerformance' | abpLocalization }}</h3>
+<span>{{ '::Menu:Books' | abpLocalization }}</span>
+
+<!-- ❌ WRONG - Won't find the resource -->
+<h3>{{ 'Dashboard:SalesPerformance' | abpLocalization }}</h3>
+<span>{{ 'Menu:Books' | abpLocalization }}</span>
+```
+
+**In TypeScript components:**
+
+```typescript
+// ✅ CORRECT - Uses default resource
+constructor(private localization: LocalizationService) {}
+
+getTitle(): string {
+  return this.localization.instant('::Dashboard:ActiveClients');
+}
+
+// ❌ WRONG - Won't find translations
+getTitle(): string {
+  return this.localization.instant('Dashboard:ActiveClients');
+}
+```
+
+### Adding New Localization Keys
+
+#### 1. Backend Localization Files
+Add keys to both language files:
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/en.json`
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json`
+
+```json
+{
+  "culture": "en",
+  "texts": {
+    "YourModule:YourKey": "Your English Text",
+    "YourModule:Description": "Description text"
+  }
+}
+```
+
+#### 2. Frontend Usage
+Use the `::` prefix to reference the default "ZenCrm" resource:
+
+```html
+<!-- Template usage -->
+{{ '::YourModule:YourKey' | abpLocalization }}
+
+<!-- Dynamic content generation -->
+<div *ngFor="let item of items">
+  {{ item.title }} <!-- Direct binding -->
+  <span>{{ '::YourModule:Status.' + item.status | abpLocalization }}</span> <!-- Computed key -->
+</div>
+```
+
+```typescript
+// Component usage
+import { LocalizationService } from '@abp/ng.core';
+
+export class YourComponent {
+  constructor(private localization: LocalizationService) {}
+
+  getLocalizedText(key: string): string {
+    return this.localization.instant('::YourModule:' + key);
+  }
+
+  buildLocalizedData() {
+    return {
+      title: this.localization.instant('::YourModule:Title'),
+      description: this.localization.instant('::YourModule:Description')
+    };
+  }
+}
+```
+
+### Environment Configuration
+
+The `environment.ts` file is pre-configured:
+```typescript
+export const environment = {
+  // ... other config
+  localization: {
+    defaultResourceName: 'ZenCrm', // This enables the :: prefix
+  },
+} as Environment;
+```
+
+### Common Localization Pitfalls
+
+- ❌ **Missing `::` prefix**: Keys won't be found in the default resource
+- ❌ **Inconsistent key naming**: Use consistent `Module:Key` pattern
+- ❌ **Missing backend translations**: Add keys to both `en.json` and `pt-BR.json`
+- ❌ **Hardcoded text**: Always use localization for user-facing text
+- ❌ **Mixing approaches**: Stick to `::` prefix for consistency with existing code
+
+### Testing Localization
+
+1. **Backend API Test**: Check endpoint `/abp/localization/texts?resourceName=ZenCrm&cultureName=pt-BR`
+2. **Frontend Test**: Change language in UI and verify all text updates
+3. **Both Languages**: Test English (default) and Portuguese translations
+4. **Dynamic Content**: Ensure dynamically generated text also uses localization
