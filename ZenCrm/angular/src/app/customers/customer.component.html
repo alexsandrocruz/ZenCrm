@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col col-md-6">
         <h5 class="card-title">
-          Customers
+          {{ '::Customer:Title' | abpLocalization }}
         </h5>
       </div>
       <div class="text-end col col-md-6">
@@ -15,7 +15,7 @@
             (click)="createCustomer()"
           >
             <i class="fa fa-plus me-1"></i>
-            <span>New Customer</span>
+            <span>{{ '::Customer:NewCustomer' | abpLocalization }}</span>
           </button>
         </div>
       </div>
@@ -59,7 +59,7 @@
                 ngbDropdownItem
                 (click)="setAsPrimaryContact(row.id)"
               >
-                {{ '::SetAsPrimaryContact' | abpLocalization }}
+                {{ '::Customer:SetAsPrimaryContact' | abpLocalization }}
               </button>
               }
               <button
@@ -67,7 +67,7 @@
                 ngbDropdownItem
                 (click)="setAsDecisionMaker(row.id, !row.isKeyDecisionMaker)"
               >
-                {{ row.isKeyDecisionMaker ? ('::RemoveAsDecisionMaker' | abpLocalization) : ('::SetAsDecisionMaker' | abpLocalization) }}
+                {{ row.isKeyDecisionMaker ? ('::Customer:RemoveAsDecisionMaker' | abpLocalization) : ('::Customer:SetAsDecisionMaker' | abpLocalization) }}
               </button>
               <button
                 *abpPermission="'ZenCrm.Customers.Delete'"
@@ -99,10 +99,10 @@
         <ng-template let-row="row" ngx-datatable-cell-template>
           <div>
             @if(row.isPrimaryContact) {
-            <span class="badge bg-primary me-1">{{ '::PrimaryContact' | abpLocalization }}</span>
+            <span class="badge bg-primary me-1">{{ '::Customer:PrimaryContact' | abpLocalization }}</span>
             }
             @if(row.isKeyDecisionMaker) {
-            <span class="badge bg-success">{{ '::DecisionMaker' | abpLocalization }}</span>
+            <span class="badge bg-success">{{ '::Customer:DecisionMaker' | abpLocalization }}</span>
             }
           </div>
         </ng-template>
@@ -125,7 +125,7 @@
 
 <abp-modal [(visible)]="isModalOpen">
   <ng-template #abpHeader>
-    <h3>{{ (selectedCustomer.id ? '::EditCustomer' : '::NewCustomer' ) | abpLocalization }}</h3>
+    <h3>{{ (selectedCustomer.id ? '::Customer:EditCustomer' : '::Customer:NewCustomer' ) | abpLocalization }}</h3>
   </ng-template>
 
   <ng-template #abpBody>

@@ -374,6 +374,91 @@ export const environment = {
 - ❌ **Missing backend translations**: Add keys to both `en.json` and `pt-BR.json`
 - ❌ **Hardcoded text**: Always use localization for user-facing text
 - ❌ **Mixing approaches**: Stick to `::` prefix for consistency with existing code
+- ❌ **Key conflicts between contexts**: Generic keys vs specific keys behave differently
+
+### Localization Key Conflicts: Generic vs Specific
+
+#### The Problem
+Generic keys (`::Address`, `::City`) can conflict or have inconsistent behavior compared to specific keys (`::Client:Address`, `::Client:City`).
+
+**Symptoms:**
+- Form labels translate correctly, but view mode labels don't
+- Some fields show in English while others show in Portuguese
+- Inconsistent behavior across different contexts (edit vs view modes)
+
+#### Root Cause Analysis
+1. **Generic keys** (`::Address`, `::City`, `::State`) may not exist in backend JSON files
+2. **Specific keys** (`::Client:Address`, `::Client:City`, `::Client:State`) work consistently
+3. **Mixed usage** within same component (edit mode uses specific, view mode uses generic)
+
+#### Solution Strategy
+
+**Option 1: Use Specific Keys Everywhere (Recommended)**
+```html
+<!-- ✅ CONSISTENT - Always use Module: prefix -->
+<label>{{ '::Client:Address' | abpLocalization }}</label>
+<td>{{ '::Client:Address' | abpLocalization }}:</td>
+```
+
+**Option 2: Add Generic Keys for Common Fields**
+```json
+// Add to BOTH en.json and pt-BR.json
+{
+  "Address": "Address",
+  "City": "City",
+  "State": "State",
+  "PostalCode": "Postal Code",
+  "Country": "Country",
+  "AnnualRevenue": "Annual Revenue",
+  "NumberOfEmployees": "Number of Employees",
+  "Website": "Website",
+  "Description": "Description"
+}
+```
+
+#### Best Practices for Avoiding Key Conflicts
+
+1. **Audit Your Components**: Check if you're mixing generic and specific keys
+2. **Use Specific Keys by Default**: `::Module:FieldName` pattern prevents conflicts
+3. **Maintain Consistency**: Use same key pattern across all contexts (edit, view, modals)
+4. **Add Generic Keys Sparingly**: Only for truly universal fields used across modules
+
+#### Debugging Localization Issues
+
+**Step 1: Identify Mixed Usage**
+```bash
+# Search for localization usage in component
+grep -n "abpLocalization" src/app/your-module/*.html
+# Look for inconsistent patterns like:
+# ::Client:Address (specific) vs ::Address (generic)
+```
+
+**Step 2: Check Backend Keys**
+```bash
+# Verify generic keys exist
+grep -n "\"Address\":" src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json
+grep -n "\"Client:Address\":" src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json
+```
+
+**Step 3: Standardize Approach**
+Choose either specific or generic keys and apply consistently across the component.
+
+#### Real Example from ZenCrm
+
+**Problem Found:**
+- **Edit form**: `{{ '::Client:Address' | abpLocalization }}` ✅ (works)
+- **View mode**: `{{ '::Address' | abpLocalization }}` ❌ (missing key)
+
+**Solution Applied:**
+1. Added generic keys to backend JSON files
+2. Maintained existing specific keys for consistency
+3. Now both approaches work correctly
+
+**Files Updated:**
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/en.json` (added generic keys)
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json` (added generic keys)
+
+This ensures consistent localization behavior across all contexts.
 
 ### Testing Localization
 
