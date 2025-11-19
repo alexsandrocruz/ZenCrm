@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { RestService } from '@abp/ng.core';
+import { RestService, LocalizationService, LocalizationPipe } from '@abp/ng.core';
 import { ClientDto, PipelineStage, SalesOpportunityDto, pipelineStageOptions } from '../proxy/sales';
 
 interface PipelineColumn {
@@ -17,10 +17,11 @@ interface PipelineColumn {
   selector: 'app-opportunity-pipeline',
   templateUrl: './opportunity-pipeline.component.html',
   styleUrls: ['./opportunity-pipeline.component.scss'],
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, LocalizationPipe],
 })
 export class OpportunityPipelineComponent implements OnInit {
   private readonly restService = inject(RestService);
+  private readonly localization = inject(LocalizationService);
 
   readonly boardStages: PipelineStage[] = [
     PipelineStage.Lead,
@@ -52,9 +53,10 @@ export class OpportunityPipelineComponent implements OnInit {
   initializeColumns(): void {
     this.columns = this.boardStages.map(stage => {
       const option = pipelineStageOptions.find(x => x.value === stage);
+      const stageKey = option?.key ?? PipelineStage[stage];
       return {
         stage,
-        label: option?.key ?? PipelineStage[stage],
+        label: this.localization.instant(`::Enum:PipelineStage.${stageKey}`),
         opportunities: [],
         totalValue: 0,
         dropListId: this.getDropListId(stage),
