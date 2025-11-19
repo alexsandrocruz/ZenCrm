@@ -129,9 +129,10 @@ export class SalesDashboardComponent implements OnInit {
   buildStageSummary(opportunities: SalesOpportunityDto[]): StageSummary[] {
     return this.stageOptions.map(option => {
       const deals = opportunities.filter(opportunity => opportunity.stage === option.value);
+      const stageKey = option.key || option.value.toString();
       return {
         stage: option.value as PipelineStage,
-        label: option.key || option.value.toString(),
+        label: this.localization.instant(`::Enum:PipelineStage.${stageKey}`),
         count: deals.length,
         value: deals.reduce((sum, opportunity) => sum + opportunity.estimatedValue, 0),
       };
@@ -164,6 +165,8 @@ export class SalesDashboardComponent implements OnInit {
 
   getStageLabel(stage?: PipelineStage): string {
     const option = this.stageOptions.find(item => item.value === stage);
-    return option?.key ?? (stage?.toString() || '-');
+    const stageKey = option?.key ?? (stage?.toString() || '-');
+    if (stageKey === '-') return '-';
+    return this.localization.instant(`::Enum:PipelineStage.${stageKey}`);
   }
 }
