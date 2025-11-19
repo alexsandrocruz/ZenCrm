@@ -13,6 +13,7 @@ import {
 } from '../proxy/sales';
 import { SimpleClientService } from '../services/simple-client.service';
 import { SimpleSalesOpportunityService } from '../services/simple-sales-opportunity.service';
+import { DashboardChartsComponent } from './dashboard-charts.component';
 import { SalesLeadService } from '../proxy/sales';
 
 interface DashboardKpi {
@@ -39,7 +40,8 @@ interface LeadSummary {
   selector: 'app-sales-dashboard',
   templateUrl: './sales-dashboard.component.html',
   styleUrls: ['./sales-dashboard.component.scss'],
-  imports: [CommonModule, FormsModule, LocalizationPipe],
+  standalone: true,
+  imports: [CommonModule, FormsModule, LocalizationPipe, DashboardChartsComponent],
 })
 export class SalesDashboardComponent implements OnInit {
   private readonly opportunityService = inject(SimpleSalesOpportunityService);
