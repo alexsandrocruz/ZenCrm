@@ -63,4 +63,9 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./leads/sales-lead.component').then(c => c.SalesLeadComponent),
     canActivate: [authGuard, permissionGuard],
   },
+  {
+    path: 'crm/interactions',
+    loadComponent: () => import('./interactions/interaction.component').then(c => c.InteractionComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
 ];

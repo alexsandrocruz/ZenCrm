@@ -22,6 +22,7 @@ import {
   ModalComponent
 } from '@abp/ng.theme.shared';
 import { LocalizationPipe } from '@abp/ng.core';
+import { ClientInteractionsComponent } from '../interactions/client-interactions.component';
 
 @Component({
   selector: 'app-client-detail',
@@ -33,7 +34,8 @@ import { LocalizationPipe } from '@abp/ng.core';
     NgxMaskDirective,
     ModalComponent,
     ModalCloseDirective,
-    LocalizationPipe
+    LocalizationPipe,
+    ClientInteractionsComponent
   ],
   providers: [ListService, provideNgxMask()],
 })

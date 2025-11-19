@@ -45,6 +45,16 @@
         <span class="badge bg-secondary ms-2">{{ customers?.length || 0 }}</span>
       </button>
     </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'interactions'"
+        (click)="setTab('interactions')"
+        type="button"
+      >
+        <i class="fa fa-comments me-2"></i>{{ '::Interaction:Interactions' | abpLocalization }}
+      </button>
+    </li>
   </ul>
 
   <!-- Tab Content -->
@@ -392,6 +402,14 @@
         </div>
       </div>
     </div>
+    }
+
+    <!-- Interactions Tab -->
+    @if (activeTab === 'interactions') {
+      <app-client-interactions
+        [clientId]="client?.id"
+        [clientName]="client?.name">
+      </app-client-interactions>
     }
   </div>
 </div>
