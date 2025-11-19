@@ -133,7 +133,7 @@ export class CustomerComponent implements OnInit {
       centered: true
     });
 
-    modalRef.componentInstance.title = 'Assign Customer to User';
+    modalRef.componentInstance.title = this.localization.instant('::Customer:AssignCustomerToUser');
     modalRef.componentInstance.selectedUserId = customer.assignedUserId;
 
     modalRef.result.then((selectedUser) => {

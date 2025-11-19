@@ -209,7 +209,7 @@
                 [value]="selectedClientName"
                 (input)="onClientInput($event)"
                 (keyup)="onClientKeyup($event)"
-                placeholder="Search for a client..."
+                placeholder="{{ '::Customer:SearchClient' | abpLocalization }}"
                 autocomplete="off"
               />
               <datalist id="client-datalist">
@@ -221,7 +221,7 @@
                 type="hidden"
                 formControlName="clientId"
               />
-            <small class="form-text text-muted">Type client name to search</small>
+            <small class="form-text text-muted">{{ '::Customer:TypeClientName' | abpLocalization }}</small>
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@
               (input)="onUserInput($event)"
               (keyup)="onUserKeyup($event)"
               (change)="onUserSelect($event)"
-              placeholder="Search for a user..."
+              placeholder="{{ '::Customer:SearchUser' | abpLocalization }}"
               autocomplete="off"
             />
             <datalist id="customer-user-datalist">
@@ -251,7 +251,7 @@
               type="hidden"
               formControlName="assignedUserId"
             />
-            <small class="form-text text-muted">Type user name to search</small>
+            <small class="form-text text-muted">{{ '::Customer:TypeUserName' | abpLocalization }}</small>
           </div>
         </div>
         <div class="col-md-6">
