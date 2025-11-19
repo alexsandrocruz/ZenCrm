@@ -31,5 +31,8 @@ export const environment = {
   remoteEnv: {
     url: '/getEnvConfig',
     mergeStrategy: 'deepmerge'
-  }
+  },
+  localization: {
+    defaultResourceName: 'ZenCrm',
+  },
 } as Environment;
