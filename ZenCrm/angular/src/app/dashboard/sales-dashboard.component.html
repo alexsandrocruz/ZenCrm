@@ -1,12 +1,12 @@
 <div class="dashboard-container">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h3 class="mb-0">Sales Performance</h3>
-      <small class="text-muted">Pipeline health, activities and upcoming revenue</small>
+      <h3 class="mb-0">{{ '::Dashboard:SalesPerformance' | abpLocalization }}</h3>
+      <small class="text-muted">{{ '::Dashboard:PipelineHealthDescription' | abpLocalization }}</small>
     </div>
     <button class="btn btn-outline-primary" type="button" (click)="loadDashboard()">
       <i class="fa fa-sync me-1"></i>
-      Refresh
+      {{ '::Dashboard:Refresh' | abpLocalization }}
     </button>
   </div>
 
@@ -32,15 +32,15 @@
     <div class="col-lg-7">
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Pipeline by Stage</h5>
-          <small class="text-muted">Monitor deal distribution</small>
+          <h5 class="mb-0">{{ '::Dashboard:PipelineByStage' | abpLocalization }}</h5>
+          <small class="text-muted">{{ '::Dashboard:MonitorDealDistribution' | abpLocalization }}</small>
         </div>
         <div class="card-body">
           @for(stage of stageSummary; track stage.stage) {
           <div class="stage-row">
             <div class="stage-label">
               <strong>{{ stage.label }}</strong>
-              <span class="text-muted">{{ stage.count }} deals</span>
+              <span class="text-muted">{{ stage.count }} {{ '::Dashboard:Deals' | abpLocalization }}</span>
             </div>
             <div class="progress mb-1">
               <div
@@ -59,12 +59,12 @@
     <div class="col-lg-5">
       <div class="card h-100">
         <div class="card-header">
-          <h5 class="mb-0">Lead Funnel</h5>
-          <small class="text-muted">Status of incoming leads</small>
+          <h5 class="mb-0">{{ '::Dashboard:LeadFunnel' | abpLocalization }}</h5>
+          <small class="text-muted">{{ '::Dashboard:StatusOfIncomingLeads' | abpLocalization }}</small>
         </div>
         <div class="card-body">
           @if(leadSummary.length === 0) {
-          <div class="text-muted text-center">No leads registered</div>
+          <div class="text-muted text-center">{{ '::Dashboard:NoLeadsRegistered' | abpLocalization }}</div>
           } @else {
           @for(item of leadSummary; track item.label) {
           <div class="d-flex justify-content-between align-items-center py-2 lead-row">
@@ -82,23 +82,23 @@
     <div class="col-lg-6">
       <div class="card h-100">
         <div class="card-header">
-          <h5 class="mb-0">Upcoming Closings</h5>
-          <small class="text-muted">Next opportunities to close</small>
+          <h5 class="mb-0">{{ '::Dashboard:UpcomingClosings' | abpLocalization }}</h5>
+          <small class="text-muted">{{ '::Dashboard:NextOpportunitiesToClose' | abpLocalization }}</small>
         </div>
         <div class="table-responsive">
           <table class="table table-hover mb-0">
             <thead>
               <tr>
-                <th>Opportunity</th>
-                <th>Client</th>
-                <th>Value</th>
-                <th>Close date</th>
+                <th>{{ '::Dashboard:Opportunity' | abpLocalization }}</th>
+                <th>{{ '::Dashboard:Client' | abpLocalization }}</th>
+                <th>{{ '::Dashboard:Value' | abpLocalization }}</th>
+                <th>{{ '::Dashboard:CloseDate' | abpLocalization }}</th>
               </tr>
             </thead>
             <tbody>
               @if(upcomingOpportunities.length === 0) {
               <tr>
-                <td colspan="4" class="text-center text-muted py-4">Nothing scheduled</td>
+                <td colspan="4" class="text-center text-muted py-4">{{ '::Dashboard:NothingScheduled' | abpLocalization }}</td>
               </tr>
               } @else {
               @for(opportunity of upcomingOpportunities; track opportunity.id) {
@@ -107,7 +107,7 @@
                   <strong>{{ opportunity.name }}</strong>
                   <div class="text-muted small">{{ getStageLabel(opportunity.stage) }}</div>
                 </td>
-                <td>{{ opportunity.clientName || 'Unassigned' }}</td>
+                <td>{{ opportunity.clientName || '::Dashboard:Unassigned' | abpLocalization }}</td>
                 <td>{{ opportunity.estimatedValue | currency }}</td>
                 <td>{{ opportunity.expectedCloseDate | date: 'mediumDate' }}</td>
               </tr>
@@ -122,12 +122,12 @@
     <div class="col-lg-6">
       <div class="card h-100">
         <div class="card-header">
-          <h5 class="mb-0">Recent Interactions</h5>
-          <small class="text-muted">Meetings, calls and follow-ups</small>
+          <h5 class="mb-0">{{ '::Dashboard:RecentInteractions' | abpLocalization }}</h5>
+          <small class="text-muted">{{ '::Dashboard:MeetingsCallsFollowUps' | abpLocalization }}</small>
         </div>
         <div class="list-group list-group-flush">
           @if(recentInteractions.length === 0) {
-          <div class="list-group-item text-center text-muted py-4">No interactions logged</div>
+          <div class="list-group-item text-center text-muted py-4">{{ '::Dashboard:NoInteractionsLogged' | abpLocalization }}</div>
           } @else {
           @for(interaction of recentInteractions; track interaction.id) {
           <div class="list-group-item">
@@ -136,12 +136,12 @@
                 <strong>{{ interaction.subject }}</strong>
                 <div class="text-muted small">
                   {{ interaction.getTypeDisplay || interaction.type }} ·
-                  {{ interaction.clientName || interaction.customerName || 'General' }}
+                  {{ interaction.clientName || interaction.customerName || '::Dashboard:General' | abpLocalization }}
                 </div>
               </div>
               <span class="badge bg-light text-dark">{{ interaction.scheduledDate | date: 'short' }}</span>
             </div>
-            <p class="mb-0 text-muted small mt-2">{{ interaction.description || 'No notes provided.' }}</p>
+            <p class="mb-0 text-muted small mt-2">{{ interaction.description || '::Dashboard:NoNotesProvided' | abpLocalization }}</p>
           </div>
           }
           }
@@ -152,7 +152,7 @@
 
   <div class="text-center my-5" *ngIf="isLoading">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ '::Dashboard:Loading' | abpLocalization }}</span>
     </div>
   </div>
 </div>

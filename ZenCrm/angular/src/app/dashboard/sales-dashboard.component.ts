@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
 import {
   CustomerService,
   GetSalesOpportunitiesInput,
@@ -36,7 +37,7 @@ interface LeadSummary {
   selector: 'app-sales-dashboard',
   templateUrl: './sales-dashboard.component.html',
   styleUrls: ['./sales-dashboard.component.scss'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LocalizationPipe],
 })
 export class SalesDashboardComponent implements OnInit {
   private readonly opportunityService = inject(SimpleSalesOpportunityService);
@@ -46,6 +47,7 @@ export class SalesDashboardComponent implements OnInit {
   // private readonly interactionService = inject(InteractionService);
   private readonly clientService = inject(SimpleClientService);
   private readonly customerService = inject(CustomerService);
+  private readonly localization = inject(LocalizationService);
 
   readonly stageOptions = pipelineStageOptions;
 
@@ -97,27 +99,27 @@ export class SalesDashboardComponent implements OnInit {
 
     return [
       {
-        title: 'Active Clients',
+        title: this.localization.instant('::Dashboard:ActiveClients'),
         value: clientCount,
-        description: 'Companies managed in the CRM',
+        description: this.localization.instant('::Dashboard:CompaniesManagedInCRM'),
         icon: 'fa-building',
       },
       {
-        title: 'Contacts',
+        title: this.localization.instant('::Dashboard:Contacts'),
         value: customerCount,
-        description: 'Customers and decision makers',
+        description: this.localization.instant('::Dashboard:CustomersAndDecisionMakers'),
         icon: 'fa-user-friends',
       },
       {
-        title: 'Open Opportunities',
+        title: this.localization.instant('::Dashboard:OpenOpportunities'),
         value: opportunities.totalCount,
-        description: `Win rate ${winRate}%`,
+        description: `${this.localization.instant('::Dashboard:WinRate')} ${winRate}%`,
         icon: 'fa-briefcase',
       },
       {
-        title: 'Pipeline Value',
+        title: this.localization.instant('::Dashboard:PipelineValue'),
         value: totalPipelineValue,
-        description: `Weighted value ${this.formatNumber(weightedValue)}`,
+        description: `${this.localization.instant('::Dashboard:WeightedValue')} ${this.formatNumber(weightedValue)}`,
         icon: 'fa-chart-line',
         isCurrency: true,
       },
@@ -147,10 +149,10 @@ export class SalesDashboardComponent implements OnInit {
   buildLeadSummary(leads: any[]): LeadSummary[] {
     // TODO: Implement when SalesLeadDto is available
     return [
-      { label: 'New', count: 0 },
-      { label: 'Qualified', count: 0 },
-      { label: 'Converted', count: 0 },
-      { label: 'Lost', count: 0 },
+      { label: this.localization.instant('::Dashboard:LeadFunnelNew'), count: 0 },
+      { label: this.localization.instant('::Dashboard:LeadFunnelQualified'), count: 0 },
+      { label: this.localization.instant('::Dashboard:LeadFunnelConverted'), count: 0 },
+      { label: this.localization.instant('::Dashboard:LeadFunnelLost'), count: 0 },
     ];
   }
 
