@@ -421,11 +421,28 @@ export class DashboardChartsComponent implements OnInit {
     return stages.map(stage => {
       const stageOpportunities = opportunities.filter(o => o.stage === stage);
       const stageKey = stage.toString();
+
+      // Mapeamento manual para garantir tradução correta usando valores numéricos
+      const stageLabels: { [key: string]: string } = {
+        '1': this.localization.instant('::Enum:PipelineStage.Lead'),
+        '2': this.localization.instant('::Enum:PipelineStage.Qualifying'),
+        '3': this.localization.instant('::Enum:PipelineStage.Qualified'),
+        '4': this.localization.instant('::Enum:PipelineStage.Analysis'),
+        '5': this.localization.instant('::Enum:PipelineStage.Proposal'),
+        '6': this.localization.instant('::Enum:PipelineStage.ProposalSent'),
+        '7': this.localization.instant('::Enum:PipelineStage.Negotiation'),
+        '8': this.localization.instant('::Enum:PipelineStage.VerbalCommitment'),
+        '9': this.localization.instant('::Enum:PipelineStage.Closing'),
+        '10': this.localization.instant('::Enum:PipelineStage.Won'),
+        '11': this.localization.instant('::Enum:PipelineStage.Lost'),
+        '12': this.localization.instant('::Enum:PipelineStage.OnHold')
+      };
+
       return {
         stage,
         count: stageOpportunities.length,
         value: stageOpportunities.reduce((sum, o) => sum + o.estimatedValue, 0),
-        label: this.localization.instant(`::Enum:PipelineStage.${stageKey}`)
+        label: stageLabels[stageKey] || stageKey
       };
     }).filter(s => s.count > 0);
   }
@@ -443,11 +460,19 @@ export class DashboardChartsComponent implements OnInit {
         [Priority.Critical]: '#dc3545'
       };
 
+      // Mapeamento manual para garantir tradução correta usando valores numéricos
+      const priorityLabels: { [key: string]: string } = {
+        '1': this.localization.instant('::Enum:Priority.Low'),
+        '2': this.localization.instant('::Enum:Priority.Normal'),
+        '3': this.localization.instant('::Enum:Priority.High'),
+        '4': this.localization.instant('::Enum:Priority.Critical')
+      };
+
       return {
         priority,
         count: priorityOpportunities.length,
         value: priorityOpportunities.reduce((sum, o) => sum + o.estimatedValue, 0),
-        label: this.localization.instant(`::Enum:Priority.${priorityKey}`),
+        label: priorityLabels[priorityKey] || priorityKey,
         color: colors[priority]
       };
     }).filter(p => p.count > 0);
