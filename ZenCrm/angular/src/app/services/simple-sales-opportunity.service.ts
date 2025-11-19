@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { SalesOpportunityDto, CreateUpdateSalesOpportunityDto, GetSalesOpportunitiesInput } from '../proxy/sales';
 import { PagedResultDto } from '@abp/ng.core';
 import { PipelineStage, Priority } from '../proxy/sales';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SimpleSalesOpportunityService {
-  private baseUrl = '/api/app/sales-opportunity';
+  private baseUrl = `${environment.apis.default.url}/api/app/sales-opportunity`;
 
   constructor(private http: HttpClient) {}
 
