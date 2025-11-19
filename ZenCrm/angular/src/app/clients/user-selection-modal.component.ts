@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, switchMap, take, tap } from 'rxjs/o
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserSearchService } from '../services/user-search.service';
 import { UserData } from '@abp/ng.identity/proxy';
+import { LocalizationPipe } from '@abp/ng.core';
 
 @Component({
   selector: 'app-user-selection-modal',
@@ -19,6 +20,7 @@ import { UserData } from '@abp/ng.identity/proxy';
     NgIf,
     NgFor,
     AsyncPipe,
+    LocalizationPipe,
   ],
   })
 export class UserSelectionModalComponent implements OnInit {

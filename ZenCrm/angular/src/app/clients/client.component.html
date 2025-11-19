@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col col-md-6">
         <h5 class="card-title">
-          Clients
+          {{ '::Client:Title' | abpLocalization }}
         </h5>
       </div>
       <div class="text-end col col-md-6">
@@ -15,7 +15,7 @@
             (click)="createClient()"
           >
             <i class="fa fa-plus me-1"></i>
-            <span>New Client</span>
+            <span>{{ '::Client:NewClient' | abpLocalization }}</span>
           </button>
         </div>
       </div>
@@ -52,14 +52,14 @@
                 (click)="viewClientDetails(row.id)"
               >
                 <i class="fa fa-eye me-1"></i>
-                View Details
+                {{ '::Client:ViewDetails' | abpLocalization }}
               </button>
               <button
                 *abpPermission="'ZenCrm.Clients.Assign'"
                 ngbDropdownItem
                 (click)="assignToUser(row.id)"
               >
-                {{ '::Assign' | abpLocalization }}
+                {{ '::Client:Assign' | abpLocalization }}
               </button>
               <button
                 *abpPermission="'ZenCrm.Clients.Delete'"
@@ -103,7 +103,7 @@
 
 <abp-modal [(visible)]="isModalOpen">
   <ng-template #abpHeader>
-    <h3>{{ (selectedClient.id ? '::EditClient' : '::NewClient' ) | abpLocalization }}</h3>
+    <h3>{{ (selectedClient.id ? '::Client:EditClient' : '::Client:NewClient' ) | abpLocalization }}</h3>
   </ng-template>
 
   <ng-template #abpBody>
@@ -119,7 +119,7 @@
           <div class="mt-2">
             <label for="client-type">{{ '::Type' | abpLocalization }}</label><span> * </span>
             <select class="form-control" id="client-type" formControlName="clientType">
-              <option [ngValue]="null">Select a client type</option>
+              <option [ngValue]="null">{{ '::Client:SelectType' | abpLocalization }}</option>
               @for(type of clientTypes; track type.value){
               <option [ngValue]="type.value">
                 {{ type.label }}
@@ -135,7 +135,7 @@
           <div class="mt-2">
             <label for="client-industry">{{ '::Industry' | abpLocalization }}</label>
             <select class="form-control" id="client-industry" formControlName="industry">
-              <option [ngValue]="null">Select an industry</option>
+              <option [ngValue]="null">{{ '::Client:SelectIndustry' | abpLocalization }}</option>
               @for(industry of clientIndustries; track industry.value){
               <option [ngValue]="industry.value">
                 {{ industry.label }}
@@ -257,7 +257,7 @@
               type="hidden"
               formControlName="assignedUserId"
             />
-            <small class="form-text text-muted">Type user name to search</small>
+            <small class="form-text text-muted">{{ '::Client:SearchUser' | abpLocalization }}</small>
           </div>
         </div>
       </div>

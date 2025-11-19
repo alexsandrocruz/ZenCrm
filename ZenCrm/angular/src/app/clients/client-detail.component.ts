@@ -21,6 +21,7 @@ import {
   ModalCloseDirective,
   ModalComponent
 } from '@abp/ng.theme.shared';
+import { LocalizationPipe } from '@abp/ng.core';
 
 @Component({
   selector: 'app-client-detail',
@@ -31,7 +32,8 @@ import {
     ReactiveFormsModule,
     NgxMaskDirective,
     ModalComponent,
-    ModalCloseDirective
+    ModalCloseDirective,
+    LocalizationPipe
   ],
   providers: [ListService, provideNgxMask()],
 })
