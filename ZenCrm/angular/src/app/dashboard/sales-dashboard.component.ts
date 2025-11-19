@@ -8,10 +8,12 @@ import {
   GetSalesOpportunitiesInput,
   PipelineStage,
   SalesOpportunityDto,
+  SalesLeadDto,
   pipelineStageOptions,
 } from '../proxy/sales';
 import { SimpleClientService } from '../services/simple-client.service';
 import { SimpleSalesOpportunityService } from '../services/simple-sales-opportunity.service';
+import { SalesLeadService } from '../proxy/sales';
 
 interface DashboardKpi {
   title: string;
@@ -41,10 +43,7 @@ interface LeadSummary {
 })
 export class SalesDashboardComponent implements OnInit {
   private readonly opportunityService = inject(SimpleSalesOpportunityService);
-  // TODO: Fix SalesLeadService when backend is ready
-  // private readonly leadService = inject(SalesLeadService);
-  // TODO: Fix InteractionService when backend is ready
-  // private readonly interactionService = inject(InteractionService);
+  private readonly leadService = inject(SalesLeadService);
   private readonly clientService = inject(SimpleClientService);
   private readonly customerService = inject(CustomerService);
   private readonly localization = inject(LocalizationService);
@@ -77,16 +76,16 @@ export class SalesDashboardComponent implements OnInit {
 
     forkJoin({
       opportunities: this.opportunityService.getList(opportunityRequest),
+      leads: this.leadService.getList({ skipCount: 0, maxResultCount: 200, sorting: 'creationTime DESC', includeInactive: false }),
       clients: this.clientService.getList({ skipCount: 0, maxResultCount: 1 }),
       customers: this.customerService.getList({ skipCount: 0, maxResultCount: 1, includeInactive: false }),
-    }).subscribe(({ opportunities, clients, customers }) => {
+    }).subscribe(({ opportunities, leads, clients, customers }) => {
       this.kpis = this.buildKpis({ items: opportunities.items || [], totalCount: opportunities.totalCount || 0 }, clients.totalCount || 0, customers.totalCount || 0);
       this.stageSummary = this.buildStageSummary(opportunities.items);
       this.upcomingOpportunities = this.buildUpcoming(opportunities.items);
+      this.leadSummary = this.buildLeadSummary(leads.items || []);
       // TODO: Add interactions when InteractionService is fixed
       this.recentInteractions = [];
-      // TODO: Add leads when SalesLeadService is fixed
-      this.leadSummary = [];
       this.isLoading = false;
     });
   }
@@ -147,14 +146,35 @@ export class SalesDashboardComponent implements OnInit {
       .slice(0, 5);
   }
 
-  buildLeadSummary(leads: any[]): LeadSummary[] {
-    // TODO: Implement when SalesLeadDto is available
-    return [
+  buildLeadSummary(leads: SalesLeadDto[]): LeadSummary[] {
+    const summary = [
       { label: this.localization.instant('::Dashboard:LeadFunnelNew'), count: 0 },
       { label: this.localization.instant('::Dashboard:LeadFunnelQualified'), count: 0 },
       { label: this.localization.instant('::Dashboard:LeadFunnelConverted'), count: 0 },
       { label: this.localization.instant('::Dashboard:LeadFunnelLost'), count: 0 },
     ];
+
+    if (!leads || leads.length === 0) {
+      return summary;
+    }
+
+    // Count leads by status or other criteria
+    leads.forEach(lead => {
+      // You can customize this logic based on your lead status system
+      // For now, we'll categorize all leads as new since we don't have a specific status field
+      summary[0].count++; // New leads
+
+      // You might want to add more sophisticated logic here
+      // For example, based on lead status, opportunity conversion, etc.
+      if (lead.company) {
+        summary[1].count++; // Qualified leads (with company info)
+      }
+
+      // For now, we'll consider all leads as potential (not lost)
+      // You can implement more sophisticated logic later
+    });
+
+    return summary;
   }
 
   private formatNumber(value: number): string {
