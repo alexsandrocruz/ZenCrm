@@ -11,6 +11,10 @@
             <i class="fa fa-project-diagram me-1"></i>
             {{ '::Opportunity:Pipeline' | abpLocalization }}
           </a>
+          <button class="btn btn-success" type="button" (click)="openQuickOpportunity()">
+            <i class="fa fa-bolt me-1"></i>
+            {{ '::Opportunity:QuickOpportunity' | abpLocalization }}
+          </button>
           <button class="btn btn-primary" type="button" (click)="createOpportunity()">
             <i class="fa fa-plus me-1"></i>
             {{ '::Opportunity:NewOpportunity' | abpLocalization }}
@@ -258,3 +262,6 @@
     </button>
   </ng-template>
 </abp-modal>
+
+<!-- Quick Opportunity Component -->
+<app-quick-opportunity></app-quick-opportunity>

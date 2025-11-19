@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -35,6 +35,7 @@ import { ClientService } from '../proxy/sales';
 import { SalesLeadService } from '../proxy/sales';
 import { SalesOpportunityService } from '../proxy/sales';
 import { UserSelectionModalComponent } from '../clients/user-selection-modal.component';
+import { QuickOpportunityComponent } from './quick-opportunity.component';
 
 import type { UserData } from '@abp/ng.identity/proxy';
 
@@ -56,6 +57,7 @@ import type { UserData } from '@abp/ng.identity/proxy';
     NgxDatatableDefaultDirective,
     LocalizationPipe,
     UserSelectionModalComponent,
+    QuickOpportunityComponent,
   ],
   providers: [ListService],
 })
@@ -360,5 +362,12 @@ export class OpportunitiesComponent implements OnInit {
     }
 
     return 'Invalid value.';
+  }
+
+  // Quick Opportunity Methods
+  @ViewChild(QuickOpportunityComponent) quickOpportunityComponent!: QuickOpportunityComponent;
+
+  openQuickOpportunity(): void {
+    this.quickOpportunityComponent.open();
   }
 }

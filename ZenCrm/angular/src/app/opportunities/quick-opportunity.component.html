@@ -1,0 +1,213 @@
+<abp-modal [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{ '::Opportunity:QuickOpportunity' | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()" class="quick-opportunity-form">
+      <!-- Lead Search with Typeahead -->
+      <div class="mb-3">
+        <label class="form-label">{{ '::Opportunity:Lead' | abpLocalization }} *</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="leadSearch"
+            [placeholder]="'::Opportunity:SearchLeadPlaceholder' | abpLocalization"
+            (input)="onLeadSearch($event)"
+            (keyup)="onLeadKeyup($event)"
+            (focus)="onLeadFocus()"
+            (blur)="onLeadBlur()"
+            autocomplete="off"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="createNewLead()"
+            [disabled]="!canCreateNewLead"
+            [title]="'::Opportunity:CreateNewLead' | abpLocalization"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Lead Suggestions Dropdown -->
+        <div class="dropdown-menu show w-100" *ngIf="showLeadSuggestions && filteredLeads.length > 0" style="position: relative; border: 1px solid #dee2e6; border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);">
+          <div class="dropdown-header">{{ '::Opportunity:ExistingLeads' | abpLocalization }}</div>
+          @for(lead of filteredLeads; track lead.id) {
+          <button
+            type="button"
+            class="dropdown-item d-flex justify-content-between align-items-center"
+            (click)="selectLead(lead)"
+          >
+            <div>
+              <div class="fw-semibold">{{ getLeadDisplayName(lead) }}</div>
+              <small class="text-muted" *ngIf="lead.company">{{ lead.company }}</small>
+            </div>
+            <small class="text-muted">{{ lead.email }}</small>
+          </button>
+          }
+        </div>
+
+        <!-- New Lead Suggestion -->
+        <div class="alert alert-info mt-2" *ngIf="showNewLeadSuggestion">
+          <i class="fa fa-lightbulb me-2"></i>
+          <span>{{ '::Opportunity:NewLeadSuggestion' | abpLocalization }} "<strong>{{ leadSearchValue }}</strong>"?</span>
+          <button type="button" class="btn btn-sm btn-primary ms-2" (click)="createNewLead()">
+            {{ '::Opportunity:CreateLead' | abpLocalization }}
+          </button>
+        </div>
+
+        <!-- Selected Lead Display -->
+        <div class="alert alert-success mt-2" *ngIf="selectedLead">
+          <i class="fa fa-check me-2"></i>
+          <span>{{ '::Opportunity:SelectedLead' | abpLocalization }}: <strong>{{ getLeadDisplayName(selectedLead) }}</strong></span>
+          <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearLead()">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+
+        @if (form.get('leadSearch')?.invalid && (form.get('leadSearch')?.dirty || form.get('leadSearch')?.touched)) {
+        <div class="invalid-feedback d-block">
+          {{ '::Opportunity:LeadRequired' | abpLocalization }}
+        </div>
+        }
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:Name' | abpLocalization }} *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [placeholder]="'::Opportunity:OpportunityNamePlaceholder' | abpLocalization"
+              [class.is-invalid]="isFieldInvalid('name')"
+            />
+            @if (isFieldInvalid('name')) {
+            <div class="invalid-feedback d-block">
+              {{ getErrorMessage('name') }}
+            </div>
+            }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:ExpectedClose' | abpLocalization }} *</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="expectedCloseDate"
+              [class.is-invalid]="isFieldInvalid('expectedCloseDate')"
+            />
+            @if (isFieldInvalid('expectedCloseDate')) {
+            <div class="invalid-feedback d-block">
+              {{ getErrorMessage('expectedCloseDate') }}
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:EstimatedValue' | abpLocalization }} *</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="estimatedValue"
+                min="0.01"
+                step="0.01"
+                [placeholder]="'::Opportunity:EstimatedValuePlaceholder' | abpLocalization"
+                [class.is-invalid]="isFieldInvalid('estimatedValue')"
+              />
+            </div>
+            @if (isFieldInvalid('estimatedValue')) {
+            <div class="invalid-feedback d-block">
+              {{ getErrorMessage('estimatedValue') }}
+            </div>
+            }
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:Priority' | abpLocalization }} *</label>
+            <select class="form-select" formControlName="priority" [class.is-invalid]="isFieldInvalid('priority')">
+              @for(priority of priorityOptions; track priority.value) {
+              <option [ngValue]="priority.value">
+                {{ ('Enum:Priority:' + priority.key) | abpLocalization }}
+              </option>
+              }
+            </select>
+            @if (isFieldInvalid('priority')) {
+            <div class="invalid-feedback d-block">
+              {{ getErrorMessage('priority') }}
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:Client' | abpLocalization }}</label>
+            <select class="form-select" formControlName="clientId">
+              <option [ngValue]="null">{{ '::Opportunity:Unassigned' | abpLocalization }}</option>
+              @for(client of clients; track client.id) {
+              <option [ngValue]="client.id">{{ client.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">{{ '::Opportunity:Owner' | abpLocalization }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="currentUser?.displayName || currentUser?.userName || currentUser?.name"
+              readonly
+              [title]="'::Opportunity:OwnerCurrentUser' | abpLocalization"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ '::Opportunity:Description' | abpLocalization }}</label>
+        <textarea
+          class="form-control"
+          formControlName="description"
+          rows="2"
+          [placeholder]="'::Opportunity:DescriptionPlaceholder' | abpLocalization"
+        ></textarea>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="quick-opportunity-active" formControlName="isActive" />
+        <label class="form-check-label" for="quick-opportunity-active">
+          {{ '::Opportunity:Active' | abpLocalization }}
+        </label>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" (click)="close()">
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid || isSaving">
+      <i class="fa fa-check me-1"></i>
+      <span *ngIf="!isSaving">{{ '::Save' | abpLocalization }}</span>
+      <span *ngIf="isSaving">
+        <i class="fa fa-spinner fa-spin me-1"></i>
+        {{ '::Saving' | abpLocalization }}
+      </span>
+    </button>
+  </ng-template>
+</abp-modal>
