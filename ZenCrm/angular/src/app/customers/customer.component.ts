@@ -12,6 +12,7 @@ import {
   ListService,
   PagedResultDto,
   LocalizationPipe,
+  LocalizationService,
   PermissionDirective,
   AutofocusDirective
 } from '@abp/ng.core';
@@ -68,6 +69,7 @@ export class CustomerComponent implements OnInit {
   private clientSearchService = inject(ClientSearchService);
   private modalService = inject(NgbModal);
   private userSearchService = inject(UserSearchService);
+  private localization = inject(LocalizationService);
 
   customers = { items: [], totalCount: 0 } as PagedResultDto<CustomerDto>;
   selectedCustomer = {} as CustomerDto;

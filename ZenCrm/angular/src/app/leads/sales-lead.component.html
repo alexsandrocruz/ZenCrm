@@ -37,7 +37,7 @@
         rowHeight="auto">
 
         <!-- Name Column -->
-        <ngx-datatable-column name="Name" prop="firstName">
+        <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="firstName">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <strong>{{ row.firstName }} {{ row.lastName }}</strong>
             <div class="text-muted small" *ngIf="row.company">
@@ -50,7 +50,7 @@
         </ngx-datatable-column>
 
         <!-- Contact Info Column -->
-        <ngx-datatable-column name="Contact" prop="email">
+        <ngx-datatable-column [name]="'::Lead:Contact' | abpLocalization" prop="email">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <div *ngIf="row.email">
               <i class="fas fa-envelope me-1"></i>{{ row.email }}
@@ -65,7 +65,7 @@
         </ngx-datatable-column>
 
         <!-- Status Column -->
-        <ngx-datatable-column name="Status" prop="status">
+        <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="status">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <span class="badge"
                   [ngClass]="{
@@ -80,33 +80,33 @@
         </ngx-datatable-column>
 
         <!-- Source Column -->
-        <ngx-datatable-column name="Source" prop="source">
+        <ngx-datatable-column [name]="'::Source' | abpLocalization" prop="source">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ getSourceLabel(row.source) }}
           </ng-template>
         </ngx-datatable-column>
 
         <!-- Assigned User Column -->
-        <ngx-datatable-column name="Assigned To" prop="assignedUserName">
+        <ngx-datatable-column [name]="'::Lead:AssignedTo' | abpLocalization" prop="assignedUserName">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <div *ngIf="row.assignedUserName">
               <i class="fas fa-user me-1"></i>{{ row.assignedUserName }}
             </div>
             <div *ngIf="!row.assignedUserName" class="text-muted">
-              <i class="fas fa-user-slash me-1"></i>Unassigned
+              <i class="fas fa-user-slash me-1"></i>{{ '::Lead:Unassigned' | abpLocalization }}
             </div>
           </ng-template>
         </ngx-datatable-column>
 
         <!-- Creation Date Column -->
-        <ngx-datatable-column name="Created" prop="creationTime">
+        <ngx-datatable-column [name]="'::Lead:Created' | abpLocalization" prop="creationTime">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.creationTime | date:'short' }}
           </ng-template>
         </ngx-datatable-column>
 
         <!-- Actions Column -->
-        <ngx-datatable-column name="Actions" [sortable]="false" [width]="150">
+        <ngx-datatable-column [name]="'::Actions' | abpLocalization" [sortable]="false" [width]="150">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-sm btn-outline-primary"
@@ -156,7 +156,7 @@
 <!-- Modal -->
 <abp-modal [(visible)]="isModalOpen">
   <ng-template #abpHeader>
-    <h3>{{ (selectedLead.id ? 'Edit Lead' : 'New Lead') }}</h3>
+    <h3>{{ (selectedLead.id ? ('::Lead:EditLead' | abpLocalization) : ('::Lead:NewLead' | abpLocalization)) }}</h3>
   </ng-template>
 
   <ng-template #abpBody>
@@ -164,13 +164,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">First Name *</label>
+            <label class="form-label">{{ '::FirstName' | abpLocalization }} *</label>
             <input type="text" class="form-control" formControlName="firstName" required />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Last Name *</label>
+            <label class="form-label">{{ '::LastName' | abpLocalization }} *</label>
             <input type="text" class="form-control" formControlName="lastName" required />
           </div>
         </div>
@@ -179,13 +179,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ '::Email' | abpLocalization }}</label>
             <input type="email" class="form-control" formControlName="email" />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Phone</label>
+            <label class="form-label">{{ '::Phone' | abpLocalization }}</label>
             <input type="tel" class="form-control" formControlName="phone" mask="(00) 00000-0000" />
           </div>
         </div>
@@ -194,13 +194,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Mobile Phone</label>
+            <label class="form-label">{{ '::MobilePhone' | abpLocalization }}</label>
             <input type="tel" class="form-control" formControlName="mobilePhone" mask="(00) 00000-0000" />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Company</label>
+            <label class="form-label">{{ '::Lead:Company' | abpLocalization }}</label>
             <input type="text" class="form-control" formControlName="company" />
           </div>
         </div>
@@ -209,13 +209,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Job Title</label>
+            <label class="form-label">{{ '::JobTitle' | abpLocalization }}</label>
             <input type="text" class="form-control" formControlName="jobTitle" />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Estimated Value</label>
+            <label class="form-label">{{ '::Lead:EstimatedValue' | abpLocalization }}</label>
             <div class="input-group">
               <span class="input-group-text">$</span>
               <input type="number" class="form-control" formControlName="estimatedValue" min="0" step="0.01" />
@@ -227,18 +227,18 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Source</label>
+            <label class="form-label">{{ '::Source' | abpLocalization }}</label>
             <select class="form-select" formControlName="source">
-              <option value="">Select a source</option>
+              <option value="">{{ '::Lead:SelectSource' | abpLocalization }}</option>
               <option *ngFor="let source of leadSources" [value]="source.value">{{ source.key }}</option>
             </select>
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">{{ '::Status' | abpLocalization }}</label>
             <select class="form-select" formControlName="status">
-              <option value="">Select status</option>
+              <option value="">{{ '::Lead:SelectStatus' | abpLocalization }}</option>
               <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
             </select>
           </div>
@@ -248,23 +248,23 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">{{ '::Status' | abpLocalization }}</label>
             <select class="form-select" formControlName="status">
-              <option value="">Select status</option>
+              <option value="">{{ '::Lead:SelectStatus' | abpLocalization }}</option>
               <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.key }}</option>
             </select>
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label class="form-label">Assigned To</label>
+            <label class="form-label">{{ '::Lead:AssignedTo' | abpLocalization }}</label>
             <input type="text" class="form-control"
                    [value]="getUserDisplayName()"
                    (input)="onUserInput($event)"
                    (keyup)="onUserKeyup($event)"
                    (change)="onUserSelect($event)"
                    list="userList"
-                   placeholder="Search and select user...">
+                   placeholder="{{ '::Lead:SearchAndSelectUser' | abpLocalization }}">
             <datalist id="userList">
               <option *ngFor="let user of filteredUsers$ | async" [value]="user.displayName || user.userName">
                 {{ user.email }}
@@ -275,7 +275,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Description</label>
+        <label class="form-label">{{ '::Description' | abpLocalization }}</label>
         <textarea class="form-control" formControlName="description" rows="3"></textarea>
       </div>
     </form>
