@@ -2,7 +2,7 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
+import { LocalizationPipe, LocalizationService, ConfigStateService } from '@abp/ng.core';
 import {
   InteractionDto,
   CreateUpdateInteractionDto
@@ -102,11 +102,8 @@ import { ClientDto } from '../proxy/sales/models';
               }
             </select>
           </div>
-          <div class="col-md-4">
-            <label for="ownerUserId" class="form-label">{{ '::Interaction:Owner' | abpLocalization }}</label>
-            <input type="text" id="ownerUserId" class="form-control" formControlName="ownerUserId"
-                   placeholder="{{ '::Interaction:OwnerPlaceholder' | abpLocalization }}">
-          </div>
+          <!-- OwnerUserId is hidden and automatically filled with current user -->
+          <input type="hidden" formControlName="ownerUserId">
         </div>
 
         <!-- Datas e Horas -->
@@ -261,6 +258,7 @@ import { ClientDto } from '../proxy/sales/models';
 })
 export class InteractionFormComponent implements OnInit {
   @Input() interaction: InteractionDto | null = null;
+  @Input() clientId: string | null = null;
 
   activeModal = inject(NgbActiveModal);
   interactionService = inject(SimpleInteractionService);
@@ -268,6 +266,7 @@ export class InteractionFormComponent implements OnInit {
   customerService = inject(CustomerService);
   localization = inject(LocalizationService);
   fb = inject(FormBuilder);
+  private configState = inject(ConfigStateService);
 
   interactionForm: FormGroup;
   isSaving = false;
@@ -284,20 +283,20 @@ export class InteractionFormComponent implements OnInit {
 
   constructor() {
     this.interactionForm = this.fb.group({
-      subject: ['', [Validators.required, Validators.maxLength(200)]],
+      subject: ['', [Validators.required, Validators.maxLength(256)]],
       description: [''],
-      type: [null, Validators.required],
+      type: [InteractionType.PhoneCall, Validators.required],
       status: [InteractionStatus.Scheduled],
       priority: [Priority.Normal],
       scheduledDate: ['', Validators.required],
       startDate: [''],
       endDate: [''],
-      durationMinutes: [0],
+      durationMinutes: [30],
       location: [''],
       outcome: [''],
       clientId: [''],
       customerId: [''],
-      ownerUserId: [''],
+      ownerUserId: [this.getCurrentUserId(), Validators.required],
       isAllDay: [false],
       requiresReminder: [false],
       reminderDate: [''],
@@ -305,11 +304,33 @@ export class InteractionFormComponent implements OnInit {
     });
   }
 
+  getCurrentUserId(): string {
+    const currentUser = this.configState.getOne('currentUser');
+    console.log('ConfigState currentUser:', currentUser);
+    return currentUser?.id || '';
+  }
+
   ngOnInit(): void {
     this.loadClients();
 
     if (this.interaction) {
       this.populateForm();
+    }
+
+    // Pre-fill clientId if provided (when creating from client detail)
+    if (this.clientId && !this.interaction) {
+      this.interactionForm.patchValue({
+        clientId: this.clientId
+      });
+      this.loadCustomers(this.clientId);
+    }
+
+    // Ensure ownerUserId is set
+    const currentUserId = this.getCurrentUserId();
+    if (currentUserId) {
+      this.interactionForm.patchValue({
+        ownerUserId: currentUserId
+      });
     }
 
     // Set default scheduled date to tomorrow if creating new interaction
@@ -321,6 +342,8 @@ export class InteractionFormComponent implements OnInit {
         scheduledDate: tomorrow.toISOString().slice(0, 16)
       });
     }
+
+    console.log('Form values after init:', this.interactionForm.value);
   }
 
   populateForm(): void {
@@ -401,9 +424,37 @@ export class InteractionFormComponent implements OnInit {
       }
     });
 
+    // Debug: Log the payload being sent
+    console.log('Raw form value:', formValue);
+    console.log('Current user ID:', this.getCurrentUserId());
+
+    // Ensure required fields are properly formatted
+    const payload: any = {
+      ...formValue,
+      // Ensure proper conversion of enums to numbers
+      type: parseInt(formValue.type) || InteractionType.PhoneCall,
+      status: parseInt(formValue.status) || InteractionStatus.Scheduled,
+      priority: parseInt(formValue.priority) || Priority.Normal,
+      durationMinutes: parseInt(formValue.durationMinutes) || 30,
+      // Ensure dates are in ISO format
+      scheduledDate: new Date(formValue.scheduledDate).toISOString(),
+      startDate: formValue.startDate ? new Date(formValue.startDate).toISOString() : null,
+      endDate: formValue.endDate ? new Date(formValue.endDate).toISOString() : null,
+      reminderDate: formValue.reminderDate ? new Date(formValue.reminderDate).toISOString() : null
+    };
+
+    // Remove empty values
+    Object.keys(payload).forEach(key => {
+      if (payload[key] === '' || payload[key] === null || payload[key] === undefined) {
+        delete payload[key];
+      }
+    });
+
+    console.log('Cleaned payload:', payload);
+
     const saveObservable = this.interaction
-      ? this.interactionService.update(this.interaction.id, formValue as CreateUpdateInteractionDto)
-      : this.interactionService.create(formValue as CreateUpdateInteractionDto);
+      ? this.interactionService.update(this.interaction.id, payload as CreateUpdateInteractionDto)
+      : this.interactionService.create(payload as CreateUpdateInteractionDto);
 
     saveObservable.pipe(
       // finalize(() => this.isSaving = false)
@@ -415,6 +466,17 @@ export class InteractionFormComponent implements OnInit {
       error: (error) => {
         this.isSaving = false;
         console.error('Error saving interaction:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.message);
+        console.error('Error details:', error.error);
+
+        // Show error details to user
+        if (error.error && error.error.errors) {
+          console.error('Validation errors:', error.error.errors);
+          alert('Validation errors: ' + JSON.stringify(error.error.errors, null, 2));
+        } else {
+          alert('Error saving interaction. Check console for details.');
+        }
       }
     });
   }

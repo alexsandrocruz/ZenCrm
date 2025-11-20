@@ -279,6 +279,9 @@
     "Dashboard:LeadFunnelQualified": "Qualified",
     "Dashboard:LeadFunnelConverted": "Converted",
     "Dashboard:LeadFunnelLost": "Lost",
-    "Dashboard:Deals": "deals"
+    "Dashboard:Deals": "deals",
+    "Interaction:DeleteConfirmationMessage": "Are you sure to delete the interaction '{0}'?",
+    "Interaction:EnterOutcome": "Enter the outcome/result:",
+    "Interaction:CancelConfirmationMessage": "Are you sure to cancel the interaction '{0}'?"
   }
 }

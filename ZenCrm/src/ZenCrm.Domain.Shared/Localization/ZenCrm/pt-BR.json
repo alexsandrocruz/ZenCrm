@@ -410,6 +410,9 @@
     "Enum:InteractionStatus.4": "Cancelada",
     "Enum:InteractionStatus.5": "Adiada",
     "Enum:InteractionStatus.6": "Falhou",
-    "Enum:InteractionStatus.7": "Pendente"
+    "Enum:InteractionStatus.7": "Pendente",
+    "Interaction:DeleteConfirmationMessage": "Tem certeza que deseja excluir a interação '{0}'?",
+    "Interaction:EnterOutcome": "Digite o resultado:",
+    "Interaction:CancelConfirmationMessage": "Tem certeza que deseja cancelar a interação '{0}'?"
   }
 }

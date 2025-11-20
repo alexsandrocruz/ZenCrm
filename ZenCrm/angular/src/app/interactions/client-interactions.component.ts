@@ -1,7 +1,7 @@
 import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
 import {
   InteractionDto,
@@ -21,7 +21,7 @@ import { InteractionDetailComponent } from './interaction-detail.component';
 @Component({
   selector: 'app-client-interactions',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, LocalizationPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, NgbDropdownModule, LocalizationPipe],
   template: `
     <div class="tab-content">
       <!-- Header -->
@@ -105,11 +105,11 @@ import { InteractionDetailComponent } from './interaction-detail.component';
               <div class="card-body">
                 <div class="interaction-header">
                   <div class="interaction-title">{{ interaction.subject }}</div>
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <div ngbDropdown>
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" ngbDropdownToggle>
                       <i class="fa fa-ellipsis-v"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
                       <li>
                         <a class="dropdown-item" (click)="viewInteraction(interaction)">
                           <i class="fa fa-eye me-2"></i>{{ '::Interaction:ViewDetails' | abpLocalization }}
@@ -120,7 +120,7 @@ import { InteractionDetailComponent } from './interaction-detail.component';
                           <i class="fa fa-edit me-2"></i>{{ '::Edit' | abpLocalization }}
                         </a>
                       </li>
-                      @if(interaction.status === InteractionStatus.Scheduled) {
+                      @if(interaction.status === 1) { // InteractionStatus.Scheduled
                         <li><hr class="dropdown-divider"></li>
                         <li>
                           <a class="dropdown-item" (click)="startInteraction(interaction)">
@@ -335,6 +335,7 @@ export class ClientInteractionsComponent implements OnInit {
   interactionService = inject(SimpleInteractionService);
   localization = inject(LocalizationService);
   fb = inject(FormBuilder);
+  private modalService = inject(NgbModal);
 
   interactions: InteractionDto[] = [];
   isLoading = false;
@@ -348,6 +349,9 @@ export class ClientInteractionsComponent implements OnInit {
   readonly typeOptions = interactionTypeOptions;
   readonly statusOptions = interactionStatusOptions;
   readonly priorityOptions = priorityOptions;
+
+  // Expose enum values for template use
+  readonly InteractionStatus = InteractionStatus;
 
   constructor() {
     this.filterForm = this.fb.group({
@@ -430,7 +434,13 @@ export class ClientInteractionsComponent implements OnInit {
   }
 
   createInteraction(): void {
-    const modalRef = this.interactionService.create({
+    const modalRef = this.modalService.open(InteractionFormComponent, {
+      size: 'lg',
+      centered: true
+    });
+
+    // Pre-populate with client data
+    const newInteraction: CreateUpdateInteractionDto = {
       subject: '',
       clientId: this.clientId,
       type: InteractionType.PhoneCall,
@@ -440,61 +450,21 @@ export class ClientInteractionsComponent implements OnInit {
       durationMinutes: 30,
       isAllDay: false,
       requiresReminder: false
-    } as CreateUpdateInteractionDto);
+    };
 
-    // This would need to be refactored to use a modal instead
-    // For now, just reload after a delay to simulate creation
-    setTimeout(() => {
-      this.loadInteractions();
-    }, 1000);
-  }
+    modalRef.componentInstance.interaction = null;
+    modalRef.componentInstance.clientId = this.clientId;
 
-  viewInteraction(interaction: InteractionDto): void {
-    // Implementation would use modal service
-    console.log('View interaction:', interaction);
-  }
-
-  editInteraction(interaction: InteractionDto): void {
-    // Implementation would use modal service
-    console.log('Edit interaction:', interaction);
-  }
-
-  startInteraction(interaction: InteractionDto): void {
-    this.interactionService.start(interaction.id).subscribe({
-      next: () => {
-        this.loadInteractions();
+    modalRef.result.then(
+      (result) => {
+        if (result) {
+          this.loadInteractions();
+        }
       },
-      error: (error) => {
-        console.error('Error starting interaction:', error);
+      () => {
+        // Modal dismissed
       }
-    });
-  }
-
-  completeInteraction(interaction: InteractionDto): void {
-    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcome'));
-    if (outcome !== null) {
-      this.interactionService.complete(interaction.id, outcome).subscribe({
-        next: () => {
-          this.loadInteractions();
-        },
-        error: (error) => {
-          console.error('Error completing interaction:', error);
-        }
-      });
-    }
-  }
-
-  cancelInteraction(interaction: InteractionDto): void {
-    if (confirm(this.localization.instant('::Interaction:CancelConfirmationMessage', interaction.subject))) {
-      this.interactionService.cancel(interaction.id).subscribe({
-        next: () => {
-          this.loadInteractions();
-        },
-        error: (error) => {
-          console.error('Error canceling interaction:', error);
-        }
-      });
-    }
+    );
   }
 
   getTypeDisplay(type?: InteractionType): string {
@@ -503,7 +473,7 @@ export class ClientInteractionsComponent implements OnInit {
     return option ? this.localization.instant(`::Enum:InteractionType.${option.key}`) : type.toString();
   }
 
-  getStatusDisplay(status?: InteractionStatus): string {
+  getStatusDisplay(status?: number): string {
     if (!status) return '-';
     const option = this.statusOptions.find(opt => opt.value === status);
     return option ? this.localization.instant(`::Enum:InteractionStatus.${option.key}`) : status.toString();
@@ -515,21 +485,21 @@ export class ClientInteractionsComponent implements OnInit {
     return option ? this.localization.instant(`::Enum:Priority.${option.key}`) : priority.toString();
   }
 
-  getStatusBadgeClass(status?: InteractionStatus): string {
+  getStatusBadgeClass(status?: number): string {
     switch (status) {
-      case InteractionStatus.Scheduled:
+      case 1: // InteractionStatus.Scheduled
         return 'bg-secondary';
-      case InteractionStatus.InProgress:
+      case 2: // InteractionStatus.InProgress
         return 'bg-primary';
-      case InteractionStatus.Completed:
+      case 3: // InteractionStatus.Completed
         return 'bg-success';
-      case InteractionStatus.Cancelled:
+      case 4: // InteractionStatus.Cancelled
         return 'bg-danger';
-      case InteractionStatus.Postponed:
+      case 5: // InteractionStatus.Postponed
         return 'bg-warning text-dark';
-      case InteractionStatus.Failed:
+      case 6: // InteractionStatus.Failed
         return 'bg-danger';
-      case InteractionStatus.Pending:
+      case 7: // InteractionStatus.Pending
         return 'bg-info';
       default:
         return 'bg-secondary';
@@ -551,15 +521,15 @@ export class ClientInteractionsComponent implements OnInit {
     }
   }
 
-  getStatusClass(status?: InteractionStatus): string {
+  getStatusClass(status?: number): string {
     switch (status) {
-      case InteractionStatus.Scheduled:
+      case 1: // InteractionStatus.Scheduled
         return 'scheduled';
-      case InteractionStatus.InProgress:
+      case 2: // InteractionStatus.InProgress
         return 'in-progress';
-      case InteractionStatus.Completed:
+      case 3: // InteractionStatus.Completed
         return 'completed';
-      case InteractionStatus.Cancelled:
+      case 4: // InteractionStatus.Cancelled
         return 'cancelled';
       default:
         return '';
@@ -568,11 +538,98 @@ export class ClientInteractionsComponent implements OnInit {
 
   isOverdue(interaction: InteractionDto): boolean {
     if (!interaction.scheduledDate) return false;
-    if (interaction.status === InteractionStatus.Completed || interaction.status === InteractionStatus.Cancelled) return false;
+    if (interaction.status === 3 || interaction.status === 4) return false; // Completed || Cancelled
 
     const scheduledDate = new Date(interaction.scheduledDate);
     const now = new Date();
     return scheduledDate < now;
+  }
+
+  // Action Methods
+  viewInteraction(interaction: InteractionDto): void {
+    const modalRef = this.modalService.open(InteractionDetailComponent, {
+      size: 'lg',
+      centered: true
+    });
+
+    modalRef.componentInstance.interaction = interaction;
+    modalRef.componentInstance.showActions = true;
+  }
+
+  editInteraction(interaction: InteractionDto): void {
+    const modalRef = this.modalService.open(InteractionFormComponent, {
+      size: 'lg',
+      centered: true
+    });
+
+    modalRef.componentInstance.interaction = interaction;
+    modalRef.componentInstance.clientId = this.clientId;
+
+    modalRef.result.then(
+      (result) => {
+        if (result) {
+          this.loadInteractions();
+        }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
+  }
+
+  deleteInteraction(interaction: InteractionDto): void {
+    if (confirm(this.localization.instant('::Interaction:DeleteConfirmationMessage', interaction.subject))) {
+      this.interactionService.delete(interaction.id).subscribe({
+        next: () => {
+          this.loadInteractions();
+        },
+        error: (error) => {
+          console.error('Error deleting interaction:', error);
+          alert('Error deleting interaction');
+        }
+      });
+    }
+  }
+
+  startInteraction(interaction: InteractionDto): void {
+    this.interactionService.start(interaction.id).subscribe({
+      next: () => {
+        this.loadInteractions();
+      },
+      error: (error) => {
+        console.error('Error starting interaction:', error);
+        alert('Error starting interaction');
+      }
+    });
+  }
+
+  completeInteraction(interaction: InteractionDto): void {
+    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcome'));
+    if (outcome !== null) {
+      this.interactionService.complete(interaction.id, outcome).subscribe({
+        next: () => {
+          this.loadInteractions();
+        },
+        error: (error) => {
+          console.error('Error completing interaction:', error);
+          alert('Error completing interaction');
+        }
+      });
+    }
+  }
+
+  cancelInteraction(interaction: InteractionDto): void {
+    if (confirm(this.localization.instant('::Interaction:CancelConfirmationMessage', interaction.subject))) {
+      this.interactionService.cancel(interaction.id).subscribe({
+        next: () => {
+          this.loadInteractions();
+        },
+        error: (error) => {
+          console.error('Error canceling interaction:', error);
+          alert('Error canceling interaction');
+        }
+      });
+    }
   }
 
   formatDateTime(dateString?: string): string {
