@@ -28,4 +28,7 @@ export const environment = {
       rootNamespace: 'AbpAccountPublic',
     },
   },
+  localization: {
+    defaultResourceName: 'ZenCrm',
+  },
 } as Environment;

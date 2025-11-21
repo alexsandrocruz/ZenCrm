@@ -6,7 +6,7 @@
         <div>
           <button class="btn btn-outline-secondary me-3" (click)="goBack()">
             <i class="fa fa-arrow-left me-1"></i>
-            Back to Clients
+            {{ '::Client:BackToClients' | abpLocalization }}
           </button>
           <h2 class="d-inline-block mb-0">{{ client?.name }}</h2>
         </div>
@@ -14,7 +14,7 @@
           @if (!isEditMode) {
           <button class="btn btn-primary" (click)="editClient()">
             <i class="fa fa-edit me-1"></i>
-            Edit Client
+            {{ '::Client:EditClient' | abpLocalization }}
           </button>
           }
         </div>
@@ -31,7 +31,7 @@
         (click)="setTab('details')"
         type="button"
       >
-        <i class="fa fa-building me-2"></i>Client Details
+        <i class="fa fa-building me-2"></i>{{ '::Client:ClientDetails' | abpLocalization }}
       </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -41,8 +41,19 @@
         (click)="setTab('contacts')"
         type="button"
       >
-        <i class="fa fa-users me-2"></i>Contacts
+        <i class="fa fa-users me-2"></i>{{ '::Client:Contacts' | abpLocalization }}
         <span class="badge bg-secondary ms-2">{{ customers?.length || 0 }}</span>
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'interactions'"
+        (click)="setTab('interactions')"
+        type="button"
+      >
+        <i class="fa fa-comments me-2"></i>{{ '::Interaction:Interactions' | abpLocalization }}
+        <span class="badge bg-secondary ms-2">{{ interactionCount || 0 }}</span>
       </button>
     </li>
   </ul>
@@ -58,13 +69,13 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-name" class="form-label">Name *</label>
+                <label for="client-name" class="form-label">{{ '::Client:Name' | abpLocalization }} *</label>
                 <input type="text" id="client-name" class="form-control" formControlName="name" autofocus />
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-type" class="form-label">Type *</label>
+                <label for="client-type" class="form-label">{{ '::Client:Type' | abpLocalization }} *</label>
                 <select class="form-control" id="client-type" formControlName="clientType">
                   @for(type of clientTypes; track type.value) {
                   <option [ngValue]="type.value">{{ type.label }}</option>
@@ -77,7 +88,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-industry" class="form-label">Industry</label>
+                <label for="client-industry" class="form-label">{{ '::Client:Industry' | abpLocalization }}</label>
                 <select class="form-control" id="client-industry" formControlName="industry">
                   @for(industry of clientIndustries; track industry.value) {
                   <option [ngValue]="industry.value">{{ industry.label }}</option>
@@ -87,7 +98,7 @@
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-email" class="form-label">Email</label>
+                <label for="client-email" class="form-label">{{ '::Client:Email' | abpLocalization }}</label>
                 <input type="email" id="client-email" class="form-control" formControlName="email" />
               </div>
             </div>
@@ -96,7 +107,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-phone" class="form-label">Phone</label>
+                <label for="client-phone" class="form-label">{{ '::Client:Phone' | abpLocalization }}</label>
                 <input
                   type="tel"
                   id="client-phone"
@@ -110,33 +121,33 @@
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-website" class="form-label">Website</label>
+                <label for="client-website" class="form-label">{{ '::Client:Website' | abpLocalization }}</label>
                 <input type="url" id="client-website" class="form-control" formControlName="website" />
               </div>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="client-address" class="form-label">Address</label>
+            <label for="client-address" class="form-label">{{ '::Client:Address' | abpLocalization }}</label>
             <input type="text" id="client-address" class="form-control" formControlName="address" />
           </div>
 
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="client-city" class="form-label">City</label>
+                <label for="client-city" class="form-label">{{ '::Client:City' | abpLocalization }}</label>
                 <input type="text" id="client-city" class="form-control" formControlName="city" />
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="client-state" class="form-label">State</label>
+                <label for="client-state" class="form-label">{{ '::Client:State' | abpLocalization }}</label>
                 <input type="text" id="client-state" class="form-control" formControlName="state" />
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="client-postal-code" class="form-label">Postal Code</label>
+                <label for="client-postal-code" class="form-label">{{ '::Client:PostalCode' | abpLocalization }}</label>
                 <input type="text" id="client-postal-code" class="form-control" formControlName="postalCode" />
               </div>
             </div>
@@ -145,13 +156,13 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-country" class="form-label">Country</label>
+                <label for="client-country" class="form-label">{{ '::Client:Country' | abpLocalization }}</label>
                 <input type="text" id="client-country" class="form-control" formControlName="country" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-annual-revenue" class="form-label">Annual Revenue</label>
+                <label for="client-annual-revenue" class="form-label">{{ '::Client:AnnualRevenue' | abpLocalization }}</label>
                 <input
                   type="text"
                   id="client-annual-revenue"
@@ -170,20 +181,20 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-employees" class="form-label">Number of Employees</label>
+                <label for="client-employees" class="form-label">{{ '::Client:NumberOfEmployees' | abpLocalization }}</label>
                 <input type="number" id="client-employees" class="form-control" formControlName="numberOfEmployees" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="client-assigned-user" class="form-label">Assigned User</label>
+                <label for="client-assigned-user" class="form-label">{{ '::Client:AssignedUser' | abpLocalization }}</label>
                 <input type="text" id="client-assigned-user" class="form-control" formControlName="assignedUserId" />
               </div>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="client-description" class="form-label">Description</label>
+            <label for="client-description" class="form-label">{{ '::Client:Description' | abpLocalization }}</label>
             <textarea id="client-description" class="form-control" formControlName="description" rows="3"></textarea>
           </div>
 
@@ -197,11 +208,11 @@
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
               <i class="fa fa-save me-1"></i>
-              Save Changes
+              {{ '::Client:SaveChanges' | abpLocalization }}
             </button>
             <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
               <i class="fa fa-times me-1"></i>
-              Cancel
+              {{ '::Client:Cancel' | abpLocalization }}
             </button>
           </div>
         </form>
@@ -209,30 +220,30 @@
         <!-- View Mode -->
         <div class="row">
           <div class="col-md-6">
-            <h4>Basic Information</h4>
+            <h4>{{ '::Client:BasicInformation' | abpLocalization }}</h4>
             <table class="table table-borderless">
               <tr>
-                <td class="fw-bold">Name:</td>
+                <td class="fw-bold">{{ '::Name' | abpLocalization }}:</td>
                 <td>{{ client?.name }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Type:</td>
+                <td class="fw-bold">{{ '::Type' | abpLocalization }}:</td>
                 <td>{{ getClientTypeLabel(client?.clientType) }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Industry:</td>
+                <td class="fw-bold">{{ '::Industry' | abpLocalization }}:</td>
                 <td>{{ getIndustryLabel(client?.industry) }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Email:</td>
+                <td class="fw-bold">{{ '::Email' | abpLocalization }}:</td>
                 <td>{{ client?.email || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Phone:</td>
+                <td class="fw-bold">{{ '::Phone' | abpLocalization }}:</td>
                 <td>{{ client?.phone || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Website:</td>
+                <td class="fw-bold">{{ '::Website' | abpLocalization }}:</td>
                 <td>
                   @if (client?.website) {
                   <a href="{{ client.website }}" target="_blank" rel="noopener">{{ client.website }}</a>
@@ -242,7 +253,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="fw-bold">Status:</td>
+                <td class="fw-bold">{{ '::Status' | abpLocalization }}:</td>
                 <td>
                   <span class="badge" [class.bg-success]="client?.isActive" [class.bg-secondary]="!client?.isActive">
                     {{ client?.isActive ? 'Active' : 'Inactive' }}
@@ -252,38 +263,38 @@
             </table>
           </div>
           <div class="col-md-6">
-            <h4>Address Information</h4>
+            <h4>{{ '::Client:AddressInformation' | abpLocalization }}</h4>
             <table class="table table-borderless">
               <tr>
-                <td class="fw-bold">Address:</td>
+                <td class="fw-bold">{{ '::Address' | abpLocalization }}:</td>
                 <td>{{ client?.address || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">City:</td>
+                <td class="fw-bold">{{ '::City' | abpLocalization }}:</td>
                 <td>{{ client?.city || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">State:</td>
+                <td class="fw-bold">{{ '::State' | abpLocalization }}:</td>
                 <td>{{ client?.state || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Postal Code:</td>
+                <td class="fw-bold">{{ '::PostalCode' | abpLocalization }}:</td>
                 <td>{{ client?.postalCode || '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Country:</td>
+                <td class="fw-bold">{{ '::Country' | abpLocalization }}:</td>
                 <td>{{ client?.country || '-' }}</td>
               </tr>
             </table>
 
-            <h4 class="mt-4">Financial Information</h4>
+            <h4 class="mt-4">{{ '::Client:FinancialInformation' | abpLocalization }}</h4>
             <table class="table table-borderless">
               <tr>
-                <td class="fw-bold">Annual Revenue:</td>
+                <td class="fw-bold">{{ '::AnnualRevenue' | abpLocalization }}:</td>
                 <td>{{ client?.annualRevenue ? 'R$ ' + client.annualRevenue.toLocaleString('pt-BR') : '-' }}</td>
               </tr>
               <tr>
-                <td class="fw-bold">Number of Employees:</td>
+                <td class="fw-bold">{{ '::NumberOfEmployees' | abpLocalization }}:</td>
                 <td>{{ client?.numberOfEmployees || '-' }}</td>
               </tr>
             </table>
@@ -292,7 +303,7 @@
 
         @if (client?.description) {
         <div class="mt-4">
-          <h4>Description</h4>
+          <h4>{{ '::Client:Description' | abpLocalization }}</h4>
           <p>{{ client.description }}</p>
         </div>
         }
@@ -305,10 +316,10 @@
     @if (activeTab === 'contacts') {
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Contacts</h5>
+        <h5 class="mb-0">{{ '::Client:Contacts' | abpLocalization }}</h5>
         <button class="btn btn-primary" (click)="createCustomer()">
           <i class="fa fa-plus me-1"></i>
-          New Contact
+          {{ '::Client:NewContact' | abpLocalization }}
         </button>
       </div>
       <div class="card-body">
@@ -316,13 +327,13 @@
           <table class="table table-striped">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Mobile</th>
-                <th>Title</th>
-                <th>Department</th>
-                <th>Roles</th>
+                <th>{{ '::Name' | abpLocalization }}</th>
+                <th>{{ '::Email' | abpLocalization }}</th>
+                <th>{{ '::Phone' | abpLocalization }}</th>
+                <th>{{ '::Client:MobilePhone' | abpLocalization }}</th>
+                <th>{{ '::Client:JobTitle' | abpLocalization }}</th>
+                <th>{{ '::Client:Department' | abpLocalization }}</th>
+                <th>{{ '::Client:Roles' | abpLocalization }}</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -338,10 +349,10 @@
                 <td>
                   <div>
                     @if(customer.isPrimaryContact) {
-                    <span class="badge bg-primary me-1">Primary Contact</span>
+                    <span class="badge bg-primary me-1">{{ '::Client:PrimaryContact' | abpLocalization }}</span>
                     }
                     @if(customer.isKeyDecisionMaker) {
-                    <span class="badge bg-success">Decision Maker</span>
+                    <span class="badge bg-success">{{ '::Client:DecisionMaker' | abpLocalization }}</span>
                     }
                   </div>
                 </td>
@@ -384,12 +395,24 @@
               </tr>
               } @empty {
               <tr>
-                <td colspan="8" class="text-center">No contacts found. Click "New Contact" to add one.</td>
+                <td colspan="8" class="text-center">{{ '::Client:NoContactsFound' | abpLocalization }}</td>
               </tr>
               }
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+    }
+
+    <!-- Interactions Tab -->
+    @if (activeTab === 'interactions') {
+    <div class="card">
+      <div class="card-body p-0">
+        <app-client-interactions
+          [clientId]="client?.id"
+          [clientName]="client?.name">
+        </app-client-interactions>
       </div>
     </div>
     }
@@ -399,7 +422,7 @@
 <!-- Customer Modal -->
 <abp-modal [(visible)]="isCustomerModalOpen">
   <ng-template #abpHeader>
-    <h3>{{ (selectedCustomer.id ? 'Edit Contact' : 'New Contact') }}</h3>
+    <h3>{{ (selectedCustomer.id ? '::Client:EditContact' : '::Client:NewContact') | abpLocalization }}</h3>
   </ng-template>
 
   <ng-template #abpBody>
@@ -407,13 +430,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-first-name" class="form-label">First Name *</label>
+            <label for="customer-first-name" class="form-label">{{ '::Client:FirstName' | abpLocalization }} *</label>
             <input type="text" id="customer-first-name" class="form-control" formControlName="firstName" autofocus />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-last-name" class="form-label">Last Name *</label>
+            <label for="customer-last-name" class="form-label">{{ '::Client:LastName' | abpLocalization }} *</label>
             <input type="text" id="customer-last-name" class="form-control" formControlName="lastName" />
           </div>
         </div>
@@ -422,13 +445,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-email" class="form-label">Email</label>
+            <label for="customer-email" class="form-label">{{ '::Email' | abpLocalization }}</label>
             <input type="email" id="customer-email" class="form-control" formControlName="email" />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-phone" class="form-label">Phone</label>
+            <label for="customer-phone" class="form-label">{{ '::Phone' | abpLocalization }}</label>
             <input
               type="tel"
               id="customer-phone"
@@ -445,7 +468,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-mobile-phone" class="form-label">Mobile Phone</label>
+            <label for="customer-mobile-phone" class="form-label">{{ '::Client:MobilePhone' | abpLocalization }}</label>
             <input
               type="tel"
               id="customer-mobile-phone"
@@ -459,7 +482,7 @@
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-title" class="form-label">Job Title</label>
+            <label for="customer-title" class="form-label">{{ '::Client:JobTitle' | abpLocalization }}</label>
             <input type="text" id="customer-title" class="form-control" formControlName="title" />
           </div>
         </div>
@@ -468,13 +491,13 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-department" class="form-label">Department</label>
+            <label for="customer-department" class="form-label">{{ '::Client:Department' | abpLocalization }}</label>
             <input type="text" id="customer-department" class="form-control" formControlName="department" />
           </div>
         </div>
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-client" class="form-label">Client</label>
+            <label for="customer-client" class="form-label">{{ '::Client:Client' | abpLocalization }}</label>
             <input
               type="text"
               id="customer-client"
@@ -495,7 +518,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
-            <label for="customer-assigned-user" class="form-label">Assigned User</label>
+            <label for="customer-assigned-user" class="form-label">{{ '::AssignedUser' | abpLocalization }}</label>
             <input type="text" id="customer-assigned-user" class="form-control" formControlName="assignedUserId" />
           </div>
         </div>
@@ -515,7 +538,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="customer-notes" class="form-label">Notes</label>
+        <label for="customer-notes" class="form-label">{{ '::Client:Notes' | abpLocalization }}</label>
         <textarea id="customer-notes" class="form-control" formControlName="notes" rows="3"></textarea>
       </div>
 

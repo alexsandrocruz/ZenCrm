@@ -1,19 +1,26 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { CommonModule, NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, take, tap } from 'rxjs/operators';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserSearchService } from '../services/user-search.service';
 import { UserData } from '@abp/ng.identity/proxy';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { LocalizationPipe } from '@abp/ng.core';
 
 @Component({
   selector: 'app-user-selection-modal',
   templateUrl: './user-selection-modal.component.html',
   styleUrls: ['./user-selection-modal.component.scss'],
+  standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    LocalizationPipe,
   ],
   })
 export class UserSelectionModalComponent implements OnInit {
@@ -23,9 +30,12 @@ export class UserSelectionModalComponent implements OnInit {
 
   searchForm: FormGroup;
   users$: Observable<UserData[]> = of([]);
+  filteredUsers$: Observable<UserData[]> = of([]);
   selectedUser: UserData | null = null;
   isLoading = false;
   searchTerms = new Subject<string>();
+  errorMessage = '';
+  private latestUsers: UserData[] = [];
 
   private fb = inject(FormBuilder);
   public modal = inject(NgbActiveModal);
@@ -40,6 +50,14 @@ export class UserSelectionModalComponent implements OnInit {
   ngOnInit(): void {
     this.setupSearch();
 
+    // React to typing in the textbox and feed the search stream
+    this.searchForm.get('searchTerm')?.valueChanges.subscribe(value => {
+      this.onSearchChange(value ?? '');
+    });
+
+    // Keep local cache of latest users for datalist selection matching
+    this.filteredUsers$.subscribe(users => (this.latestUsers = users || []));
+
     // If a selected user ID is provided, we could pre-load the user details
     if (this.selectedUserId) {
       // TODO: Load user details by ID
@@ -48,28 +66,29 @@ export class UserSelectionModalComponent implements OnInit {
   }
 
   setupSearch(): void {
-    this.users$ = this.searchTerms.pipe(
+    this.filteredUsers$ = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      tap(() => this.isLoading = true),
-      switchMap(query => {
-        if (!query || query.trim().length < 2) {
+      switchMap(raw => {
+        const q = (raw || '').trim();
+        this.errorMessage = '';
+        if (!q || q.length < 2) {
           this.isLoading = false;
           return of([]);
         }
-        return this.userSearchService.searchUsers(query).pipe(
-          tap(() => this.isLoading = false)
+        this.isLoading = true;
+        return this.userSearchService.searchUsers(q).pipe(
+          tap(() => (this.isLoading = false))
         );
       })
     );
-
-    // Initialize with empty search to show no users
-    this.searchTerms.next('');
   }
 
   onSearchChange(event: any): void {
-    const value = event.target ? event.target.value : event;
+    const value = event?.target ? event.target.value : event;
     this.searchTerms.next(value);
+    // Try to auto-select if input exactly matches an option
+    this.syncSelectedFromInput((value || '').toString());
   }
 
   selectUser(user: UserData): void {
@@ -105,5 +124,31 @@ export class UserSelectionModalComponent implements OnInit {
     this.selectedUser = null;
     this.searchForm.get('searchTerm')?.setValue('');
     this.searchTerms.next('');
+  }
+
+  onUserSelect(event: any): void {
+    const selectedValue = event?.target?.value;
+    if (!selectedValue || selectedValue.trim() === '') {
+      this.selectedUser = null;
+      return;
+    }
+    this.syncSelectedFromInput(selectedValue);
+  }
+
+  private syncSelectedFromInput(value: string): void {
+    const v = (value || '').trim();
+    if (!v) {
+      this.selectedUser = null;
+      return;
+    }
+    const matched = (this.latestUsers || []).find(u =>
+      this.getUserDisplayName(u) === v ||
+      u.userName === v ||
+      `${u.name ?? ''} ${u.surname ?? ''}`.trim() === v ||
+      u.email === v
+    );
+    if (matched) {
+      this.selectedUser = matched;
+    }
   }
 }

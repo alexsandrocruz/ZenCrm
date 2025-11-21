@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,11 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  ListService,
-  LocalizationPipe,
-  PagedResultDto,
-} from '@abp/ng.core';
+import { ListService, LocalizationPipe, LocalizationService, PagedResultDto } from '@abp/ng.core';
 import {
   Confirmation,
   ConfirmationService,
@@ -26,6 +22,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import {
   ClientDto,
   CreateUpdateSalesOpportunityDto,
+  GetSalesLeadsInput,
   GetSalesOpportunitiesInput,
   PipelineStage,
   Priority,
@@ -34,9 +31,11 @@ import {
   pipelineStageOptions,
   priorityOptions,
 } from '../proxy/sales';
-import { SimpleClientService } from '../services/simple-client.service';
-import { SimpleSalesOpportunityService } from '../services/simple-sales-opportunity.service';
+import { ClientService } from '../proxy/sales';
+import { SalesLeadService } from '../proxy/sales';
+import { SalesOpportunityService } from '../proxy/sales';
 import { UserSelectionModalComponent } from '../clients/user-selection-modal.component';
+import { QuickOpportunityComponent } from './quick-opportunity.component';
 
 import type { UserData } from '@abp/ng.identity/proxy';
 
@@ -58,16 +57,19 @@ import type { UserData } from '@abp/ng.identity/proxy';
     NgxDatatableDefaultDirective,
     LocalizationPipe,
     UserSelectionModalComponent,
+    QuickOpportunityComponent,
   ],
   providers: [ListService],
 })
 export class OpportunitiesComponent implements OnInit {
   public readonly list = inject(ListService);
   private readonly fb = inject(FormBuilder);
-  private readonly opportunityService = inject(SimpleSalesOpportunityService);
+  private readonly opportunityService = inject(SalesOpportunityService);
   private readonly confirmation = inject(ConfirmationService);
-  private readonly clientService = inject(SimpleClientService);
+  private readonly clientService = inject(ClientService);
+  private readonly salesLeadService = inject(SalesLeadService);
   private readonly modalService = inject(NgbModal);
+  private readonly localization = inject(LocalizationService);
 
   opportunities = { items: [], totalCount: 0 } as PagedResultDto<SalesOpportunityDto>;
   selectedOpportunity = {} as SalesOpportunityDto;
@@ -107,10 +109,15 @@ export class OpportunitiesComponent implements OnInit {
       .getList({ skipCount: 0, maxResultCount: 100, sorting: 'name' })
       .subscribe(result => (this.clientsLookup = result.items));
 
-    // TODO: Implement SalesLeadService when backend is ready
-    // this.salesLeadService
-    //   .getList({ skipCount: 0, maxResultCount: 100, sorting: 'creationTime DESC', includeInactive: false })
-    //   .subscribe(result => (this.salesLeads = result.items));
+    const leadInput: GetSalesLeadsInput = {
+      skipCount: 0,
+      maxResultCount: 100,
+      sorting: 'creationTime DESC',
+      includeInactive: false,
+      converted: false,
+    };
+
+    this.salesLeadService.getList(leadInput).subscribe(result => (this.salesLeads = result.items));
   }
 
   createOpportunity(): void {
@@ -142,8 +149,8 @@ export class OpportunitiesComponent implements OnInit {
       name: [this.selectedOpportunity.name || '', [Validators.required, Validators.maxLength(256)]],
       description: [this.selectedOpportunity.description || '', [Validators.maxLength(2000)]],
       estimatedValue: [
-        this.selectedOpportunity.estimatedValue ?? 0,
-        [Validators.required, Validators.min(0)],
+        this.selectedOpportunity.estimatedValue ?? null,
+        [Validators.required, Validators.min(0.01)],
       ],
       priority: [this.selectedOpportunity.priority ?? Priority.Normal, Validators.required],
       expectedCloseDate: [
@@ -165,13 +172,26 @@ export class OpportunitiesComponent implements OnInit {
       return;
     }
 
+    // Additional validation for expected close date
+    const expectedCloseDate = this.form.get('expectedCloseDate')?.value;
+    if (expectedCloseDate) {
+      const selectedDate = new Date(expectedCloseDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of day for fair comparison
+
+      if (selectedDate < today) {
+        alert('Expected close date cannot be in the past.');
+        return;
+      }
+    }
+
     const formValue = this.form.value;
     const payload: CreateUpdateSalesOpportunityDto = {
       name: formValue.name,
       description: formValue.description || undefined,
       estimatedValue: Number(formValue.estimatedValue || 0),
       priority: formValue.priority,
-      expectedCloseDate: formValue.expectedCloseDate,
+      expectedCloseDate: formValue.expectedCloseDate ? new Date(formValue.expectedCloseDate).toISOString() : undefined,
       salesLeadId: formValue.salesLeadId,
       clientId: formValue.clientId || undefined,
       ownerUserId: formValue.ownerUserId,
@@ -180,13 +200,40 @@ export class OpportunitiesComponent implements OnInit {
       isActive: formValue.isActive ?? true,
     };
 
+    // Remover campos undefined do payload para evitar erros de serialização
+    Object.keys(payload).forEach(key => {
+      if (payload[key] === undefined) {
+        delete payload[key];
+      }
+    });
+
+    // Log para debug do payload sendo enviado
+    console.log('Payload being sent to API:', payload);
+
     const request$ = this.selectedOpportunity.id
       ? this.opportunityService.update(this.selectedOpportunity.id, payload)
       : this.opportunityService.create(payload);
 
-    request$.subscribe(() => {
-      this.isModalOpen = false;
-      this.list.get();
+    request$.subscribe({
+      next: () => {
+        this.isModalOpen = false;
+        this.list.get();
+      },
+      error: (error) => {
+        console.error('Error saving opportunity:', error);
+        let errorMessage = 'An error occurred while saving the opportunity.';
+
+        if (error.error?.error?.message) {
+          errorMessage = error.error.error.message;
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+
+        // Show a more user-friendly error message
+        alert(errorMessage);
+      }
     });
   }
 
@@ -204,12 +251,26 @@ export class OpportunitiesComponent implements OnInit {
 
   getStageLabel(stage?: PipelineStage): string {
     const option = this.stageOptions.find(x => x.value === stage);
-    return option?.key ?? 'N/A';
+    if (!option) {
+      return 'N/A';
+    }
+
+    return this.translateEnumKey('PipelineStage', option.key);
   }
 
   getPriorityLabel(priority?: Priority): string {
     const option = this.priorityOptions.find(x => x.value === priority);
-    return option?.key ?? 'N/A';
+    if (!option) {
+      return 'N/A';
+    }
+
+    return this.translateEnumKey('Priority', option.key);
+  }
+
+  private translateEnumKey(enumName: string, key: string): string {
+    const localizationKey = `::Enum:${enumName}.${key}`;
+    const localizedValue = this.localization.instant(localizationKey);
+    return localizedValue && localizedValue !== localizationKey ? localizedValue : key;
   }
 
   getStageBadgeClass(stage?: PipelineStage): string {
@@ -273,5 +334,40 @@ export class OpportunitiesComponent implements OnInit {
 
   private formatDateInput(value?: string): string {
     return value ? formatDate(value, 'yyyy-MM-dd', 'en-US') : '';
+  }
+
+  // Helper methods for form validation
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const field = this.form.get(fieldName);
+    if (!field || !field.errors) return '';
+
+    if (field.errors['required']) {
+      return 'This field is required.';
+    }
+
+    if (field.errors['min']) {
+      if (fieldName === 'estimatedValue') {
+        return 'Value must be greater than 0.';
+      }
+      return `Minimum value is ${field.errors['min'].min}.`;
+    }
+
+    if (field.errors['maxlength']) {
+      return `Maximum length is ${field.errors['maxlength'].requiredLength} characters.`;
+    }
+
+    return 'Invalid value.';
+  }
+
+  // Quick Opportunity Methods
+  @ViewChild(QuickOpportunityComponent) quickOpportunityComponent!: QuickOpportunityComponent;
+
+  openQuickOpportunity(): void {
+    this.quickOpportunityComponent.open();
   }
 }

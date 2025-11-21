@@ -1,0 +1,255 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h4 class="card-title mb-0">{{ '::Interaction:Title' | abpLocalization }}</h4>
+      <small class="text-muted">{{ '::Interaction:Subtitle' | abpLocalization }}</small>
+    </div>
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-primary" (click)="loadInteractions()" [disabled]="isLoading">
+        <i class="fa fa-sync me-1"></i>
+        {{ '::Interaction:Refresh' | abpLocalization }}
+      </button>
+      <button type="button" class="btn btn-primary" (click)="createInteraction()">
+        <i class="fa fa-plus me-1"></i>
+        {{ '::Interaction:NewInteraction' | abpLocalization }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <!-- Filtros -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="form-label">{{ '::Interaction:Filter' | abpLocalization }}</label>
+        <input type="text" class="form-control" formControlName="filter"
+               placeholder="{{ '::Interaction:FilterPlaceholder' | abpLocalization }}"
+               (input)="onFilterChange()">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">{{ '::Interaction:Type' | abpLocalization }}</label>
+        <select class="form-select" formControlName="type" (change)="onFilterChange()">
+          <option value="">{{ '::Interaction:AllTypes' | abpLocalization }}</option>
+          @for(option of typeOptions; track option.value) {
+            <option [value]="option.value">{{ '::Enum:InteractionType.' + option.key | abpLocalization }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">{{ '::Interaction:Status' | abpLocalization }}</label>
+        <select class="form-select" formControlName="status" (change)="onFilterChange()">
+          <option value="">{{ '::Interaction:AllStatuses' | abpLocalization }}</option>
+          @for(option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ '::Enum:InteractionStatus.' + option.key | abpLocalization }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">{{ '::Interaction:Priority' | abpLocalization }}</label>
+        <select class="form-select" formControlName="priority" (change)="onFilterChange()">
+          <option value="">{{ '::Interaction:AllPriorities' | abpLocalization }}</option>
+          @for(option of priorityOptions; track option.value) {
+            <option [value]="option.value">{{ '::Enum:Priority.' + option.key | abpLocalization }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">&nbsp;</label>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+            {{ '::Interaction:ClearFilters' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opções de inclusão -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="includeCompleted" formControlName="includeCompleted"
+                 (change)="onFilterChange()">
+          <label class="form-check-label" for="includeCompleted">
+            {{ '::Interaction:IncludeCompleted' | abpLocalization }}
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="includeCancelled" formControlName="includeCancelled"
+                 (change)="onFilterChange()">
+          <label class="form-check-label" for="includeCancelled">
+            {{ '::Interaction:IncludeCancelled' | abpLocalization }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if(isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ '::Interaction:Loading' | abpLocalization }}...</span>
+        </div>
+        <p class="mt-2">{{ '::Interaction:Loading' | abpLocalization }}...</p>
+      </div>
+    }
+
+    <!-- Tabela -->
+    @if(!isLoading && interactions.length > 0) {
+      <ngx-datatable
+        class="material"
+        [rows]="interactions"
+        [columns]="columns"
+        [count]="totalCount"
+        [offset]="(currentPage - 1) * pageSize"
+        [limit]="pageSize"
+        [externalPaging]="true"
+        [externalSorting]="true"
+        (page)="onPageChange($event.offset + 1)">
+
+        <!-- Coluna de Assunto -->
+        <ngx-datatable-column name="subject" prop="subject">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div>
+              <strong>{{ row.subject }}</strong>
+              @if(row.description) {
+                <div class="text-muted small">{{ row.description | slice:0:100 }}{{ row.description.length > 100 ? '...' : '' }}</div>
+              }
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Tipo -->
+        <ngx-datatable-column name="type" prop="type">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge bg-light text-dark">{{ getTypeDisplay(row.type) }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Status -->
+        <ngx-datatable-column name="status" prop="status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge {{ getStatusBadgeClass(row.status) }}">{{ getStatusDisplay(row.status) }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Prioridade -->
+        <ngx-datatable-column name="priority" prop="priority">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge {{ getPriorityBadgeClass(row.priority) }}">{{ getPriorityDisplay(row.priority) }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Data Agendada -->
+        <ngx-datatable-column name="scheduledDate" prop="scheduledDate">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div>
+              <div>{{ formatDateTime(row.scheduledDate) }}</div>
+              @if(row.durationMinutes && row.durationMinutes > 0) {
+                <div class="text-muted small">{{ row.durationMinutes }} {{ '::Interaction:Minutes' | abpLocalization }}</div>
+              }
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Cliente -->
+        <ngx-datatable-column name="clientName" prop="clientName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.clientName || '-' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Contato -->
+        <ngx-datatable-column name="customerName" prop="customerName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.customerName || '-' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Responsável -->
+        <ngx-datatable-column name="ownerUserName" prop="ownerUserName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.ownerUserName || '-' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Coluna de Ações -->
+        <ngx-datatable-column name="actions" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-outline-primary btn-sm"
+                      (click)="viewInteraction(row)" title="{{ '::Interaction:ViewDetails' | abpLocalization }}">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      (click)="editInteraction(row)" title="{{ '::Edit' | abpLocalization }}">
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <!-- Ações de Status -->
+              @if(row.status === 1) { <!-- Scheduled -->
+                <div class="btn-group btn-group-sm">
+                  <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle"
+                          data-bs-toggle="dropdown" title="{{ '::Interaction:Actions' | abpLocalization }}">
+                    <i class="fa fa-play"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" (click)="startInteraction(row)">
+                      <i class="fa fa-play me-2"></i>{{ '::Interaction:Start' | abpLocalization }}
+                    </a></li>
+                    <li><a class="dropdown-item" (click)="completeInteraction(row)">
+                      <i class="fa fa-check me-2"></i>{{ '::Interaction:Complete' | abpLocalization }}
+                    </a></li>
+                    <li><a class="dropdown-item" (click)="cancelInteraction(row)">
+                      <i class="fa fa-times me-2"></i>{{ '::Interaction:Cancel' | abpLocalization }}
+                    </a></li>
+                  </ul>
+                </div>
+              } @else if(row.status === 2) { <!-- InProgress -->
+                <button type="button" class="btn btn-outline-success btn-sm"
+                        (click)="completeInteraction(row)" title="{{ '::Interaction:Complete' | abpLocalization }}">
+                  <i class="fa fa-check"></i>
+                </button>
+              } @else if(row.status === 3) { <!-- Completed -->
+                <button type="button" class="btn btn-outline-warning btn-sm" disabled>
+                  <i class="fa fa-check"></i>
+                </button>
+              }
+
+              <button type="button" class="btn btn-outline-danger btn-sm"
+                      (click)="deleteInteraction(row)" title="{{ '::Delete' | abpLocalization }}">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+
+      <!-- Paginação -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="text-muted">
+          {{ totalCount }} {{ '::Interaction:Records' | abpLocalization }}
+        </div>
+        <ngb-pagination [collectionSize]="totalCount"
+                       [(page)]="currentPage"
+                       [pageSize]="pageSize"
+                       (pageChange)="onPageChange($event)"
+                       [maxSize]="5"
+                       [ellipses]="true"
+                       [boundaryLinks]="true">
+        </ngb-pagination>
+      </div>
+    }
+
+    <!-- Sem dados -->
+    @if(!isLoading && interactions.length === 0) {
+      <div class="text-center py-5">
+        <i class="fa fa-comments fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">{{ '::Interaction:NoInteractionsFound' | abpLocalization }}</h5>
+        <p class="text-muted">{{ '::Interaction:NoInteractionsDescription' | abpLocalization }}</p>
+        <button type="button" class="btn btn-primary" (click)="createInteraction()">
+          <i class="fa fa-plus me-1"></i>
+          {{ '::Interaction:CreateFirstInteraction' | abpLocalization }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

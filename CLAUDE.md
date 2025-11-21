@@ -94,3 +94,375 @@ Located in `modules/` directory, each follows ABP's module structure:
 - Feature Management
 - Blob Storage
 - LeptonXLite UI Theme
+
+## CRM Entity Development Guidelines
+
+### When Creating New CRM Entities
+
+#### 1. Domain Layer (Entity Design)
+```csharp
+// Always create entities with parameterized constructors for required fields
+public class SalesOpportunity : FullAuditedAggregateRoot<Guid>
+{
+    public string Name { get; private set; }
+    public Guid SalesLeadId { get; private set; }
+    public Guid OwnerUserId { get; private set; }
+    public decimal EstimatedValue { get; private set; }
+    public DateTime ExpectedCloseDate { get; private set; }
+
+    // Constructor with REQUIRED parameters only
+    public SalesOpportunity(
+        Guid id,
+        string name,
+        Guid salesLeadId,
+        Guid ownerUserId,
+        decimal estimatedValue,
+        DateTime expectedCloseDate) : base(id)
+    {
+        SetName(name);
+        SalesLeadId = salesLeadId;
+        OwnerUserId = ownerUserId;
+        SetEstimatedValue(estimatedValue);
+        ExpectedCloseDate = expectedCloseDate;
+        // Initialize defaults
+        Priority = Priority.Normal;
+        Stage = PipelineStage.Qualification;
+        IsActive = true;
+    }
+
+    // Use setter methods for business logic validation
+    public void SetEstimatedValue(decimal value)
+    {
+        if (value <= 0)
+            throw new ArgumentException("Estimated value must be greater than 0");
+        EstimatedValue = value;
+    }
+}
+```
+
+#### 2. Application Layer (AutoMapper Configuration)
+```csharp
+// ALWAYS add mappings to ZenCrmApplicationAutoMapperProfile.cs
+public class ZenCrmApplicationAutoMapperProfile : Profile
+{
+    public ZenCrmApplicationAutoMapperProfile()
+    {
+        CreateMap<YourEntity, YourEntityDto>();
+        CreateMap<CreateUpdateYourEntityDto, YourEntity>();
+        // Add ALL entity mappings here
+    }
+}
+```
+
+#### 3. Application Service (Entity Creation Pattern)
+```csharp
+[Authorize(ZenCrmPermissions.YourEntity.Create)]
+public async Task<YourEntityDto> CreateAsync(CreateUpdateYourEntityDto input)
+{
+    // NEVER use ObjectMapper.Map() for entities with parameterized constructors
+    // ALWAYS construct manually using the entity's constructor
+    var entity = new YourEntity(
+        GuidGenerator.Create(),
+        input.RequiredField1,
+        input.RequiredField2,
+        input.RequiredField3
+    );
+
+    // Use setter methods for optional properties with validation
+    entity.SetOptionalProperty(input.OptionalField);
+    entity.AssociateWithRelatedEntity(input.RelatedEntityId);
+
+    await _repository.InsertAsync(entity);
+
+    // Use ObjectMapper for Entity -> DTO mapping (this works)
+    return ObjectMapper.Map<YourEntity, YourEntityDto>(entity);
+}
+```
+
+#### 4. Frontend Angular Form Validation
+```typescript
+// Form validation with proper min/max values
+buildForm(): void {
+  this.form = this.fb.group({
+    name: ['', [Validators.required, Validators.maxLength(256)]],
+    estimatedValue: [
+      null, // Start with null instead of 0
+      [Validators.required, Validators.min(0.01)] // Enforce > 0
+    ],
+    expectedCloseDate: [null, Validators.required]
+  });
+}
+
+// Helper methods for validation feedback
+isFieldInvalid(fieldName: string): boolean {
+  const field = this.form.get(fieldName);
+  return field ? field.invalid && (field.dirty || field.touched) : false;
+}
+
+getErrorMessage(fieldName: string): string {
+  const field = this.form.get(fieldName);
+  if (!field || !field.errors) return '';
+
+  if (field.errors['required']) return 'This field is required.';
+  if (field.errors['min']) {
+    if (fieldName === 'estimatedValue') return 'Value must be greater than 0.';
+    return `Minimum value is ${field.errors['min'].min}.`;
+  }
+  return 'Invalid value.';
+}
+```
+
+#### 5. Frontend Template HTML
+```html
+<!-- Always include validation feedback -->
+<input
+  type="number"
+  min="0.01"
+  step="0.01"
+  class="form-control"
+  formControlName="estimatedValue"
+  [class.is-invalid]="isFieldInvalid('estimatedValue')"
+/>
+@if (isFieldInvalid('estimatedValue')) {
+  <div class="invalid-feedback d-block">
+    {{ getErrorMessage('estimatedValue') }}
+  </div>
+}
+```
+
+#### 6. Frontend Payload Cleanup
+```typescript
+// Always remove undefined fields from payload
+const payload = { /* ... form values ... */ };
+
+Object.keys(payload).forEach(key => {
+  if (payload[key] === undefined) {
+    delete payload[key];
+  }
+});
+```
+
+### Critical Rules to Follow
+
+1. **NEVER use ObjectMapper.Map()** to create entities with parameterized constructors
+2. **ALWAYS add AutoMapper mappings** for every new entity in `ZenCrmApplicationAutoMapperProfile.cs`
+3. **Frontend forms must validate** business rules (e.g., values > 0)
+4. **Remove undefined fields** from API payloads to prevent serialization errors
+5. **Use parameterized constructors** to enforce required fields and business logic
+6. **Test both API and frontend** when creating new entities
+
+### Common Pitfalls to Avoid
+
+- ❌ `ObjectMapper.Map<Dto, Entity>(input)` - Fails with parameterized constructors
+- ❌ Sending `undefined` values in API payloads
+- ❌ Starting numeric fields with 0 when validation requires > 0
+- ❌ Forgetting to add AutoMapper profiles for new entities
+- ❌ Not providing visual validation feedback in forms
+
+### Testing New Entities
+
+1. Test API directly with curl/PostMan first
+2. Test frontend form validation
+3. Test end-to-end creation flow
+4. Verify all CRUD operations work correctly
+
+## ABP Framework Localization Guidelines
+
+### How Localization Works in ZenCrm
+
+ZenCrm uses ABP Framework's built-in localization system with the resource "ZenCrm" defined in:
+- **Backend**: `src/ZenCrm.Domain.Shared/Localization/ZenCrm/ZenCrmResource.cs`
+- **Angular**: Configured via `environment.ts` with `defaultResourceName: 'ZenCrm'`
+
+### Critical Localization Rule: Use Double Colons (`::`)
+
+**ALWAYS use `::` prefix for localization keys to use the default resource:**
+
+```html
+<!-- ✅ CORRECT - Uses ZenCrm resource by default -->
+<h3>{{ '::Dashboard:SalesPerformance' | abpLocalization }}</h3>
+<span>{{ '::Menu:Books' | abpLocalization }}</span>
+
+<!-- ❌ WRONG - Won't find the resource -->
+<h3>{{ 'Dashboard:SalesPerformance' | abpLocalization }}</h3>
+<span>{{ 'Menu:Books' | abpLocalization }}</span>
+```
+
+**In TypeScript components:**
+
+```typescript
+// ✅ CORRECT - Uses default resource
+constructor(private localization: LocalizationService) {}
+
+getTitle(): string {
+  return this.localization.instant('::Dashboard:ActiveClients');
+}
+
+// ❌ WRONG - Won't find translations
+getTitle(): string {
+  return this.localization.instant('Dashboard:ActiveClients');
+}
+```
+
+### Adding New Localization Keys
+
+#### 1. Backend Localization Files
+Add keys to both language files:
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/en.json`
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json`
+
+```json
+{
+  "culture": "en",
+  "texts": {
+    "YourModule:YourKey": "Your English Text",
+    "YourModule:Description": "Description text"
+  }
+}
+```
+
+#### 2. Frontend Usage
+Use the `::` prefix to reference the default "ZenCrm" resource:
+
+```html
+<!-- Template usage -->
+{{ '::YourModule:YourKey' | abpLocalization }}
+
+<!-- Dynamic content generation -->
+<div *ngFor="let item of items">
+  {{ item.title }} <!-- Direct binding -->
+  <span>{{ '::YourModule:Status.' + item.status | abpLocalization }}</span> <!-- Computed key -->
+</div>
+```
+
+```typescript
+// Component usage
+import { LocalizationService } from '@abp/ng.core';
+
+export class YourComponent {
+  constructor(private localization: LocalizationService) {}
+
+  getLocalizedText(key: string): string {
+    return this.localization.instant('::YourModule:' + key);
+  }
+
+  buildLocalizedData() {
+    return {
+      title: this.localization.instant('::YourModule:Title'),
+      description: this.localization.instant('::YourModule:Description')
+    };
+  }
+}
+```
+
+### Environment Configuration
+
+The `environment.ts` file is pre-configured:
+```typescript
+export const environment = {
+  // ... other config
+  localization: {
+    defaultResourceName: 'ZenCrm', // This enables the :: prefix
+  },
+} as Environment;
+```
+
+### Common Localization Pitfalls
+
+- ❌ **Missing `::` prefix**: Keys won't be found in the default resource
+- ❌ **Inconsistent key naming**: Use consistent `Module:Key` pattern
+- ❌ **Missing backend translations**: Add keys to both `en.json` and `pt-BR.json`
+- ❌ **Hardcoded text**: Always use localization for user-facing text
+- ❌ **Mixing approaches**: Stick to `::` prefix for consistency with existing code
+- ❌ **Key conflicts between contexts**: Generic keys vs specific keys behave differently
+
+### Localization Key Conflicts: Generic vs Specific
+
+#### The Problem
+Generic keys (`::Address`, `::City`) can conflict or have inconsistent behavior compared to specific keys (`::Client:Address`, `::Client:City`).
+
+**Symptoms:**
+- Form labels translate correctly, but view mode labels don't
+- Some fields show in English while others show in Portuguese
+- Inconsistent behavior across different contexts (edit vs view modes)
+
+#### Root Cause Analysis
+1. **Generic keys** (`::Address`, `::City`, `::State`) may not exist in backend JSON files
+2. **Specific keys** (`::Client:Address`, `::Client:City`, `::Client:State`) work consistently
+3. **Mixed usage** within same component (edit mode uses specific, view mode uses generic)
+
+#### Solution Strategy
+
+**Option 1: Use Specific Keys Everywhere (Recommended)**
+```html
+<!-- ✅ CONSISTENT - Always use Module: prefix -->
+<label>{{ '::Client:Address' | abpLocalization }}</label>
+<td>{{ '::Client:Address' | abpLocalization }}:</td>
+```
+
+**Option 2: Add Generic Keys for Common Fields**
+```json
+// Add to BOTH en.json and pt-BR.json
+{
+  "Address": "Address",
+  "City": "City",
+  "State": "State",
+  "PostalCode": "Postal Code",
+  "Country": "Country",
+  "AnnualRevenue": "Annual Revenue",
+  "NumberOfEmployees": "Number of Employees",
+  "Website": "Website",
+  "Description": "Description"
+}
+```
+
+#### Best Practices for Avoiding Key Conflicts
+
+1. **Audit Your Components**: Check if you're mixing generic and specific keys
+2. **Use Specific Keys by Default**: `::Module:FieldName` pattern prevents conflicts
+3. **Maintain Consistency**: Use same key pattern across all contexts (edit, view, modals)
+4. **Add Generic Keys Sparingly**: Only for truly universal fields used across modules
+
+#### Debugging Localization Issues
+
+**Step 1: Identify Mixed Usage**
+```bash
+# Search for localization usage in component
+grep -n "abpLocalization" src/app/your-module/*.html
+# Look for inconsistent patterns like:
+# ::Client:Address (specific) vs ::Address (generic)
+```
+
+**Step 2: Check Backend Keys**
+```bash
+# Verify generic keys exist
+grep -n "\"Address\":" src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json
+grep -n "\"Client:Address\":" src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json
+```
+
+**Step 3: Standardize Approach**
+Choose either specific or generic keys and apply consistently across the component.
+
+#### Real Example from ZenCrm
+
+**Problem Found:**
+- **Edit form**: `{{ '::Client:Address' | abpLocalization }}` ✅ (works)
+- **View mode**: `{{ '::Address' | abpLocalization }}` ❌ (missing key)
+
+**Solution Applied:**
+1. Added generic keys to backend JSON files
+2. Maintained existing specific keys for consistency
+3. Now both approaches work correctly
+
+**Files Updated:**
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/en.json` (added generic keys)
+- `src/ZenCrm.Domain.Shared/Localization/ZenCrm/pt-BR.json` (added generic keys)
+
+This ensures consistent localization behavior across all contexts.
+
+### Testing Localization
+
+1. **Backend API Test**: Check endpoint `/abp/localization/texts?resourceName=ZenCrm&cultureName=pt-BR`
+2. **Frontend Test**: Change language in UI and verify all text updates
+3. **Both Languages**: Test English (default) and Portuguese translations
+4. **Dynamic Content**: Ensure dynamically generated text also uses localization

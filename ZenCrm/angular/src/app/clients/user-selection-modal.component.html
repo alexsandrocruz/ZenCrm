@@ -5,83 +5,45 @@
 
 <div class="modal-body">
   <div class="mb-3">
-    <label for="userSearch" class="form-label">Search Users</label>
+    <label for="userSearch" class="form-label">{{ '::Client:SearchUsers' | abpLocalization }}</label>
     <div class="input-group">
       <input
         type="text"
         id="userSearch"
         class="form-control"
-        placeholder="Type at least 2 characters to search..."
+        placeholder="{{ '::Client:TypeToSearch' | abpLocalization }}"
         [formControl]="searchForm.get('searchTerm')"
         (input)="onSearchChange($event)"
+        (change)="onUserSelect($event)"
+        list="user-datalist"
         autocomplete="off"
       />
-      <button
-        class="btn btn-outline-secondary"
-        type="button"
-        (click)="clearSelection()"
-        title="Clear search"
-      >
+      <datalist id="user-datalist">
+        <option
+          *ngFor="let user of (filteredUsers$ | async); trackBy: trackUserById"
+          [value]="getUserDisplayName(user)"
+        >
+          {{ user.email || user.userName }}
+        </option>
+      </datalist>
+      <button class="btn btn-outline-secondary" type="button" (click)="clearSelection()" title="Clear search">
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <small class="form-text text-muted">Search by name, email, or username</small>
+    <small class="form-text text-muted">{{ '::Client:SearchByNameEmail' | abpLocalization }}</small>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="errorMessage" class="alert alert-danger py-2">
+    {{ errorMessage }}
   </div>
 
   <!-- Loading indicator -->
-  <div *ngIf="isLoading" class="text-center py-3">
+  <div *ngIf="isLoading" class="text-center py-2">
     <div class="spinner-border spinner-border-sm" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <span class="ms-2">Searching users...</span>
-  </div>
-
-  <!-- User results -->
-  <div *ngIf="!isLoading" class="user-list">
-    <div class="list-group">
-      <!-- Users list -->
-      <div
-        *ngFor="let user of (users$ | async); trackBy: trackUserById"
-        class="list-group-item list-group-item-action"
-        [class.active]="selectedUser?.id === user.id"
-        (click)="selectUser(user)"
-        style="cursor: pointer;"
-      >
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <div class="me-3">
-              <i class="fas fa-user-circle fa-2x text-muted"></i>
-            </div>
-            <div>
-              <h6 class="mb-1">{{ getUserDisplayName(user) }}</h6>
-              <small class="text-muted d-block">{{ user.email || user.userName }}</small>
-              <small *ngIf="user.userName" class="badge bg-secondary">
-                {{ user.userName }}
-              </small>
-            </div>
-          </div>
-          <div>
-            <i
-              *ngIf="selectedUser?.id === user.id"
-              class="fas fa-check-circle text-success"
-              title="Selected"
-            ></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- No results or search hint -->
-      <div *ngIf="(users$ | async)?.length === 0" class="list-group-item text-muted text-center py-4">
-        <div *ngIf="searchForm.get('searchTerm')?.value?.trim().length >= 2">
-          <i class="fas fa-user-slash fa-2x mb-2"></i>
-          <p>No users found matching your search.</p>
-        </div>
-        <div *ngIf="!searchForm.get('searchTerm')?.value || searchForm.get('searchTerm')?.value?.trim().length < 2">
-          <i class="fas fa-search fa-2x mb-2"></i>
-          <p>Type at least 2 characters to search for users.</p>
-        </div>
-      </div>
-    </div>
+    <span class="ms-2">{{ '::Client:SearchingUsers' | abpLocalization }}</span>
   </div>
 </div>
 
@@ -96,6 +58,6 @@
     [disabled]="!selectedUser"
   >
     <i class="fas fa-check me-1"></i>
-    Select User
+    {{ '::Client:SelectUser' | abpLocalization }}
   </button>
 </div>

@@ -1,7 +1,6 @@
 export * from './client-industry.enum';
 export * from './client-type.enum';
-// TODO: Fix client.service
-// export * from './client.service';
+export * from './client.service';
 export * from './customer.service';
 export * from './interaction-status.enum';
 export * from './interaction-type.enum';
@@ -12,7 +11,5 @@ export * from './lead-status.enum';
 export * from './models';
 export * from './pipeline-stage.enum';
 export * from './priority.enum';
-// TODO: Fix sales-lead.service
-// export * from './sales-lead.service';
-// TODO: Fix sales-opportunity.service
-// export * from './sales-opportunity.service';
+export * from './sales-lead.service';
+export * from './sales-opportunity.service';

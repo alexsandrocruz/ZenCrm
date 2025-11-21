@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ClientDto, CreateUpdateClientDto, GetClientsInput } from '../proxy/sales';
 import { PagedResultDto } from '@abp/ng.core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SimpleClientService {
-  private baseUrl = '/api/app/client';
+  private baseUrl = `${environment.apis.default.url}/api/app/client`;
 
   constructor(private http: HttpClient) {}
 

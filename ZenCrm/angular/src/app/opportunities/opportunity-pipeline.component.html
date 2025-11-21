@@ -3,18 +3,18 @@
     <div class="card-body">
       <div class="row g-3 align-items-end">
         <div class="col-md-5">
-          <label class="form-label text-uppercase fw-semibold small">Search</label>
+          <label class="form-label text-uppercase fw-semibold small">{{ '::Opportunity:Search' | abpLocalization }}</label>
           <input
             type="text"
             class="form-control"
-            placeholder="Client, opportunity or competitor"
+            placeholder="{{ '::Opportunity:SearchPipeline' | abpLocalization }}"
             [(ngModel)]="filterText"
           />
         </div>
         <div class="col-md-4">
-          <label class="form-label text-uppercase fw-semibold small">Client</label>
+          <label class="form-label text-uppercase fw-semibold small">{{ '::Opportunity:Client' | abpLocalization }}</label>
           <select class="form-select" [(ngModel)]="clientFilter">
-            <option [ngValue]="null">All clients</option>
+            <option [ngValue]="null">{{ '::Opportunity:AllClients' | abpLocalization }}</option>
             @for(client of clients; track client.id) {
             <option [ngValue]="client.id">{{ client.name }}</option>
             }
@@ -23,11 +23,11 @@
         <div class="col-md-3 text-md-end">
           <button type="button" class="btn btn-outline-secondary me-2" (click)="resetFilters()">
             <i class="fa fa-undo me-1"></i>
-            Reset
+            {{ '::Opportunity:ResetFilters' | abpLocalization }}
           </button>
           <button type="button" class="btn btn-primary" (click)="applyFilters()">
             <i class="fa fa-filter me-1"></i>
-            Apply
+            {{ '::Opportunity:ApplyFilters' | abpLocalization }}
           </button>
         </div>
       </div>
@@ -41,7 +41,7 @@
         <div>
           <h6 class="mb-0">{{ column.label }}</h6>
           <small class="text-muted">
-            {{ column.opportunities.length }} deals
+            {{ column.opportunities.length }} {{ '::Opportunity:Deals' | abpLocalization }}
           </small>
         </div>
         <div class="pipeline-column-value">
@@ -65,7 +65,7 @@
           <div class="pipeline-card-title">{{ opportunity.name }}</div>
           <div class="pipeline-card-client">
             <i class="fa fa-building me-1"></i>
-            {{ opportunity.clientName || 'Unassigned client' }}
+            {{ opportunity.clientName || ('::Opportunity:UnassignedClient' | abpLocalization) }}
           </div>
           <div class="pipeline-card-meta">
             <span><i class="fa fa-money-bill me-1"></i>{{ opportunity.estimatedValue | currency }}</span>
@@ -75,12 +75,12 @@
             </span>
           </div>
           <div class="pipeline-card-footer">
-            <span>Owner: {{ opportunity.ownerUserName || '-' }}</span>
+            <span>{{ '::Opportunity:OwnerLabel' | abpLocalization }} {{ opportunity.ownerUserName || '-' }}</span>
             <span>{{ opportunity.probability | number: '1.0-0' }}%</span>
           </div>
         </div>
         <div class="text-muted text-center py-3" *ngIf="!column.opportunities.length && !isLoading">
-          No opportunities in this stage
+          {{ '::Opportunity:NoOpportunitiesInStage' | abpLocalization }}
         </div>
       </div>
     </div>
@@ -89,14 +89,14 @@
 
   <div class="text-center py-4" *ngIf="isLoading">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ '::Opportunity:Loading' | abpLocalization }}</span>
     </div>
   </div>
 
   <div class="card mt-4" *ngIf="lostOpportunities.length">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h6 class="mb-0">Recently Lost Deals</h6>
-      <small class="text-muted">{{ lostOpportunities.length }} records</small>
+      <h6 class="mb-0">{{ '::Opportunity:RecentlyLostDeals' | abpLocalization }}</h6>
+      <small class="text-muted">{{ lostOpportunities.length }} {{ '::Opportunity:Records' | abpLocalization }}</small>
     </div>
     <div class="list-group list-group-flush">
       @for(opportunity of lostOpportunities | slice:0:5; track opportunity.id) {
@@ -104,12 +104,12 @@
         <div>
           <div class="fw-semibold">{{ opportunity.name }}</div>
           <small class="text-muted">
-            {{ opportunity.clientName || 'Unassigned client' }} · {{ opportunity.expectedCloseDate | date: 'mediumDate' }}
+            {{ opportunity.clientName || ('::Opportunity:UnassignedClient' | abpLocalization) }} · {{ opportunity.expectedCloseDate | date: 'mediumDate' }}
           </small>
         </div>
         <div class="text-end">
           <div>{{ opportunity.estimatedValue | currency }}</div>
-          <small class="text-danger">Lost</small>
+          <small class="text-danger">{{ '::Opportunity:Lost' | abpLocalization }}</small>
         </div>
       </div>
       }
