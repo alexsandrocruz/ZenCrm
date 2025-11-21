@@ -1,6 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
 import { InteractionDto } from '../proxy/sales/models';
 import { InteractionType } from '../proxy/sales/interaction-type.enum';
@@ -8,6 +8,8 @@ import { InteractionStatus } from '../proxy/sales/interaction-status.enum';
 import { interactionTypeOptions, interactionStatusOptions, priorityOptions } from '../proxy/sales';
 import { SimpleInteractionService } from '../services/simple-interaction.service';
 import { ConfirmationService } from '@abp/ng.theme.shared';
+import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.component';
+import { InteractionPostponeModalComponent } from './interaction-postpone-modal.component';
 
 @Component({
   selector: 'app-interaction-detail',
@@ -257,6 +259,7 @@ export class InteractionDetailComponent {
   interactionService = inject(SimpleInteractionService);
   localization = inject(LocalizationService);
   confirmation = inject(ConfirmationService);
+  private modalService = inject(NgbModal);
 
   readonly typeOptions = interactionTypeOptions;
   readonly statusOptions = interactionStatusOptions;
@@ -344,41 +347,64 @@ export class InteractionDetailComponent {
     });
   }
 
-  async completeInteraction(): Promise<void> {
+  completeInteraction(): void {
     if (!this.interaction) return;
 
-    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcome'));
-    if (outcome !== null) {
-      this.interactionService.complete(this.interaction.id, outcome).subscribe({
-        next: (result) => {
-          this.interaction = result;
-        },
-        error: (error) => {
-          console.error('Error completing interaction:', error);
+    const modalRef = this.modalService.open(InteractionOutcomeModalComponent, {
+      size: 'md',
+      centered: true
+    });
+
+    modalRef.componentInstance.interactionSubject = this.interaction.subject;
+
+    modalRef.result.then(
+      (outcome) => {
+        if (outcome && outcome.trim() !== '') {
+          this.interactionService.complete(this.interaction.id, outcome.trim()).subscribe({
+            next: (result) => {
+              this.interaction = result;
+            },
+            error: (error) => {
+              console.error('Error completing interaction:', error);
+              this.showError('::Interaction:ErrorCompletingInteraction');
+            }
+          });
         }
-      });
-    }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
   }
 
-  async postponeInteraction(): Promise<void> {
+  postponeInteraction(): void {
     if (!this.interaction) return;
 
-    const newDateString = prompt(this.localization.instant('::Interaction:EnterNewScheduledDate'));
-    if (newDateString) {
-      const newDate = new Date(newDateString);
-      if (!isNaN(newDate.getTime())) {
-        this.interactionService.postpone(this.interaction.id, newDate).subscribe({
-          next: (result) => {
-            this.interaction = result;
-          },
-          error: (error) => {
-            console.error('Error postponing interaction:', error);
-          }
-        });
-      } else {
-        alert(this.localization.instant('::Interaction:InvalidDateFormat'));
+    const modalRef = this.modalService.open(InteractionPostponeModalComponent, {
+      size: 'md',
+      centered: true
+    });
+
+    modalRef.componentInstance.interactionSubject = this.interaction.subject;
+
+    modalRef.result.then(
+      (result) => {
+        if (result && result.newDate) {
+          this.interactionService.postpone(this.interaction.id, result.newDate, result.reason).subscribe({
+            next: (result) => {
+              this.interaction = result;
+            },
+            error: (error) => {
+              console.error('Error postponing interaction:', error);
+              this.showError('::Interaction:ErrorPostponingInteraction');
+            }
+          });
+        }
+      },
+      () => {
+        // Modal dismissed
       }
-    }
+    );
   }
 
   cancelInteraction(): void {
@@ -396,9 +422,17 @@ export class InteractionDetailComponent {
           },
           error: (error) => {
             console.error('Error canceling interaction:', error);
+            this.showError('::Interaction:ErrorCancellingInteraction');
           }
         });
       }
     });
+  }
+
+  private showError(localizationKey: string): void {
+    this.confirmation.error(
+      localizationKey,
+      '::Error'
+    ).subscribe();
   }
 }

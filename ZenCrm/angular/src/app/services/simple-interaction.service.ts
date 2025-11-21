@@ -52,10 +52,12 @@ export class SimpleInteractionService {
     return this.http.post<InteractionDto>(`${this.baseUrl}/${id}/cancel`, {});
   }
 
-  postpone(id: string, newScheduledDate: Date): Observable<InteractionDto> {
-    return this.http.post<InteractionDto>(`${this.baseUrl}/${id}/postpone`, {}, {
-      params: { newScheduledDate: newScheduledDate.toISOString() }
-    });
+  postpone(id: string, newScheduledDate: Date, reason?: string): Observable<InteractionDto> {
+    const params: any = { newScheduledDate: newScheduledDate.toISOString() };
+    if (reason) {
+      params.reason = reason;
+    }
+    return this.http.post<InteractionDto>(`${this.baseUrl}/${id}/postpone`, {}, { params });
   }
 
   setReminder(id: string, requiresReminder: boolean, reminderDate?: Date): Observable<InteractionDto> {

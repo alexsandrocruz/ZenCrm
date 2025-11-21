@@ -18,6 +18,7 @@ import { priorityOptions } from '../proxy/sales/priority.enum';
 import { SimpleInteractionService } from '../services/simple-interaction.service';
 import { InteractionFormComponent } from './interaction-form.component';
 import { InteractionDetailComponent } from './interaction-detail.component';
+import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.component';
 
 @Component({
   selector: 'app-client-interactions',
@@ -621,17 +622,23 @@ export class ClientInteractionsComponent implements OnInit {
   }
 
   deleteInteraction(interaction: InteractionDto): void {
-    if (confirm(this.localization.instant('::Interaction:DeleteConfirmationMessage', interaction.subject))) {
-      this.interactionService.delete(interaction.id).subscribe({
-        next: () => {
-          this.loadInteractions();
-        },
-        error: (error) => {
-          console.error('Error deleting interaction:', error);
-          alert('Error deleting interaction');
-        }
-      });
-    }
+    this.confirmation.warn(
+      '::Interaction:DeleteConfirmationMessage',
+      '::AreYouSure',
+      { messageLocalizationParams: [interaction.subject] }
+    ).subscribe(status => {
+      if (status) {
+        this.interactionService.delete(interaction.id).subscribe({
+          next: () => {
+            this.loadInteractions();
+          },
+          error: (error) => {
+            console.error('Error deleting interaction:', error);
+            this.showError('::Interaction:ErrorDeletingInteraction');
+          }
+        });
+      }
+    });
   }
 
   startInteraction(interaction: InteractionDto): void {
@@ -647,37 +654,63 @@ export class ClientInteractionsComponent implements OnInit {
   }
 
   completeInteraction(interaction: InteractionDto): void {
-    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcomeFor', interaction.subject));
-    if (outcome !== null && outcome.trim() !== '') {
-      this.interactionService.complete(interaction.id, outcome.trim()).subscribe({
-        next: () => {
-          this.loadInteractions();
-        },
-        error: (error) => {
-          console.error('Error completing interaction:', error);
-          alert('Error completing interaction');
+    const modalRef = this.modalService.open(InteractionOutcomeModalComponent, {
+      size: 'md',
+      centered: true
+    });
+
+    modalRef.componentInstance.interactionSubject = interaction.subject;
+
+    modalRef.result.then(
+      (outcome) => {
+        if (outcome && outcome.trim() !== '') {
+          this.interactionService.complete(interaction.id, outcome.trim()).subscribe({
+            next: () => {
+              this.loadInteractions();
+            },
+            error: (error) => {
+              console.error('Error completing interaction:', error);
+              this.showError('::Interaction:ErrorCompletingInteraction');
+            }
+          });
         }
-      });
-    }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
   }
 
   cancelInteraction(interaction: InteractionDto): void {
-    if (confirm(this.localization.instant('::Interaction:CancelConfirmationMessage', interaction.subject))) {
-      this.interactionService.cancel(interaction.id).subscribe({
-        next: () => {
-          this.loadInteractions();
-        },
-        error: (error) => {
-          console.error('Error canceling interaction:', error);
-          alert('Error canceling interaction');
-        }
-      });
-    }
+    this.confirmation.warn(
+      '::Interaction:CancelConfirmationMessage',
+      '::AreYouSure',
+      { messageLocalizationParams: [interaction.subject] }
+    ).subscribe(status => {
+      if (status) {
+        this.interactionService.cancel(interaction.id).subscribe({
+          next: () => {
+            this.loadInteractions();
+          },
+          error: (error) => {
+            console.error('Error canceling interaction:', error);
+            this.showError('::Interaction:ErrorCancellingInteraction');
+          }
+        });
+      }
+    });
   }
 
   formatDateTime(dateString?: string): string {
     if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  private showError(localizationKey: string): void {
+    this.confirmation.error(
+      localizationKey,
+      '::Error'
+    ).subscribe();
   }
 }
