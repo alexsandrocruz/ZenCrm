@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using ZenCrm.Books;
 using ZenCrm.Sales;
+using ZenCrm.Communication.Entities;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -16,6 +17,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using ZenCrm.EntityFrameworkCore.Communication;
 
 namespace ZenCrm.EntityFrameworkCore;
 
@@ -37,6 +39,10 @@ public class ZenCrmDbContext :
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
     public DbSet<SalesOpportunity> SalesOpportunities { get; set; }
+
+    // Communication Entities
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<MessageTemplate> MessageTemplates { get; set; }
 
     #region Entities from the modules
 
@@ -184,6 +190,9 @@ public class ZenCrmDbContext :
             b.HasIndex(x => x.SalesLeadId);
             b.HasIndex(x => x.ClientId);
             b.HasIndex(x => x.CustomerId);
+            b.HasIndex(x => x.MessageId);
+            b.HasIndex(x => x.CommunicationSent);
+            b.HasIndex(x => x.CommunicationSentDate);
         });
 
         builder.Entity<SalesOpportunity>(b =>
@@ -204,6 +213,9 @@ public class ZenCrmDbContext :
             b.HasIndex(x => x.ParentOpportunityId);
             b.HasIndex(x => x.EstimatedValue);
         });
+
+        // Configure Communication Entities
+        builder.ConfigureCommunication();
 
         /* Configure your own tables/entities inside here */
 

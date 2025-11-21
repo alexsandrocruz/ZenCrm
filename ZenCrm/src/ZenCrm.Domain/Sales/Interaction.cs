@@ -4,6 +4,8 @@ using JetBrains.Annotations;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using ZenCrm.Sales;
+using ZenCrm.Communication;
+using ZenCrm.Communication.Entities;
 
 namespace ZenCrm.Sales;
 
@@ -56,6 +58,11 @@ public class Interaction : AuditedAggregateRoot<Guid>
     [CanBeNull]
     [StringLength(2048)]
     public string? AdditionalData { get; set; }
+
+    // Communication properties
+    public Guid? MessageId { get; set; }
+    public bool CommunicationSent { get; set; }
+    public DateTime? CommunicationSentDate { get; set; }
 
     protected Interaction()
     {
@@ -272,5 +279,80 @@ public class Interaction : AuditedAggregateRoot<Guid>
         return Status != InteractionStatus.Completed &&
                Status != InteractionStatus.Cancelled &&
                ScheduledDate < DateTime.UtcNow;
+    }
+
+    // Communication methods
+
+    /// <summary>
+    /// Associate this interaction with a sent message
+    /// </summary>
+    public Interaction AssociateWithMessage(Guid messageId)
+    {
+        MessageId = messageId;
+        CommunicationSent = true;
+        CommunicationSentDate = DateTime.UtcNow;
+        return this;
+    }
+
+    /// <summary>
+    /// Clear communication association
+    /// </summary>
+    public Interaction ClearCommunicationAssociation()
+    {
+        MessageId = null;
+        CommunicationSent = false;
+        CommunicationSentDate = null;
+        return this;
+    }
+
+    /// <summary>
+    /// Check if communication can be sent for this interaction type
+    /// </summary>
+    public bool CanSendCommunication()
+    {
+        return Type switch
+        {
+            InteractionType.Email => true,
+            InteractionType.SMS => true,
+            InteractionType.WhatsApp => true,
+            InteractionType.PhoneCall => true, // Can send follow-up SMS/Email
+            InteractionType.Meeting => true,  // Can send invitation/reminder
+            InteractionType.VirtualMeeting => true, // Can send meeting link
+            _ => false
+        };
+    }
+
+    /// <summary>
+    /// Get the preferred communication channel for this interaction type
+    /// </summary>
+    public CommunicationChannel? GetPreferredChannel()
+    {
+        return Type switch
+        {
+            InteractionType.Email => CommunicationChannel.Email,
+            InteractionType.SMS => CommunicationChannel.SMS,
+            InteractionType.WhatsApp => CommunicationChannel.WhatsApp,
+            InteractionType.PhoneCall => CommunicationChannel.SMS, // Follow-up SMS
+            InteractionType.Meeting => CommunicationChannel.Email, // Meeting invitation
+            InteractionType.VirtualMeeting => CommunicationChannel.Email, // Meeting link
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// Get recipient address for communication
+    /// </summary>
+    public string GetRecipientAddress()
+    {
+        // This would need to be implemented based on related entities
+        // For now, return a placeholder
+        if (CustomerId.HasValue)
+            return $"customer-{CustomerId}@example.com";
+        if (ClientId.HasValue)
+            return $"client-{ClientId}@example.com";
+        if (SalesLeadId.HasValue)
+            return $"lead-{SalesLeadId}@example.com";
+
+        throw new InvalidOperationException("No recipient available for this interaction");
     }
 }

@@ -17,6 +17,8 @@ using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
+using ZenCrm.Communication;
+using ZenCrm.Communication.Services;
 
 namespace ZenCrm;
 
@@ -44,9 +46,13 @@ public class ZenCrmDomainModule : AbpModule
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
 
-
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+
+        // Register communication services
+        context.Services.AddTransient<ICommunicationManager, CommunicationManager>();
+        context.Services.AddTransient<IEmailService, Communication.Providers.AbpEmailProvider>();
+        context.Services.AddTransient<IMessageTemplateService, MessageTemplateService>();
     }
 }

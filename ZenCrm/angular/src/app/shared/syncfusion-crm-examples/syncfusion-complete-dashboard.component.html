@@ -1,0 +1,179 @@
+<section class="bg-white dark:bg-gray-950 min-h-screen p-4 sm:p-6">
+    <div class="w-full" style="max-width: 1200px;">
+
+        <!-- Header Section -->
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h1 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">CRM Sales Dashboard</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Period: <span class="font-medium">2024 Annual Overview</span></p>
+            </div>
+            <div class="flex gap-2">
+                <button ejs-button class="e-outline hidden sm:block" content="Export Report" type="button" (click)="exportReport()"></button>
+                <button ejs-button class="e-outline block sm:hidden" iconCss="e-icons e-download" type="button" (click)="exportReport()"></button>
+            </div>
+        </div>
+
+        <!-- Period Selection and Metrics -->
+        <div class="mb-6 text-gray-900 dark:text-white">
+            <p class="text-xs hidden sm:block mb-2">Select Period</p>
+            <div class="flex justify-between flex-col-reverse gap-6 sm:flex-row sm:items-center">
+                <ejs-dropdownlist
+                    class="w-full sm:w-auto"
+                    [dataSource]="periodOptions"
+                    [(ngModel)]="selectedPeriod"
+                    [fields]="{ text: 'text', value: 'value' }"
+                    (change)="onPeriodChange($event)"
+                    popupWidth="200">
+                </ejs-dropdownlist>
+
+                <!-- Key Metrics -->
+                <div class="flex flex-wrap justify-between gap-4 w-full sm:w-auto"
+                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%;">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-center" style="min-width: 120px;">
+                        <p class="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400">Total Revenue</p>
+                        <p class="text-lg sm:text-xl font-bold text-blue-900 dark:text-blue-100 mt-1">{{ formatCurrency(2450000) }}</p>
+                        <p class="text-xs text-blue-700 dark:text-blue-300 mt-1">+12.5% YoY</p>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg text-center" style="min-width: 120px;">
+                        <p class="text-xs sm:text-sm font-medium text-green-600 dark:text-green-400">Active Clients</p>
+                        <p class="text-lg sm:text-xl font-bold text-green-900 dark:text-green-100 mt-1">1,284</p>
+                        <p class="text-xs text-green-700 dark:text-green-300 mt-1">+8.2% YoY</p>
+                    </div>
+                    <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg text-center" style="min-width: 120px;">
+                        <p class="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">New Leads</p>
+                        <p class="text-lg sm:text-xl font-bold text-purple-900 dark:text-purple-100 mt-1">847</p>
+                        <p class="text-xs text-purple-700 dark:text-purple-300 mt-1">+23.1% YoY</p>
+                    </div>
+                    <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg text-center" style="min-width: 120px;">
+                        <p class="text-xs sm:text-sm font-medium text-orange-600 dark:text-orange-400">Conversion Rate</p>
+                        <p class="text-lg sm:text-xl font-bold text-orange-900 dark:text-orange-100 mt-1">24.8%</p>
+                        <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">+2.3% YoY</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Revenue Trend Chart -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Revenue Trend</h2>
+                <ejs-chart
+                    id="revenueChart"
+                    style="display: block; width: 100%; height: 300px;"
+                    [primaryXAxis]="revenueChartConfig.primaryXAxis"
+                    [primaryYAxis]="revenueChartConfig.primaryYAxis"
+                    [tooltip]="revenueChartConfig.tooltip"
+                    (load)="onChartLoad($event)"
+                    (axisLabelRender)="onAxisLabelRender($event)">
+                    <e-series-collection>
+                        <e-series
+                            [dataSource]="revenueData"
+                            type="Line"
+                            xName="month"
+                            yName="revenue"
+                            name="Revenue"
+                            [marker]="{ visible: true, width: 8, height: 8 }"
+                            width={3}>
+                        </e-series>
+                    </e-series-collection>
+                </ejs-chart>
+            </div>
+
+            <!-- Sales by Region Chart -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales by Region</h2>
+                <ejs-chart
+                    id="regionChart"
+                    style="display: block; width: 100%; height: 300px;"
+                    [tooltip]="regionChartConfig.tooltip"
+                    (load)="onChartLoad($event)"
+                    (axisLabelRender)="onAxisLabelRender($event)">
+                    <e-series-collection>
+                        <e-series
+                            [dataSource]="regionData"
+                            type="Pie"
+                            xName="region"
+                            yName="revenue"
+                            name="Revenue by Region"
+                            [dataLabel]="{ visible: true, position: 'Outside', name: 'region', format: '{percentage}%' }">
+                        </e-series>
+                    </e-series-collection>
+                </ejs-chart>
+            </div>
+        </div>
+
+        <!-- Bottom Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Client Acquisition -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Client Acquisition</h2>
+                <ejs-chart
+                    id="acquisitionChart"
+                    style="display: block; width: 100%; height: 250px;"
+                    [primaryXAxis]="acquisitionChartConfig.primaryXAxis"
+                    [primaryYAxis]="acquisitionChartConfig.primaryYAxis"
+                    [tooltip]="acquisitionChartConfig.tooltip"
+                    (load)="onChartLoad($event)"
+                    (axisLabelRender)="onAxisLabelRender($event)">
+                    <e-series-collection>
+                        <e-series
+                            [dataSource]="acquisitionData"
+                            type="Column"
+                            xName="month"
+                            yName="clients"
+                            name="New Clients">
+                        </e-series>
+                    </e-series-collection>
+                </ejs-chart>
+            </div>
+
+            <!-- Sales Pipeline -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Pipeline</h2>
+                <ejs-chart
+                    id="pipelineChart"
+                    style="display: block; width: 100%; height: 250px;"
+                    [primaryXAxis]="pipelineChartConfig.primaryXAxis"
+                    [primaryYAxis]="pipelineChartConfig.primaryYAxis"
+                    [tooltip]="pipelineChartConfig.tooltip"
+                    (load)="onChartLoad($event)"
+                    (axisLabelRender)="onAxisLabelRender($event)">
+                    <e-series-collection>
+                        <e-series
+                            [dataSource]="pipelineData"
+                            type="Bar"
+                            xName="stage"
+                            yName="value"
+                            name="Pipeline Value"
+                            [cornerRadius]="{ bottomLeft: 5, bottomRight: 5, topLeft: 5, topRight: 5 }">
+                        </e-series>
+                    </e-series-collection>
+                </ejs-chart>
+            </div>
+
+            <!-- Lead Sources -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Lead Sources</h2>
+                <ejs-chart
+                    id="leadSourcesChart"
+                    style="display: block; width: 100%; height: 250px;"
+                    [tooltip]="leadSourcesChartConfig.tooltip"
+                    (load)="onChartLoad($event)"
+                    (axisLabelRender)="onAxisLabelRender($event)">
+                    <e-series-collection>
+                        <e-series
+                            [dataSource]="leadSourcesData"
+                            type="Doughnut"
+                            xName="source"
+                            yName="count"
+                            name="Lead Sources"
+                            [dataLabel]="{ visible: true, position: 'Outside', name: 'source' }">
+                        </e-series>
+                    </e-series-collection>
+                </ejs-chart>
+            </div>
+        </div>
+
+    </div>
+</section>
