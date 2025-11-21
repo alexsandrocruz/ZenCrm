@@ -26,66 +26,69 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, NgbDropdownModule, LocalizationPipe, InteractionOutcomeModalComponent],
   template: `
     <div class="tab-content">
-      <!-- Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h6 class="mb-1">{{ '::Interaction:ClientInteractions' | abpLocalization }}</h6>
-          <small class="text-muted">{{ clientName }}</small>
-        </div>
-        <button type="button" class="btn btn-primary btn-sm" (click)="createInteraction()">
-          <i class="fa fa-plus me-1"></i>
-          {{ '::Interaction:NewInteraction' | abpLocalization }}
-        </button>
-      </div>
-
-      <!-- Filtros Rápidos -->
-      <form [formGroup]="filterForm" class="row mb-3">
-        <div class="col-md-3">
-          <label class="form-label">{{ '::Interaction:Filter' | abpLocalization }}</label>
-          <input type="text" class="form-control form-control-sm" formControlName="filter"
-                 placeholder="{{ '::Interaction:FilterPlaceholder' | abpLocalization }}"
-                 (input)="loadInteractions()">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">{{ '::Interaction:Type' | abpLocalization }}</label>
-          <select class="form-select form-select-sm" formControlName="type" (change)="loadInteractions()">
-            <option value="">{{ '::Interaction:AllTypes' | abpLocalization }}</option>
-            @for(option of typeOptions; track option.value) {
-              <option [value]="option.value">{{ '::Enum:InteractionType.' + option.key | abpLocalization }}</option>
-            }
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">{{ '::Interaction:Status' | abpLocalization }}</label>
-          <select class="form-select form-select-sm" formControlName="status" (change)="loadInteractions()">
-            <option value="">{{ '::Interaction:AllStatuses' | abpLocalization }}</option>
-            @for(option of statusOptions; track option.value) {
-              <option [value]="option.value">{{ '::Enum:InteractionStatus.' + option.key | abpLocalization }}</option>
-            }
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">{{ '::Interaction:Priority' | abpLocalization }}</label>
-          <select class="form-select form-select-sm" formControlName="priority" (change)="loadInteractions()">
-            <option value="">{{ '::Interaction:AllPriorities' | abpLocalization }}</option>
-            @for(option of priorityOptions; track option.value) {
-              <option [value]="option.value">{{ '::Enum:Priority.' + option.key | abpLocalization }}</option>
-            }
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">&nbsp;</label>
-          <div class="d-flex gap-2">
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="loadInteractions()">
-              <i class="fa fa-sync me-1"></i>
-              {{ '::Interaction:Refresh' | abpLocalization }}
-            </button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="clearFilters()">
-              {{ '::Interaction:ClearFilters' | abpLocalization }}
-            </button>
+      <!-- Header e Filtros com espaçamento -->
+      <div class="p-4 pb-0">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h6 class="mb-1">{{ '::Interaction:ClientInteractions' | abpLocalization }}</h6>
+            <small class="text-muted">{{ clientName }}</small>
           </div>
+          <button type="button" class="btn btn-primary btn-sm" (click)="createInteraction()">
+            <i class="fa fa-plus me-1"></i>
+            {{ '::Interaction:NewInteraction' | abpLocalization }}
+          </button>
         </div>
-      </form>
+
+        <!-- Filtros Rápidos -->
+        <form [formGroup]="filterForm" class="row mb-4">
+          <div class="col-md-3">
+            <label class="form-label">{{ '::Interaction:Filter' | abpLocalization }}</label>
+            <input type="text" class="form-control form-control-sm" formControlName="filter"
+                   placeholder="{{ '::Interaction:FilterPlaceholder' | abpLocalization }}"
+                   (input)="loadInteractions()">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">{{ '::Interaction:Type' | abpLocalization }}</label>
+            <select class="form-select form-select-sm" formControlName="type" (change)="loadInteractions()">
+              <option value="">{{ '::Interaction:AllTypes' | abpLocalization }}</option>
+              @for(option of typeOptions; track option.value) {
+                <option [value]="option.value">{{ '::Enum:InteractionType.' + option.key | abpLocalization }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">{{ '::Interaction:Status' | abpLocalization }}</label>
+            <select class="form-select form-select-sm" formControlName="status" (change)="loadInteractions()">
+              <option value="">{{ '::Interaction:AllStatuses' | abpLocalization }}</option>
+              @for(option of statusOptions; track option.value) {
+                <option [value]="option.value">{{ '::Enum:InteractionStatus.' + option.key | abpLocalization }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">{{ '::Interaction:Priority' | abpLocalization }}</label>
+            <select class="form-select form-select-sm" formControlName="priority" (change)="loadInteractions()">
+              <option value="">{{ '::Interaction:AllPriorities' | abpLocalization }}</option>
+              @for(option of priorityOptions; track option.value) {
+                <option [value]="option.value">{{ '::Enum:Priority.' + option.key | abpLocalization }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">&nbsp;</label>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="loadInteractions()">
+                <i class="fa fa-sync me-1"></i>
+                {{ '::Interaction:Refresh' | abpLocalization }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="clearFilters()">
+                {{ '::Interaction:ClearFilters' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
 
       <!-- Loading -->
       @if(isLoading) {
@@ -99,145 +102,155 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
 
       <!-- Lista de Interações -->
       @if(!isLoading && interactions.length > 0) {
-        <div class="interaction-list">
-          @for(interaction of interactions; track interaction.id) {
-            <div class="card interaction-card mb-3"
-                 [ngClass]="getStatusClass(interaction.status)"
-                 [ngClass]="{ 'overdue': isOverdue(interaction) }">
-              <div class="card-body">
-                <div class="interaction-header">
-                  <div class="interaction-title">{{ interaction.subject }}</div>
-                  <div ngbDropdown>
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" ngbDropdownToggle>
-                      <i class="fa fa-ellipsis-v"></i>
-                    </button>
-                    <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
+        <div class="px-4 pb-4">
+          <div class="interaction-list">
+            @for(interaction of interactions; track interaction.id) {
+              <div class="card interaction-card mb-3"
+                   [ngClass]="getStatusClass(interaction.status)"
+                   [ngClass]="{ 'overdue': isOverdue(interaction) }">
+                <div class="card-body">
+                  <div class="interaction-header">
+                    <div class="interaction-title">{{ interaction.subject }}</div>
+                    <div ngbDropdown>
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" ngbDropdownToggle>
+                        Ações
+                      </button>
+                      <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a class="dropdown-item" (click)="viewInteraction(interaction)">
+                            <i class="fa fa-eye me-2"></i>{{ '::Interaction:ViewDetails' | abpLocalization }}
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" (click)="editInteraction(interaction)">
+                            <i class="fa fa-edit me-2"></i>{{ '::Edit' | abpLocalization }}
+                          </a>
+                        </li>
+                        @if(interaction.status === 1) {
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a class="dropdown-item" (click)="startInteraction(interaction)">
+                              <i class="fa fa-play me-2"></i>{{ '::Interaction:Start' | abpLocalization }}
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" (click)="completeInteraction(interaction)">
+                              <i class="fa fa-check me-2"></i>{{ '::Interaction:Complete' | abpLocalization }}
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" (click)="cancelInteraction(interaction)">
+                              <i class="fa fa-times me-2"></i>{{ '::Interaction:Cancel' | abpLocalization }}
+                            </a>
+                          </li>
+                        }
+                      <li><hr class="dropdown-divider"></li>
                       <li>
-                        <a class="dropdown-item" (click)="viewInteraction(interaction)">
-                          <i class="fa fa-eye me-2"></i>{{ '::Interaction:ViewDetails' | abpLocalization }}
+                        <a class="dropdown-item text-danger" (click)="deleteInteraction(interaction)">
+                          <i class="fa fa-trash me-2"></i>{{ '::Delete' | abpLocalization }}
                         </a>
                       </li>
-                      <li>
-                        <a class="dropdown-item" (click)="editInteraction(interaction)">
-                          <i class="fa fa-edit me-2"></i>{{ '::Edit' | abpLocalization }}
-                        </a>
-                      </li>
-                      @if(interaction.status === 1) {
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                          <a class="dropdown-item" (click)="startInteraction(interaction)">
-                            <i class="fa fa-play me-2"></i>{{ '::Interaction:Start' | abpLocalization }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="completeInteraction(interaction)">
-                            <i class="fa fa-check me-2"></i>{{ '::Interaction:Complete' | abpLocalization }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="cancelInteraction(interaction)">
-                            <i class="fa fa-times me-2"></i>{{ '::Interaction:Cancel' | abpLocalization }}
-                          </a>
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="interaction-meta">
-                  <span class="badge {{ getStatusBadgeClass(interaction.status) }}">
-                    {{ getStatusDisplay(interaction.status) }}
-                  </span>
-                  <span class="badge {{ getPriorityBadgeClass(interaction.priority) }}">
-                    {{ getPriorityDisplay(interaction.priority) }}
-                  </span>
-                  <span class="badge bg-light text-dark">
-                    {{ getTypeDisplay(interaction.type) }}
-                  </span>
-                  @if(interaction.durationMinutes && interaction.durationMinutes > 0) {
-                    <span class="text-muted">
-                      <i class="fa fa-clock"></i> {{ interaction.durationMinutes }}m
-                    </span>
-                  }
-                  @if(interaction.location) {
-                    <span class="text-muted">
-                      <i class="fa fa-map-marker-alt"></i> {{ interaction.location }}
-                    </span>
-                  }
-                </div>
-
-                @if(interaction.description) {
-                  <div class="interaction-description">
-                    {{ interaction.description | slice:0:150 }}{{ interaction.description.length > 150 ? '...' : '' }}
-                  </div>
-                }
-
-                <div class="interaction-meta">
-                  <span class="text-muted">
-                    <i class="fa fa-calendar"></i> {{ formatDateTime(interaction.scheduledDate) }}
-                  </span>
-                  @if(interaction.ownerUserName) {
-                    <span class="text-muted">
-                      <i class="fa fa-user"></i> {{ interaction.ownerUserName }}
-                    </span>
-                  }
-                  @if(interaction.customerName) {
-                    <span class="text-muted">
-                      <i class="fa fa-user-tie"></i> {{ interaction.customerName }}
-                    </span>
-                  }
-                </div>
-
-                @if(interaction.outcome) {
-                  <div class="mt-2">
-                    <small class="text-muted">{{ '::Interaction:Outcome' | abpLocalization }}:</small>
-                    <div class="border rounded p-2 bg-light mt-1">
-                      {{ interaction.outcome }}
+                      </ul>
                     </div>
                   </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
 
-        <!-- Paginação -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
-          <div class="text-muted">
-            {{ totalCount }} {{ '::Interaction:Records' | abpLocalization }}
+                  <div class="interaction-meta">
+                    <span class="badge {{ getStatusBadgeClass(interaction.status) }}">
+                      {{ getStatusDisplay(interaction.status) }}
+                    </span>
+                    <span class="badge {{ getPriorityBadgeClass(interaction.priority) }}">
+                      {{ getPriorityDisplay(interaction.priority) }}
+                    </span>
+                    <span class="badge bg-light text-dark">
+                      {{ getTypeDisplay(interaction.type) }}
+                    </span>
+                    @if(interaction.durationMinutes && interaction.durationMinutes > 0) {
+                      <span class="text-muted">
+                        <i class="fa fa-clock"></i> {{ interaction.durationMinutes }}m
+                      </span>
+                    }
+                    @if(interaction.location) {
+                      <span class="text-muted">
+                        <i class="fa fa-map-marker-alt"></i> {{ interaction.location }}
+                      </span>
+                    }
+                  </div>
+
+                  @if(interaction.description) {
+                    <div class="interaction-description">
+                      {{ interaction.description | slice:0:150 }}{{ interaction.description.length > 150 ? '...' : '' }}
+                    </div>
+                  }
+
+                  <div class="interaction-meta">
+                    <span class="text-muted">
+                      <i class="fa fa-calendar"></i> {{ formatDateTime(interaction.scheduledDate) }}
+                    </span>
+                    @if(interaction.ownerUserName) {
+                      <span class="text-muted">
+                        <i class="fa fa-user"></i> {{ interaction.ownerUserName }}
+                      </span>
+                    }
+                    @if(interaction.customerName) {
+                      <span class="text-muted">
+                        <i class="fa fa-user-tie"></i> {{ interaction.customerName }}
+                      </span>
+                    }
+                  </div>
+
+                  @if(interaction.outcome) {
+                    <div class="mt-2">
+                      <small class="text-muted">{{ '::Interaction:Outcome' | abpLocalization }}:</small>
+                      <div class="border rounded p-2 bg-light mt-1">
+                        {{ interaction.outcome }}
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
           </div>
-          <nav>
-            <ul class="pagination pagination-sm mb-0">
-              <li class="page-item" [class.disabled]="currentPage === 1">
-                <button class="page-link" (click)="onPageChange(currentPage - 1)">
-                  <span aria-hidden="true">&laquo;</span>
-                </button>
-              </li>
-              @for(page of getVisiblePages(); track page) {
-                <li class="page-item" [class.active]="page === currentPage">
-                  <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+
+          <!-- Paginação -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted">
+              {{ totalCount }} {{ '::Interaction:Records' | abpLocalization }}
+            </div>
+            <nav>
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <button class="page-link" (click)="onPageChange(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
                 </li>
-              }
-              <li class="page-item" [class.disabled]="currentPage === totalPages">
-                <button class="page-link" (click)="onPageChange(currentPage + 1)">
-                  <span aria-hidden="true">&raquo;</span>
-                </button>
-              </li>
-            </ul>
-          </nav>
+                @for(page of getVisiblePages(); track page) {
+                  <li class="page-item" [class.active]="page === currentPage">
+                    <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+                  </li>
+                }
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <button class="page-link" (click)="onPageChange(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       }
 
       <!-- Sem interações -->
       @if(!isLoading && interactions.length === 0) {
-        <div class="text-center py-5">
-          <i class="fa fa-comments fa-3x text-muted mb-3"></i>
-          <h6 class="text-muted">{{ '::Interaction:NoInteractionsForClient' | abpLocalization }}</h6>
-          <p class="text-muted">{{ '::Interaction:NoInteractionsForClientDescription' | abpLocalization }}</p>
-          <button type="button" class="btn btn-primary" (click)="createInteraction()">
-            <i class="fa fa-plus me-1"></i>
-            {{ '::Interaction:CreateFirstInteraction' | abpLocalization }}
-          </button>
+        <div class="px-4 pb-4">
+          <div class="text-center py-5">
+            <i class="fa fa-comments fa-3x text-muted mb-3"></i>
+            <h6 class="text-muted">{{ '::Interaction:NoInteractionsForClient' | abpLocalization }}</h6>
+            <p class="text-muted">{{ '::Interaction:NoInteractionsForClientDescription' | abpLocalization }}</p>
+            <button type="button" class="btn btn-primary" (click)="createInteraction()">
+              <i class="fa fa-plus me-1"></i>
+              {{ '::Interaction:CreateFirstInteraction' | abpLocalization }}
+            </button>
+          </div>
         </div>
       }
     </div>
@@ -513,14 +526,12 @@ export class ClientInteractionsComponent implements OnInit {
 
   getTypeDisplay(type?: InteractionType): string {
     if (!type) return '-';
-    const option = this.typeOptions.find(opt => opt.value === type);
-    return option ? this.localization.instant(`::Enum:InteractionType.${option.key}`) : type.toString();
+    return this.localization.instant(`::Enum:InteractionType.${type}`);
   }
 
   getStatusDisplay(status?: number): string {
     if (!status) return '-';
-    const option = this.statusOptions.find(opt => opt.value === status);
-    return option ? this.localization.instant(`::Enum:InteractionStatus.${option.key}`) : status.toString();
+    return this.localization.instant(`::Enum:InteractionStatus.${status}`);
   }
 
   getPriorityDisplay(priority?: number): string {

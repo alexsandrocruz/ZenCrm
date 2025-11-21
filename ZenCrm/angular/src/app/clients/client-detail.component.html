@@ -406,10 +406,14 @@
 
     <!-- Interactions Tab -->
     @if (activeTab === 'interactions') {
-      <app-client-interactions
-        [clientId]="client?.id"
-        [clientName]="client?.name">
-      </app-client-interactions>
+    <div class="card">
+      <div class="card-body p-0">
+        <app-client-interactions
+          [clientId]="client?.id"
+          [clientName]="client?.name">
+        </app-client-interactions>
+      </div>
+    </div>
     }
   </div>
 </div>
