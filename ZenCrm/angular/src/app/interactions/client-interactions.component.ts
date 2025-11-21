@@ -23,7 +23,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
 @Component({
   selector: 'app-client-interactions',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, NgbDropdownModule, LocalizationPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, NgbDropdownModule, LocalizationPipe, InteractionOutcomeModalComponent],
   template: `
     <div class="tab-content">
       <!-- Header -->
