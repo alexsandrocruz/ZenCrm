@@ -3,6 +3,8 @@ export { SyncfusionClientGridComponent } from './syncfusion-client-grid.componen
 export { SyncfusionOpportunityFormComponent } from './syncfusion-opportunity-form.component';
 export { SyncfusionSimpleDashboardComponent } from './syncfusion-simple-dashboard.component';
 export { SyncfusionMetricsPanelComponent } from './syncfusion-metrics-panel.component';
+export { SyncfusionChartDashboardComponent } from './syncfusion-chart-dashboard.component';
+export { SyncfusionCompleteDashboardComponent } from './syncfusion-complete-dashboard.component';
 
 // Example usage documentation
 export const CRM_EXAMPLES_ROUTES = [
@@ -29,6 +31,18 @@ export const CRM_EXAMPLES_ROUTES = [
     component: 'SyncfusionMetricsPanelComponent',
     title: 'Metrics Panel Example',
     description: 'Modern metrics panel with gradient cards and responsive layout'
+  },
+  {
+    path: 'admin/syncfusion-examples/chart-dashboard',
+    component: 'SyncfusionChartDashboardComponent',
+    title: 'Chart Dashboard Example',
+    description: 'Advanced sales dashboard with interactive charts and KPI metrics'
+  },
+  {
+    path: 'admin/syncfusion-examples/complete-dashboard',
+    component: 'SyncfusionCompleteDashboardComponent',
+    title: 'Complete Dashboard Example',
+    description: 'Comprehensive CRM dashboard with metrics, charts, and analysis based on Syncfusion demos'
   }
 ];
 

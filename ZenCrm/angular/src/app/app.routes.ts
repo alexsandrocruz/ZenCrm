@@ -101,6 +101,16 @@ export const APP_ROUTES: Routes = [
         loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-metrics-panel.component').then(c => c.SyncfusionMetricsPanelComponent),
         canActivate: [authGuard, permissionGuard],
       },
+      {
+        path: 'chart-dashboard',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-chart-dashboard.component').then(c => c.SyncfusionChartDashboardComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
+      {
+        path: 'complete-dashboard',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-complete-dashboard.component').then(c => c.SyncfusionCompleteDashboardComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
     ]
   },
 ];
