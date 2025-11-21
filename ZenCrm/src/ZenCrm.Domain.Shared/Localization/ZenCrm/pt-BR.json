@@ -413,6 +413,11 @@
     "Enum:InteractionStatus.7": "Pendente",
     "Interaction:DeleteConfirmationMessage": "Tem certeza que deseja excluir a interação '{0}'?",
     "Interaction:EnterOutcome": "Digite o resultado:",
-    "Interaction:CancelConfirmationMessage": "Tem certeza que deseja cancelar a interação '{0}'?"
+    "Interaction:CancelConfirmationMessage": "Tem certeza que deseja cancelar a interação '{0}'?",
+    "Interaction:CompleteInteraction": "Concluir Interação",
+    "Interaction:EnterOutcomeFor": "Digite o resultado para '{0}':",
+    "Interaction:EnterOutcomePlaceholder": "Resultado...",
+    "Confirm": "Confirmar",
+    "Cancel": "Cancelar"
   }
 }

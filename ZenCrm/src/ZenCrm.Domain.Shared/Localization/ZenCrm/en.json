@@ -282,6 +282,11 @@
     "Dashboard:Deals": "deals",
     "Interaction:DeleteConfirmationMessage": "Are you sure to delete the interaction '{0}'?",
     "Interaction:EnterOutcome": "Enter the outcome/result:",
-    "Interaction:CancelConfirmationMessage": "Are you sure to cancel the interaction '{0}'?"
+    "Interaction:CancelConfirmationMessage": "Are you sure to cancel the interaction '{0}'?",
+    "Interaction:CompleteInteraction": "Complete Interaction",
+    "Interaction:EnterOutcomeFor": "Enter the result for '{0}':",
+    "Interaction:EnterOutcomePlaceholder": "Result/outcome...",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel"
   }
 }

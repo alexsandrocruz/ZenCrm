@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModalModule, NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
+import { ConfirmationService } from '@abp/ng.theme.shared';
 import {
   InteractionDto,
   GetInteractionsInput,
@@ -120,7 +121,7 @@ import { InteractionDetailComponent } from './interaction-detail.component';
                           <i class="fa fa-edit me-2"></i>{{ '::Edit' | abpLocalization }}
                         </a>
                       </li>
-                      @if(interaction.status === 1) { // InteractionStatus.Scheduled
+                      @if(interaction.status === 1) {
                         <li><hr class="dropdown-divider"></li>
                         <li>
                           <a class="dropdown-item" (click)="startInteraction(interaction)">
@@ -326,6 +327,47 @@ import { InteractionDetailComponent } from './interaction-detail.component';
       font-size: 0.875rem;
       padding: 0.25rem 0.5rem;
     }
+
+    /* Dropdown fixes */
+    .dropdown-menu {
+      z-index: 1050 !important;
+      min-width: 180px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    /* Ensure dropdown appears above other elements */
+    .dropdown {
+      position: relative;
+      z-index: 1040;
+    }
+
+    /* Fix dropdown positioning */
+    [ngbDropdownMenu] {
+      position: absolute !important;
+      top: 100% !important;
+      right: 0 !important;
+      left: auto !important;
+      z-index: 1050 !important;
+      margin-top: 0.25rem;
+      transform: translateX(0);
+    }
+
+    /* Ensure dropdown items are properly displayed */
+    .dropdown-item {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    /* Fix card overflow */
+    .card-body {
+      overflow: visible !important;
+    }
+
+    .interaction-card {
+      overflow: visible !important;
+    }
   `]
 })
 export class ClientInteractionsComponent implements OnInit {
@@ -336,6 +378,7 @@ export class ClientInteractionsComponent implements OnInit {
   localization = inject(LocalizationService);
   fb = inject(FormBuilder);
   private modalService = inject(NgbModal);
+  private confirmation = inject(ConfirmationService);
 
   interactions: InteractionDto[] = [];
   isLoading = false;
@@ -604,9 +647,9 @@ export class ClientInteractionsComponent implements OnInit {
   }
 
   completeInteraction(interaction: InteractionDto): void {
-    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcome'));
-    if (outcome !== null) {
-      this.interactionService.complete(interaction.id, outcome).subscribe({
+    const outcome = prompt(this.localization.instant('::Interaction:EnterOutcomeFor', interaction.subject));
+    if (outcome !== null && outcome.trim() !== '') {
+      this.interactionService.complete(interaction.id, outcome.trim()).subscribe({
         next: () => {
           this.loadInteractions();
         },
