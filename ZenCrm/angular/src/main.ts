@@ -5,6 +5,12 @@ import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
 
+// Import and register Syncfusion license
+import { registerSyncfusionLicense } from './app/shared/syncfusion-license';
+
+// Register Syncfusion license before bootstrap
+registerSyncfusionLicense();
+
 if (environment.production) {
   enableProdMode();
 }

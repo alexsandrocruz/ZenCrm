@@ -68,4 +68,14 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./interactions/interaction.component').then(c => c.InteractionComponent),
     canActivate: [authGuard, permissionGuard],
   },
+  {
+    path: 'admin/syncfusion-demo',
+    loadComponent: () => import('./shared/syncfusion-demo.component').then(c => c.SyncfusionDemoComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
+    path: 'admin/syncfusion-license',
+    loadComponent: () => import('./shared/syncfusion-license-status.component').then(c => c.SyncfusionLicenseStatusComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
 ];

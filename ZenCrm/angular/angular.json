@@ -131,6 +131,26 @@
                 "inject": true,
                 "bundleName": "bootstrap-icons"
               },
+              {
+                "input": "node_modules/@syncfusion/ej2-base/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-base-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-buttons/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-buttons-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-popups/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-popups-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-splitbuttons/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-splitbuttons-material"
+              },
               "src/styles.scss"
             ],
             "scripts": [],
