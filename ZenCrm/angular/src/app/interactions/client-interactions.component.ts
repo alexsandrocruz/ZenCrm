@@ -1,7 +1,7 @@
-import { Component, Input, inject, OnInit } from '@angular/core';
+import { Component, Input, inject, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModalModule, NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
 import { ConfirmationService } from '@abp/ng.theme.shared';
 import {
@@ -23,7 +23,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
 @Component({
   selector: 'app-client-interactions',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, NgbDropdownModule, LocalizationPipe, InteractionOutcomeModalComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModalModule, LocalizationPipe, InteractionOutcomeModalComponent],
   template: `
     <div class="tab-content">
       <!-- Header e Filtros com espaçamento -->
@@ -111,46 +111,39 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
                 <div class="card-body">
                   <div class="interaction-header">
                     <div class="interaction-title">{{ interaction.subject }}</div>
-                    <div ngbDropdown>
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" ngbDropdownToggle>
-                        Ações
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-sm btn-outline-primary"
+                              (click)="viewInteraction(interaction)"
+                              title="{{ '::Interaction:ViewDetails' | abpLocalization }}">
+                        <i class="fa fa-eye"></i>
                       </button>
-                      <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
-                        <li>
-                          <a class="dropdown-item" (click)="viewInteraction(interaction)">
-                            <i class="fa fa-eye me-2"></i>{{ '::Interaction:ViewDetails' | abpLocalization }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="editInteraction(interaction)">
-                            <i class="fa fa-edit me-2"></i>{{ '::Edit' | abpLocalization }}
-                          </a>
-                        </li>
-                        @if(interaction.status === 1) {
-                          <li><hr class="dropdown-divider"></li>
-                          <li>
-                            <a class="dropdown-item" (click)="startInteraction(interaction)">
-                              <i class="fa fa-play me-2"></i>{{ '::Interaction:Start' | abpLocalization }}
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item" (click)="completeInteraction(interaction)">
-                              <i class="fa fa-check me-2"></i>{{ '::Interaction:Complete' | abpLocalization }}
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item" (click)="cancelInteraction(interaction)">
-                              <i class="fa fa-times me-2"></i>{{ '::Interaction:Cancel' | abpLocalization }}
-                            </a>
-                          </li>
-                        }
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <a class="dropdown-item text-danger" (click)="deleteInteraction(interaction)">
-                          <i class="fa fa-trash me-2"></i>{{ '::Delete' | abpLocalization }}
-                        </a>
-                      </li>
-                      </ul>
+                      <button class="btn btn-sm btn-outline-secondary"
+                              (click)="editInteraction(interaction)"
+                              title="{{ '::Edit' | abpLocalization }}">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      @if(interaction.status === 1) {
+                        <button class="btn btn-sm btn-outline-success"
+                                (click)="startInteraction(interaction)"
+                                title="{{ '::Interaction:Start' | abpLocalization }}">
+                          <i class="fa fa-play"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info"
+                                (click)="completeInteraction(interaction)"
+                                title="{{ '::Interaction:Complete' | abpLocalization }}">
+                          <i class="fa fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning"
+                                (click)="cancelInteraction(interaction)"
+                                title="{{ '::Interaction:Cancel' | abpLocalization }}">
+                          <i class="fa fa-times"></i>
+                        </button>
+                      }
+                      <button class="btn btn-sm btn-outline-danger"
+                              (click)="deleteInteraction(interaction)"
+                              title="{{ '::Delete' | abpLocalization }}">
+                        <i class="fa fa-trash"></i>
+                      </button>
                     </div>
                   </div>
 
@@ -267,7 +260,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
 
       &:hover {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
+        /* transform: translateY(-2px); REMOVED TEMPORARILY */
       }
 
       &.overdue {
@@ -276,11 +269,52 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
       }
     }
 
+    /* CRITICAL FIX: Completely disable hover on ALL cards when ANY dropdown is open */
+    .interaction-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* transform: translateY(-2px); REMOVED TEMPORARILY */
+      }
+
+      &.overdue {
+        background-color: #fff5f5;
+        border-left-color: #dc3545;
+      }
+    }
+
+    /* NUCLEAR FIX: Disable ALL hover effects when ANY dropdown is open */
+    :global(.dropdown.show) ~ * .interaction-card,
+    :global(.dropdown.show) + .interaction-card,
+    .interaction-list:hover .interaction-card:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+
+    /* Most aggressive approach - disable hover on entire list when dropdown open */
+    .interaction-list:has(.dropdown.show) .interaction-card:hover {
+      transform: translateY(0) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Alternative: Disable all transitions when dropdown is open */
+    body:has(.dropdown.show) .interaction-card {
+      transition: none !important;
+    }
+
+    body:has(.dropdown.show) .interaction-card:hover {
+      transform: translateY(0) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
     .interaction-header {
       display: flex;
-      justify-content: space-between;
       align-items: start;
       margin-bottom: 0.5rem;
+      gap: 1rem;
     }
 
     .interaction-title {
@@ -288,7 +322,12 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
       color: #333;
       margin-bottom: 0.25rem;
       flex: 1;
-      margin-right: 1rem;
+    }
+
+    /* Dropdown positioned on the left side */
+    .interaction-header .dropdown-menu {
+      left: 0 !important;
+      right: auto !important;
     }
 
     .interaction-meta {
@@ -344,7 +383,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
 
     /* Dropdown fixes */
     .dropdown-menu {
-      z-index: 1050 !important;
+      z-index: 99999 !important;
       min-width: 180px;
       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
       border: 1px solid rgba(0, 0, 0, 0.15);
@@ -353,7 +392,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
     /* Ensure dropdown appears above other elements */
     .dropdown {
       position: relative;
-      z-index: 1040;
+      z-index: 99998;
     }
 
     /* Fix dropdown positioning */
@@ -362,7 +401,7 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
       top: 100% !important;
       right: 0 !important;
       left: auto !important;
-      z-index: 1050 !important;
+      z-index: 99999 !important;
       margin-top: 0.25rem;
       transform: translateX(0);
     }
@@ -374,13 +413,56 @@ import { InteractionOutcomeModalComponent } from './interaction-outcome-modal.co
       white-space: nowrap;
     }
 
-    /* Fix card overflow */
+    /* Fix card overflow - create clean stacking context */
     .card-body {
       overflow: visible !important;
     }
 
     .interaction-card {
       overflow: visible !important;
+      isolation: isolate;
+    }
+
+    /* Prevent interaction cards from creating separate stacking contexts */
+    .interaction-list {
+      max-height: 600px;
+      overflow-y: auto;
+      position: relative;
+      isolation: isolate;
+    }
+
+    /* Button group styling */
+    .btn-group {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-group .btn {
+      padding: 0.375rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    /* Fix card overflow - create clean stacking context */
+    .card-body {
+      overflow: visible !important;
+    }
+
+    .interaction-card {
+      overflow: visible !important;
+      isolation: isolate;
+    }
+
+    /* Prevent interaction cards from overlapping dropdown */
+    .interaction-list {
+      max-height: 600px;
+      overflow-y: auto;
+      position: relative;
+      isolation: isolate;
+    }
+
+    
+    /* Make sure dropdown is always on top when open */
+    .show > .dropdown-menu {
+      z-index: 1051 !important;
     }
   `]
 })
@@ -393,6 +475,7 @@ export class ClientInteractionsComponent implements OnInit {
   fb = inject(FormBuilder);
   private modalService = inject(NgbModal);
   private confirmation = inject(ConfirmationService);
+  private renderer = inject(Renderer2);
 
   interactions: InteractionDto[] = [];
   isLoading = false;
