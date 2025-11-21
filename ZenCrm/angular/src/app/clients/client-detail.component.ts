@@ -23,6 +23,8 @@ import {
 } from '@abp/ng.theme.shared';
 import { LocalizationPipe } from '@abp/ng.core';
 import { ClientInteractionsComponent } from '../interactions/client-interactions.component';
+import { SimpleInteractionService } from '../services/simple-interaction.service';
+import { GetInteractionsInput } from '../proxy/sales/models';
 
 @Component({
   selector: 'app-client-detail',
@@ -45,6 +47,7 @@ export class ClientDetailComponent implements OnInit {
   selectedCustomer: CustomerDto = {} as CustomerDto;
   isCustomerModalOpen = false;
   customerForm: FormGroup;
+  interactionCount: number = 0;
 
   isEditMode = false;
   form: FormGroup;
@@ -61,7 +64,8 @@ export class ClientDetailComponent implements OnInit {
     private customerService: CustomerService,
     private fb: FormBuilder,
     private list: ListService,
-    private confirmation: ConfirmationService
+    private confirmation: ConfirmationService,
+    private interactionService: SimpleInteractionService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +135,7 @@ export class ClientDetailComponent implements OnInit {
         });
         this.customerForm.patchValue({ clientId: client.id });
         this.loadCustomers();
+        this.loadInteractionCount(clientId);
       });
     }
   }
@@ -308,6 +313,26 @@ export class ClientDetailComponent implements OnInit {
 
   getFullName(customer: CustomerDto): string {
     return `${customer.firstName} ${customer.lastName}`.trim();
+  }
+
+  loadInteractionCount(clientId: string): void {
+    const input: GetInteractionsInput = {
+      skipCount: 0,
+      maxResultCount: 1, // Só precisamos do total, não dos dados
+      clientId: clientId,
+      includeCompleted: true,
+      includeCancelled: true
+    };
+
+    this.interactionService.getByClient(clientId, input).subscribe({
+      next: (result) => {
+        this.interactionCount = result.totalCount || 0;
+      },
+      error: (error) => {
+        console.error('Error loading interaction count:', error);
+        this.interactionCount = 0;
+      }
+    });
   }
 
   goBack(): void {

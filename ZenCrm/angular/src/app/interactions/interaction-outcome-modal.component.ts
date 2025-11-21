@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { LocalizationPipe } from '@abp/ng.core';
+import { LocalizationPipe, LocalizationService } from '@abp/ng.core';
 
 @Component({
   selector: 'app-interaction-outcome-modal',
@@ -14,7 +14,7 @@ import { LocalizationPipe } from '@abp/ng.core';
       <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
     </div>
     <div class="modal-body">
-      <p>{{ '::Interaction:EnterOutcomeFor' | abpLocalization }}: <strong>{{ interactionSubject }}</strong></p>
+      <p [innerHTML]="getEnterOutcomeText()"></p>
 
       <form [formGroup]="outcomeForm">
         <div class="mb-3">
@@ -68,6 +68,7 @@ import { LocalizationPipe } from '@abp/ng.core';
 export class InteractionOutcomeModalComponent {
   activeModal = inject(NgbActiveModal);
   fb = inject(FormBuilder);
+  localization = inject(LocalizationService);
 
   interactionSubject: string = '';
   outcomeForm: FormGroup;
@@ -76,6 +77,12 @@ export class InteractionOutcomeModalComponent {
     this.outcomeForm = this.fb.group({
       outcome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]]
     });
+  }
+
+  getEnterOutcomeText(): string {
+    const baseText = this.localization.instant('::Interaction:EnterOutcomeFor');
+    const textWithoutColon = baseText.replace(':', ''); // Remove os dois pontos do final
+    return textWithoutColon.replace('{0}', `<strong>${this.interactionSubject}</strong>`);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -103,25 +110,21 @@ export class InteractionOutcomeModalComponent {
     const messages: { [key: string]: string } = {
       outcome: '::Interaction:OutcomeRequired'
     };
-    return messages[fieldName] || 'This field is required.';
+    return this.localization.instant(messages[fieldName] || '::Validation:ThisFieldIsRequired');
   }
 
   private getFieldMinLengthMessage(fieldName: string): string {
     const messages: { [key: string]: string } = {
       outcome: '::Interaction:OutcomeMinLength'
     };
-    const field = this.outcomeForm.get(fieldName);
-    const requiredLength = field?.errors?.['minlength']?.requiredLength || 3;
-    return (messages[fieldName] || 'Minimum {0} characters required.').replace('{0}', requiredLength.toString());
+    return this.localization.instant(messages[fieldName] || '::Validation:MinLengthRequired');
   }
 
   private getFieldMaxLengthMessage(fieldName: string): string {
     const messages: { [key: string]: string } = {
       outcome: '::Interaction:OutcomeMaxLength'
     };
-    const field = this.outcomeForm.get(fieldName);
-    const maxLength = field?.errors?.['maxlength']?.requiredLength || 1000;
-    return (messages[fieldName] || 'Maximum {0} characters allowed.').replace('{0}', maxLength.toString());
+    return this.localization.instant(messages[fieldName] || '::Validation:MaxLengthAllowed');
   }
 
   saveOutcome(): void {

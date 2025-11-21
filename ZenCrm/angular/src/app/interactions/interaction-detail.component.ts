@@ -153,11 +153,11 @@ import { InteractionPostponeModalComponent } from './interaction-postpone-modal.
         </div>
 
         <!-- Actions disponíveis -->
-        @if(showActions) {
+        @if(showActions && interaction) {
           <div class="border-top pt-3 mt-3">
             <h6 class="text-muted mb-3">{{ '::Interaction:Actions' | abpLocalization }}</h6>
             <div class="d-flex flex-wrap gap-2">
-              @if(interaction.status === InteractionStatus.Scheduled) {
+              @if(interaction.status === 1) {
                 <button type="button" class="btn btn-success" (click)="startInteraction()">
                   <i class="fa fa-play me-1"></i>
                   {{ '::Interaction:Start' | abpLocalization }}
@@ -174,7 +174,7 @@ import { InteractionPostponeModalComponent } from './interaction-postpone-modal.
                   <i class="fa fa-times me-1"></i>
                   {{ '::Interaction:Cancel' | abpLocalization }}
                 </button>
-              } @else if(interaction.status === InteractionStatus.InProgress) {
+              } @else if(interaction.status === 2) {
                 <button type="button" class="btn btn-primary" (click)="completeInteraction()">
                   <i class="fa fa-check me-1"></i>
                   {{ '::Interaction:Complete' | abpLocalization }}
@@ -187,7 +187,7 @@ import { InteractionPostponeModalComponent } from './interaction-postpone-modal.
                   <i class="fa fa-times me-1"></i>
                   {{ '::Interaction:Cancel' | abpLocalization }}
                 </button>
-              } @else if(interaction.status === InteractionStatus.Completed) {
+              } @else if(interaction.status === 3) {
                 <button type="button" class="btn btn-secondary" disabled>
                   <i class="fa fa-check me-1"></i>
                   {{ '::Interaction:Completed' | abpLocalization }}
@@ -303,14 +303,12 @@ export class InteractionDetailComponent {
 
   getTypeDisplay(type?: InteractionType): string {
     if (!type) return '-';
-    const option = this.typeOptions.find(opt => opt.value === type);
-    return option ? this.localization.instant(`::Enum:InteractionType.${option.key}`) : type.toString();
+    return this.localization.instant(`::Enum:InteractionType.${type}`);
   }
 
   getStatusDisplay(status?: InteractionStatus): string {
     if (!status) return '-';
-    const option = this.statusOptions.find(opt => opt.value === status);
-    return option ? this.localization.instant(`::Enum:InteractionStatus.${option.key}`) : status.toString();
+    return this.localization.instant(`::Enum:InteractionStatus.${status}`);
   }
 
   getPriorityDisplay(priority?: number): string {
