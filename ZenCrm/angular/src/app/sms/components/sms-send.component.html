@@ -1,0 +1,310 @@
+<div class="e-bigger page-content">
+  <div class="breadcrumbs">
+    <div class="breadcrumb-text">Enviar Mensagem SMS</div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+      <div class="content-wrapper">
+        <form [formGroup]="smsForm" (ngSubmit)="onSubmit()">
+          <div class="send-sms-card">
+            <div class="card-header">
+              <h4 class="card-title">Nova Mensagem SMS</h4>
+              <p class="card-subtitle">Preencha os dados abaixo para enviar uma mensagem SMS</p>
+            </div>
+
+            <div class="card-body">
+              <!-- Destinatário -->
+              <div class="form-group">
+                <label for="phoneNumber" class="e-float-text e-label-top">Número de Telefone</label>
+                <ejs-textbox
+                  id="phoneNumber"
+                  formControlName="phoneNumber"
+                  placeholder="+55 11 9xxxx-xxxx"
+                  [floatLabelType]="'Auto'"
+                  cssClass="e-outline">
+                </ejs-textbox>
+                <div *ngIf="smsForm.get('phoneNumber')?.invalid && smsForm.get('phoneNumber')?.touched"
+                     class="error-message">
+                  Número de telefone é obrigatório
+                </div>
+              </div>
+
+              <!-- Seleção de Template -->
+              <div class="form-group">
+                <label for="smsTemplateId" class="e-float-text e-label-top">Template SMS (Opcional)</label>
+                <ejs-dropdownlist
+                  id="smsTemplateId"
+                  formControlName="smsTemplateId"
+                  [dataSource]="templates"
+                  [fields]="{ text: 'name', value: 'id' }"
+                  [floatLabelType]="'Auto'"
+                  placeholder="Selecione um template ou digite mensagem personalizada"
+                  cssClass="e-outline"
+                  (change)="onTemplateChange()">
+                </ejs-dropdownlist>
+              </div>
+
+              <!-- Mensagem Personalizada -->
+              <div *ngIf="!smsForm.get('smsTemplateId')?.value" class="form-group">
+                <label for="content" class="e-float-text e-label-top">Conteúdo da Mensagem</label>
+                <ejs-textbox
+                  id="content"
+                  formControlName="content"
+                  [multiline]="true"
+                  placeholder="Digite sua mensagem aqui..."
+                  [floatLabelType]="'Auto'"
+                  cssClass="e-outline"
+                  rows="4">
+                </ejs-textbox>
+                <div class="character-count">
+                  {{ smsForm.get('content')?.value?.length || 0 }}/160 caracteres
+                </div>
+                <div *ngIf="smsForm.get('content')?.invalid && smsForm.get('content')?.touched"
+                     class="error-message">
+                  Conteúdo da mensagem é obrigatório
+                </div>
+              </div>
+
+              <!-- Variáveis do Template -->
+              <div *ngIf="smsForm.get('smsTemplateId')?.value && currentTemplate" class="template-variables">
+                <h5 class="section-title">Variáveis do Template</h5>
+                <p class="section-subtitle">Preencha os valores para as variáveis do template selecionado</p>
+
+                <div class="row">
+                  <div *ngFor="let variable of templateVariables | keyvalue" class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                      <label [for]="'var-' + variable.key" class="e-float-text e-label-top">
+                        {{ variable.value.name }}
+                      </label>
+                      <ejs-textbox
+                        [id]="'var-' + variable.key"
+                        [formControlName]="variable.key"
+                        [placeholder]="variable.value.description"
+                        [floatLabelType]="'Auto'"
+                        cssClass="e-outline">
+                      </ejs-textbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Configurações Avançadas -->
+              <div class="advanced-settings">
+                <h5 class="section-title">Configurações</h5>
+
+                <div class="row">
+                  <!-- Categoria -->
+                  <div class="col-md-4 col-sm-12">
+                    <div class="form-group">
+                      <label for="category" class="e-float-text e-label-top">Categoria</label>
+                      <ejs-dropdownlist
+                        id="category"
+                        formControlName="category"
+                        [dataSource]="categoryOptions"
+                        [fields]="{ text: 'text', value: 'value' }"
+                        [floatLabelType]="'Auto'"
+                        cssClass="e-outline">
+                      </ejs-dropdownlist>
+                    </div>
+                  </div>
+
+                  <!-- Prioridade -->
+                  <div class="col-md-4 col-sm-12">
+                    <div class="form-group">
+                      <label for="priority" class="e-float-text e-label-top">Prioridade</label>
+                      <ejs-dropdownlist
+                        id="priority"
+                        formControlName="priority"
+                        [dataSource]="priorityOptions"
+                        [fields]="{ text: 'text', value: 'value' }"
+                        [floatLabelType]="'Auto'"
+                        cssClass="e-outline">
+                      </ejs-dropdownlist>
+                    </div>
+                  </div>
+
+                  <!-- Agendamento -->
+                  <div class="col-md-4 col-sm-12">
+                    <div class="form-group">
+                      <ejs-checkbox
+                        id="scheduleSend"
+                        formControlName="scheduleSend"
+                        label="Agendar envio">
+                      </ejs-checkbox>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Data de Agendamento -->
+                <div *ngIf="smsForm.get('scheduleSend')?.value" class="row">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                      <label for="scheduledSendDate" class="e-float-text e-label-top">Data e Hora do Agendamento</label>
+                      <ejs-datetimepicker
+                        id="scheduledSendDate"
+                        formControlName="scheduledSendDate"
+                        [floatLabelType]="'Auto'"
+                        placeholder="Selecione data e hora"
+                        cssClass="e-outline">
+                      </ejs-datetimepicker>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ID da Campanha -->
+                <div class="row">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                      <label for="campaignId" class="e-float-text e-label-top">ID da Campanha (Opcional)</label>
+                      <ejs-textbox
+                        id="campaignId"
+                        formControlName="campaignId"
+                        placeholder="campaign_12345"
+                        [floatLabelType]="'Auto'"
+                        cssClass="e-outline">
+                      </ejs-textbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="card-footer">
+              <div class="action-buttons">
+                <button
+                  type="button"
+                  (click)="validatePhone()"
+                  class="e-btn e-outline e-primary">
+                  <span class="e-btn-icon e-icons e-check"></span>
+                  Validar Telefone
+                </button>
+
+                <button
+                  type="button"
+                  (click)="calculateCost()"
+                  class="e-btn e-outline e-success">
+                  <span class="e-btn-icon e-icons e-calculator"></span>
+                  Calcular Custo
+                </button>
+
+                <button
+                  type="submit"
+                  [disabled]="!smsForm.valid || isSubmitting"
+                  class="e-btn e-primary">
+                  <span class="e-btn-icon e-icons e-send"></span>
+                  {{ isSubmitting ? 'Enviando...' : 'Enviar SMS' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Resultados -->
+        <div class="results-section">
+          <!-- Validação de Telefone -->
+          <div *ngIf="validationResult" class="result-card validation-card">
+            <div class="result-header">
+              <h5 class="result-title">
+                <span class="e-icons e-check-circle"></span>
+                Resultado da Validação
+              </h5>
+            </div>
+            <div class="result-content">
+              <div *ngIf="validationResult.validNumbers.length > 0" class="valid-numbers">
+                <h6>Números Válidos ({{ validationResult.validNumbers.length }})</h6>
+                <ul class="numbers-list">
+                  <li *ngFor="let num of validationResult.validNumbers" class="valid-number">
+                    <span class="original">{{ num.original }}</span>
+                    <span class="arrow">→</span>
+                    <span class="formatted">{{ num.formatted }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div *ngIf="validationResult.invalidNumbers.length > 0" class="invalid-numbers">
+                <h6>Números Inválidos ({{ validationResult.invalidNumbers.length }})</h6>
+                <ul class="numbers-list">
+                  <li *ngFor="let num of validationResult.invalidNumbers" class="invalid-number">
+                    <span class="original">{{ num.original }}</span>
+                    <span class="error">{{ num.errorReason }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cálculo de Custo -->
+          <div *ngIf="costResult" class="result-card cost-card">
+            <div class="result-header">
+              <h5 class="result-title">
+                <span class="e-icons e-calculator"></span>
+                Estimativa de Custo
+              </h5>
+            </div>
+            <div class="result-content">
+              <div class="cost-details">
+                <div class="cost-item">
+                  <span class="cost-label">Preço:</span>
+                  <span class="cost-value">${{ costResult.price }} {{ costResult.currency }}</span>
+                </div>
+                <div class="cost-item">
+                  <span class="cost-label">Segmentos:</span>
+                  <span class="cost-value">{{ costResult.segments }}</span>
+                </div>
+                <div class="cost-item">
+                  <span class="cost-label">País:</span>
+                  <span class="cost-value">{{ costResult.countryCode }}</span>
+                </div>
+                <div class="cost-item">
+                  <span class="cost-label">Tipo:</span>
+                  <span class="cost-value" [class]="'cost-type ' + (costResult.isInternational ? 'international' : 'domestic')">
+                    {{ costResult.isInternational ? 'Internacional' : 'Nacional' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resultado do Envio -->
+          <div *ngIf="sendResult" class="result-card send-result-card">
+            <div class="result-header">
+              <h5 class="result-title" [ngClass]="sendResult.success ? 'success' : 'error'">
+                <span class="e-icons" [ngClass]="sendResult.success ? 'e-check-circle' : 'e-close-circle'"></span>
+                {{ sendResult.success ? 'SMS Enviado com Sucesso' : 'Falha no Envio do SMS' }}
+              </h5>
+            </div>
+            <div class="result-content">
+              <div *ngIf="sendResult.success" class="success-details">
+                <div class="detail-item">
+                  <span class="detail-label">ID da Mensagem:</span>
+                  <span class="detail-value">{{ sendResult.messageId }}</span>
+                </div>
+                <div *ngIf="sendResult.externalMessageId" class="detail-item">
+                  <span class="detail-label">ID Externo:</span>
+                  <span class="detail-value">{{ sendResult.externalMessageId }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Custo:</span>
+                  <span class="detail-value">${{ sendResult.cost }} {{ sendResult.currency }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Segmentos:</span>
+                  <span class="detail-value">{{ sendResult.segments }}</span>
+                </div>
+              </div>
+
+              <div *ngIf="!sendResult.success" class="error-details">
+                <div class="detail-item">
+                  <span class="detail-label">Erro:</span>
+                  <span class="detail-value error-text">{{ sendResult.errorMessage }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

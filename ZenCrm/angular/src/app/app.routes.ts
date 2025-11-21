@@ -69,6 +69,11 @@ export const APP_ROUTES: Routes = [
     canActivate: [authGuard, permissionGuard],
   },
   {
+    path: 'crm/sms',
+    loadComponent: () => import('./sms/components/sms-send.component').then(c => c.SmsSendComponent),
+    canActivate: [authGuard, permissionGuard],
+  },
+  {
     path: 'admin/syncfusion-demo',
     loadComponent: () => import('./shared/syncfusion-demo.component').then(c => c.SyncfusionDemoComponent),
     canActivate: [authGuard, permissionGuard],

@@ -19,6 +19,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
 using ZenCrm.Communication;
 using ZenCrm.Communication.Services;
+using ZenCrm.Communication.Providers;
 
 namespace ZenCrm;
 
@@ -50,9 +51,20 @@ public class ZenCrmDomainModule : AbpModule
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
 
+        // Configure Twilio settings
+        Configure<TwilioConfig>(context.Services.GetConfiguration().GetSection("Twilio"));
+
         // Register communication services
         context.Services.AddTransient<ICommunicationManager, CommunicationManager>();
         context.Services.AddTransient<IEmailService, Communication.Providers.AbpEmailProvider>();
         context.Services.AddTransient<IMessageTemplateService, MessageTemplateService>();
+
+        // Register SMS services
+        context.Services.AddTransient<ISmsService, TwilioSmsProvider>();
+        context.Services.AddTransient<ISmsTemplateService, SmsTemplateService>();
+        context.Services.AddTransient<ISmsDeliveryService, SmsDeliveryService>();
+
+        // Configure Twilio
+        context.Services.AddSingleton<TwilioConfig>();
     }
 }

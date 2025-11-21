@@ -107,5 +107,8 @@ public static class CommunicationModelBuilderExtensions
             // Ensure unique template name per channel
             b.HasIndex(x => new { x.Name, x.Channel }).IsUnique();
         });
+
+        builder.ApplyConfiguration(new SmsTemplateConfiguration());
+        builder.ApplyConfiguration(new SmsDeliveryRecordConfiguration());
     }
 }

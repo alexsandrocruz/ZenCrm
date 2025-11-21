@@ -16,8 +16,7 @@ import { ChangeDetectorRef } from '@angular/core';
     DropDownListAllModule,
     ChartAllModule
   ],
-  templateUrl: './syncfusion-complete-dashboard.component.html',
-  styleUrl: './syncfusion-complete-dashboard.component.scss'
+  templateUrl: './syncfusion-complete-dashboard.component.html'
 })
 export class SyncfusionCompleteDashboardComponent implements OnInit {
   selectedPeriod: string = '2024';
@@ -48,6 +47,20 @@ export class SyncfusionCompleteDashboardComponent implements OnInit {
       enable: true,
       format: '${series.name}: ${value}'
     }
+  };
+
+  // Data label settings for charts
+  regionDataLabelSettings: any = {
+    visible: true,
+    position: 'Outside',
+    name: 'region',
+    format: '{percentage}%'
+  };
+
+  leadSourceDataLabelSettings: any = {
+    visible: true,
+    position: 'Outside',
+    name: 'source'
   };
 
   regionChartConfig: any = {

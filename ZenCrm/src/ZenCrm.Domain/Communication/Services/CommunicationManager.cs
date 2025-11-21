@@ -10,6 +10,7 @@ using Volo.Abp.Domain.Services;
 using Volo.Abp.Guids;
 using ZenCrm.Communication.Entities;
 using ZenCrm.Communication.Jobs;
+using ZenCrm.Communication.Providers;
 
 namespace ZenCrm.Communication.Services;
 
@@ -20,8 +21,13 @@ public class CommunicationManager : DomainService, ICommunicationManager
 {
     private readonly IRepository<Message, Guid> _messageRepository;
     private readonly IRepository<MessageTemplate, Guid> _templateRepository;
+    private readonly IRepository<SmsTemplate, Guid> _smsTemplateRepository;
+    private readonly IRepository<SmsDeliveryRecord, Guid> _smsDeliveryRepository;
     private readonly IMessageTemplateService _templateService;
+    private readonly ISmsTemplateService _smsTemplateService;
     private readonly IEmailService _emailService;
+    private readonly ISmsService _smsService;
+    private readonly ISmsDeliveryService _smsDeliveryService;
     private readonly IBackgroundJobManager _backgroundJobManager;
     private readonly IGuidGenerator _guidGenerator;
     private readonly ILogger<CommunicationManager> _logger;
@@ -29,16 +35,26 @@ public class CommunicationManager : DomainService, ICommunicationManager
     public CommunicationManager(
         IRepository<Message, Guid> messageRepository,
         IRepository<MessageTemplate, Guid> templateRepository,
+        IRepository<SmsTemplate, Guid> smsTemplateRepository,
+        IRepository<SmsDeliveryRecord, Guid> smsDeliveryRepository,
         IMessageTemplateService templateService,
+        ISmsTemplateService smsTemplateService,
         IEmailService emailService,
+        ISmsService smsService,
+        ISmsDeliveryService smsDeliveryService,
         IBackgroundJobManager backgroundJobManager,
         IGuidGenerator guidGenerator,
         ILogger<CommunicationManager> logger)
     {
         _messageRepository = messageRepository;
         _templateRepository = templateRepository;
+        _smsTemplateRepository = smsTemplateRepository;
+        _smsDeliveryRepository = smsDeliveryRepository;
         _templateService = templateService;
+        _smsTemplateService = smsTemplateService;
         _emailService = emailService;
+        _smsService = smsService;
+        _smsDeliveryService = smsDeliveryService;
         _backgroundJobManager = backgroundJobManager;
         _guidGenerator = guidGenerator;
         _logger = logger;
@@ -171,6 +187,165 @@ public class CommunicationManager : DomainService, ICommunicationManager
         return messageIds;
     }
 
+    /// <summary>
+    /// Send SMS using SMS template
+    /// </summary>
+    public async Task<Guid> SendSmsAsync(
+        string phoneNumber,
+        Guid? smsTemplateId = null,
+        string? content = null,
+        Dictionary<string, object>? variables = null,
+        MessagePriority priority = MessagePriority.Normal,
+        DateTime? scheduledSendDate = null,
+        Guid? relatedEntityId = null,
+        string? relatedEntityType = null,
+        Guid? interactionId = null,
+        string? campaignId = null,
+        SmsCategory category = SmsCategory.Transactional)
+    {
+        string smsContent;
+        string subject = "SMS Message";
+
+        if (smsTemplateId.HasValue)
+        {
+            var smsTemplate = await _smsTemplateRepository.GetAsync(smsTemplateId.Value);
+            if (!smsTemplate.IsActive)
+            {
+                throw new InvalidOperationException($"SMS template '{smsTemplate.Name}' is not active");
+            }
+
+            smsContent = await _smsTemplateService.GenerateContentAsync(smsTemplateId.Value, variables ?? new Dictionary<string, object>());
+            subject = smsTemplate.Name;
+
+            // Update priority and category from template
+            priority = smsTemplate.DefaultPriority;
+            category = smsTemplate.Category;
+
+            // Increment template usage
+            smsTemplate.IncrementUsage();
+            await _smsTemplateRepository.UpdateAsync(smsTemplate);
+        }
+        else if (!string.IsNullOrWhiteSpace(content))
+        {
+            smsContent = content;
+        }
+        else
+        {
+            throw new ArgumentException("Either SMS template ID or content must be provided");
+        }
+
+        return await SendMessageAsync(
+            subject,
+            smsContent,
+            CommunicationChannel.SMS,
+            phoneNumber,
+            category == SmsCategory.Marketing ? MessageType.Marketing : MessageType.Notification,
+            priority,
+            fromAddress: null,
+            scheduledSendDate,
+            templateId: smsTemplateId,
+            templateVariables: variables,
+            relatedEntityId,
+            relatedEntityType,
+            interactionId
+        );
+    }
+
+    /// <summary>
+    /// Send bulk SMS messages
+    /// </summary>
+    public async Task<List<Guid>> SendBulkSmsAsync(
+        List<string> phoneNumbers,
+        Guid? smsTemplateId = null,
+        string? content = null,
+        Dictionary<string, object>? variables = null,
+        MessagePriority priority = MessagePriority.Normal,
+        DateTime? scheduledSendDate = null,
+        Guid? relatedEntityId = null,
+        string? relatedEntityType = null,
+        string? campaignId = null,
+        SmsCategory category = SmsCategory.Transactional)
+    {
+        var messageIds = new List<Guid>();
+
+        foreach (var phoneNumber in phoneNumbers)
+        {
+            try
+            {
+                var messageId = await SendSmsAsync(
+                    phoneNumber,
+                    smsTemplateId,
+                    content,
+                    variables,
+                    priority,
+                    scheduledSendDate,
+                    relatedEntityId,
+                    relatedEntityType,
+                    null,
+                    campaignId,
+                    category
+                );
+
+                messageIds.Add(messageId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to queue SMS to {PhoneNumber}: {Error}", phoneNumber, ex.Message);
+                // Continue with other messages even if one fails
+            }
+        }
+
+        return messageIds;
+    }
+
+    /// <summary>
+    /// Validate phone numbers before sending SMS
+    /// </summary>
+    public async Task<PhoneValidationResult> ValidatePhoneNumbersAsync(string[] phoneNumbers)
+    {
+        return await _smsService.ValidatePhoneNumbersAsync(phoneNumbers);
+    }
+
+    /// <summary>
+    /// Calculate SMS cost before sending
+    /// </summary>
+    public async Task<SmsCostResult> CalculateSmsCostAsync(string phoneNumber, int messageLength, string? countryCode = null)
+    {
+        return await _smsService.CalculateCostAsync(phoneNumber, messageLength, countryCode);
+    }
+
+    /// <summary>
+    /// Get SMS delivery status
+    /// </summary>
+    public async Task<SmsDeliveryStatus> GetSmsDeliveryStatusAsync(string externalMessageId)
+    {
+        return await _smsService.GetDeliveryStatusAsync(externalMessageId);
+    }
+
+    /// <summary>
+    /// Get SMS delivery records for a message
+    /// </summary>
+    public async Task<List<SmsDeliveryRecord>> GetSmsDeliveryRecordsAsync(Guid messageId)
+    {
+        return await _smsDeliveryService.GetByMessageIdAsync(messageId);
+    }
+
+    /// <summary>
+    /// Get SMS delivery statistics
+    /// </summary>
+    public async Task<SmsDeliveryStatistics> GetSmsDeliveryStatisticsAsync(DateTime? startDate = null, DateTime? endDate = null)
+    {
+        return await _smsDeliveryService.GetStatisticsAsync(startDate, endDate);
+    }
+
+    /// <summary>
+    /// Sync SMS delivery status with provider
+    /// </summary>
+    public async Task<int> SyncSmsDeliveryStatusAsync(SmsProvider provider = SmsProvider.Twilio)
+    {
+        return await _smsDeliveryService.SyncWithProviderAsync(provider);
+    }
+
     public async Task<Guid> QueueMessageAsync(
         string subject,
         string content,
@@ -215,6 +390,7 @@ public class CommunicationManager : DomainService, ICommunicationManager
         try
         {
             MessageDeliveryResult result;
+            SmsDeliveryRecord? smsDeliveryRecord = null;
 
             // Send based on channel
             switch (message.Channel)
@@ -223,8 +399,33 @@ public class CommunicationManager : DomainService, ICommunicationManager
                     result = await _emailService.SendAsync(message);
                     break;
 
-                // Other channels will be implemented in future phases
                 case CommunicationChannel.SMS:
+                    // Create SMS delivery record before sending
+                    smsDeliveryRecord = await CreateSmsDeliveryRecordAsync(message);
+
+                    // Send SMS
+                    result = await _smsService.SendAsync(message);
+
+                    // Update SMS delivery record with result
+                    if (smsDeliveryRecord != null)
+                    {
+                        if (result.Success)
+                        {
+                            smsDeliveryRecord.SetMessageDetails(
+                                message.Content,
+                                1, // segments calculated by provider
+                                result.Price ?? 0);
+                            smsDeliveryRecord.UpdateStatus(SmsDeliveryStatus.Sent);
+                        }
+                        else
+                        {
+                            smsDeliveryRecord.UpdateStatus(SmsDeliveryStatus.Failed, null, result.ErrorMessage);
+                        }
+                        await _smsDeliveryRepository.UpdateAsync(smsDeliveryRecord);
+                    }
+                    break;
+
+                // Other channels will be implemented in future phases
                 case CommunicationChannel.WhatsApp:
                 case CommunicationChannel.PushNotification:
                     throw new NotImplementedException($"Channel {message.Channel} not yet implemented");
@@ -236,13 +437,13 @@ public class CommunicationManager : DomainService, ICommunicationManager
             if (result.Success)
             {
                 message.MarkAsSent(result.ExternalMessageId, result.ProviderResponse);
-                _logger.LogInformation("Message {MessageId} sent successfully", messageId);
+                _logger.LogInformation("Message {MessageId} sent successfully via {Channel}", messageId, message.Channel);
             }
             else
             {
                 message.MarkAsFailed(result.ErrorMessage ?? "Unknown error");
-                _logger.LogError("Message {MessageId} sending failed: {Error}",
-                    messageId, result.ErrorMessage);
+                _logger.LogError("Message {MessageId} sending failed via {Channel}: {Error}",
+                    messageId, message.Channel, result.ErrorMessage);
 
                 // Schedule retry if possible
                 if (message.CanRetry() && result.ShouldRetry)
@@ -492,5 +693,86 @@ public class CommunicationManager : DomainService, ICommunicationManager
 
         _logger.LogInformation("Message {MessageId} scheduled for retry in {Delay} minutes",
             message.Id, delay.TotalMinutes);
+    }
+
+    /// <summary>
+    /// Create SMS delivery record for tracking
+    /// </summary>
+    private async Task<SmsDeliveryRecord> CreateSmsDeliveryRecordAsync(Message message)
+    {
+        try
+        {
+            var deliveryRecord = new SmsDeliveryRecord(
+                _guidGenerator.Create(),
+                message.Id,
+                string.Empty, // External message ID will be set after sending
+                message.ToAddress,
+                string.Empty, // From phone number will be set by provider
+                SmsProvider.Twilio, // Default provider
+                DetermineSmsCategory(message.Type)
+            );
+
+            // Extract campaign ID from template variables if available
+            var templateVariables = !string.IsNullOrWhiteSpace(message.TemplateVariables)
+                ? JsonSerializer.Deserialize<Dictionary<string, object>>(message.TemplateVariables)
+                : new Dictionary<string, object>();
+
+            if (templateVariables != null && templateVariables.TryGetValue("campaignId", out var campaignIdObj))
+            {
+                deliveryRecord.SetCampaignInfo(campaignIdObj?.ToString());
+            }
+
+            // Set delivery info based on phone number
+            var countryCode = await ExtractCountryCodeAsync(message.ToAddress);
+            deliveryRecord.SetDeliveryInfo(countryCode);
+
+            await _smsDeliveryRepository.InsertAsync(deliveryRecord);
+
+            _logger.LogInformation("Created SMS delivery record for message: {MessageId}", message.Id);
+            return deliveryRecord;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating SMS delivery record for message: {MessageId}", message.Id);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Determine SMS category from message type
+    /// </summary>
+    private static SmsCategory DetermineSmsCategory(MessageType messageType)
+    {
+        return messageType switch
+        {
+            MessageType.Marketing => SmsCategory.Marketing,
+            MessageType.Transactional => SmsCategory.Transactional,
+            MessageType.Notification => SmsCategory.Notification,
+            MessageType.Alert => SmsCategory.Authentication, // Use Alert for authentication
+            MessageType.Reminder => SmsCategory.Transactional,
+            _ => SmsCategory.Transactional
+        };
+    }
+
+    /// <summary>
+    /// Extract country code from phone number (simplified)
+    /// </summary>
+    private async Task<string> ExtractCountryCodeAsync(string phoneNumber)
+    {
+        try
+        {
+            // Use SMS service to format and extract country code
+            var formattedNumber = await _smsService.FormatPhoneNumberAsync(phoneNumber);
+            if (formattedNumber.StartsWith("+"))
+            {
+                var countryCodeMatch = System.Text.RegularExpressions.Regex.Match(formattedNumber, @"^\+(\d{1,3})");
+                return countryCodeMatch.Success ? countryCodeMatch.Groups[1].Value : "1";
+            }
+            return "1"; // Default to US
+        }
+        catch
+        {
+            return "1"; // Default to US on error
+        }
     }
 }

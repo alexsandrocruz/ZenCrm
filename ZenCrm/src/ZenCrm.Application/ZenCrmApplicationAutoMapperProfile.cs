@@ -1,6 +1,8 @@
 using AutoMapper;
 using ZenCrm.Books;
 using ZenCrm.Sales;
+using ZenCrm.Communication.Entities;
+using ZenCrm.Communication.Sms;
 
 namespace ZenCrm;
 
@@ -27,6 +29,12 @@ public class ZenCrmApplicationAutoMapperProfile : Profile
 
         CreateMap<Interaction, InteractionDto>();
         CreateMap<CreateUpdateInteractionDto, Interaction>();
+
+        // Communication mappings
+        CreateMap<SmsTemplate, SmsTemplateDto>();
+        CreateMap<CreateUpdateSmsTemplateDto, SmsTemplate>();
+
+        CreateMap<SmsDeliveryRecord, SmsDeliveryRecordDto>();
 
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
