@@ -78,4 +78,29 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./shared/syncfusion-license-status.component').then(c => c.SyncfusionLicenseStatusComponent),
     canActivate: [authGuard, permissionGuard],
   },
+  {
+    path: 'admin/syncfusion-examples',
+    children: [
+      {
+        path: 'client-grid',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-client-grid.component').then(c => c.SyncfusionClientGridComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
+      {
+        path: 'opportunity-form',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-opportunity-form.component').then(c => c.SyncfusionOpportunityFormComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
+      {
+        path: 'simple-dashboard',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-simple-dashboard.component').then(c => c.SyncfusionSimpleDashboardComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
+      {
+        path: 'metrics-panel',
+        loadComponent: () => import('./shared/syncfusion-crm-examples/syncfusion-metrics-panel.component').then(c => c.SyncfusionMetricsPanelComponent),
+        canActivate: [authGuard, permissionGuard],
+      },
+    ]
+  },
 ];

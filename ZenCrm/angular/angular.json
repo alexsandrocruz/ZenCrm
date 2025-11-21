@@ -151,6 +151,36 @@
                 "inject": true,
                 "bundleName": "ej2-splitbuttons-material"
               },
+              {
+                "input": "node_modules/@syncfusion/ej2-inputs/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-inputs-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-dropdowns/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-dropdowns-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-calendars/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-calendars-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-navigations/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-navigations-material"
+              },
+              {
+                "input": "node_modules/@syncfusion/ej2-grids/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-grids-material"
+              },
+            {
+                "input": "node_modules/@syncfusion/ej2-angular-richtexteditor/styles/material.css",
+                "inject": true,
+                "bundleName": "ej2-richtexteditor-material"
+              },
               "src/styles.scss"
             ],
             "scripts": [],
@@ -161,13 +191,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "2.5mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "8mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "100kb"
+                  "maximumWarning": "5kb",
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
